@@ -1,0 +1,25 @@
+# Build artifacts
+os/dist/
+os/node_modules/
+os/src/data.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Editors
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Claude Code working files
+.claude/cache/
+.claude/logs/
+
+# Source materials (often large PDFs you don't want in git)
+# Uncomment if you keep source material out of git:
+# frameworks/*/source/
