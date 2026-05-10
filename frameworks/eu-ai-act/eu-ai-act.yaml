@@ -1173,6 +1173,10 @@ requirements:
   business_models:
   - on-prem
   - ai-factory
+  - framework: popia
+    refs:
+    - popia-s-automated-decisions
+    note: AI Act Art. 22 automated processing aligns directly with POPIA s 71 automated decision-making.
 - id: eu-ai-act-art-23-24
   kind: article
   native_id: Article 23-24
@@ -1360,6 +1364,10 @@ requirements:
   business_models:
   - on-prem
   - ai-factory
+  - framework: popia
+    refs:
+    - popia-cond-7
+    note: EU AI Act risk-management for high-risk AI overlaps with POPIA s 19 security safeguards when personal information is processed.
 - id: eu-ai-act-art-10
   kind: article
   native_id: Article 10
@@ -1443,6 +1451,14 @@ requirements:
   business_models:
   - on-prem
   - ai-factory
+  - framework: popia
+    refs:
+    - popia-cond-2
+    note: AI Act data governance overlaps with POPIA processing-limitation conditions (ss 9-12).
+  - framework: popia
+    refs:
+    - popia-s-special-pi
+    note: AI Act Art. 10(5) special categories overlap with POPIA ss 26-33 special PI.
 - id: eu-ai-act-art-11
   kind: article
   native_id: Article 11
@@ -1570,6 +1586,10 @@ requirements:
   business_models:
   - on-prem
   - ai-factory
+  - framework: popia
+    refs:
+    - popia-cond-3
+    note: AI Act record-keeping aligns with POPIA s 14 retention rules.
 - id: eu-ai-act-art-13
   kind: article
   native_id: Article 13
@@ -1618,6 +1638,10 @@ requirements:
   business_models:
   - on-prem
   - ai-factory
+  - framework: popia
+    refs:
+    - popia-cond-6
+    note: AI Act transparency obligations align with POPIA s 17-18 openness.
 - id: eu-ai-act-art-14
   kind: article
   native_id: Article 14
@@ -1664,6 +1688,10 @@ requirements:
   business_models:
   - on-prem
   - ai-factory
+  - framework: popia
+    refs:
+    - popia-s-automated-decisions
+    note: AI Act human-oversight obligation supports POPIA s 71 substantial-effect safeguards.
 - id: eu-ai-act-art-15
   kind: article
   native_id: Article 15
@@ -1954,6 +1982,14 @@ requirements:
   business_models:
   - on-prem
   - ai-factory
+  - framework: popia
+    refs:
+    - popia-cond-1
+    note: AI Act deployer obligations require POPIA-style accountability where personal information is processed.
+  - framework: popia
+    refs:
+    - popia-s-information-officer
+    note: Designated humans (Art. 26.2) overlap with POPIA Information Officer duties.
 - id: eu-ai-act-art-27
   kind: article
   native_id: Article 27
@@ -2003,6 +2039,10 @@ requirements:
   business_models:
   - on-prem
   - ai-factory
+  - framework: popia
+    refs:
+    - popia-s-automated-decisions
+    note: FRIA covers fundamental-rights impacts of automated decisions; POPIA s 71 analysis integrates.
 - id: eu-ai-act-art-49
   kind: article
   native_id: Article 49
@@ -2111,6 +2151,10 @@ requirements:
   business_models:
   - on-prem
   - ai-factory
+  - framework: popia
+    refs:
+    - popia-cond-6
+    note: AI Act Art. 50 disclosure aligns with POPIA s 18 collection-notice obligations.
 - id: eu-ai-act-art-51-52-55
   kind: article
   native_id: Article 51-52-55
@@ -2346,6 +2390,10 @@ requirements:
   business_models:
   - on-prem
   - ai-factory
+  - framework: popia
+    refs:
+    - popia-cond-7
+    note: AI Act post-market monitoring aligns with POPIA s 19 ongoing-safeguards verification.
 - id: eu-ai-act-art-73
   kind: article
   native_id: Article 73
@@ -2414,3 +2462,7 @@ requirements:
   business_models:
   - on-prem
   - ai-factory
+  - framework: popia
+    refs:
+    - popia-cond-7
+    note: AI Act Art. 73 serious-incident reporting aligns with POPIA s 22 breach-notification timing.

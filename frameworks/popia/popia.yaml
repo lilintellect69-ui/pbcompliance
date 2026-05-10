@@ -1,0 +1,1416 @@
+# Protection of Personal Information Act, 2013 (Act No. 4 of 2013) — PrivateBox alignment record (schema v2)
+# Source-of-truth file for the GRC OS. Edits go in version control.
+#
+# Schema: see /docs/schema-v2.md
+# PB-curated source pack: frameworks/popia/source/privatebox-popia-architecture-pack.md
+#
+# POPIA is the South African statutory baseline for personal-information processing. PB has dual posture:
+# (1) RESPONSIBLE PARTY for PB's own corporate processing — website, CRM, billing, staff, marketing.
+# (2) OPERATOR when processing customer personal information under contract — support, telemetry, managed services.
+# Both postures generate distinct duties; this YAML captures both via role_applicability per requirement.
+#
+# Crosswalks: POPIA carries no outgoing crosswalks in v1 (foundational law). Other frameworks reference INTO POPIA.
+# Retroactive edits to iso-42001.yaml, iso-27701.yaml and eu-ai-act.yaml add the incoming crosswalks.
+
+schema_version: '2.0'
+id: popia
+version: '2013'
+full_name: Protection of Personal Information Act, 2013 (Act No. 4 of 2013)
+type: regulation
+issuer: Republic of South Africa (Parliament)
+audit_type: regulatory_inspection
+certifiable: false
+pb_interpretation_version: '1.0'
+pb_interpretation_owner: null
+pb_interpretation_last_reviewed: null
+roles:
+- responsible_party
+- operator
+- information_officer
+tiers: []
+effective_dates:
+- milestone: POPIA full commencement (1-year transitional period ended)
+  date: '2021-07-01'
+  obligations: []
+
+pb_application:
+  why_chosen: >-
+    POPIA is the binding South African statutory baseline for processing personal information. PrivateBox
+    targets SA legal, finance and healthcare buyers as primary market — every procurement engagement asks
+    about POPIA posture. Unlike ISO 42001 (alignment standard), POPIA is law: enforcement notices, fines
+    and civil remedies are real and visible (Dis-Chem enforcement notice; Department of Basic Education
+    infringement notice). PrivateBox carries dual POPIA roles — responsible party for its own corporate
+    processing (website, CRM, billing, staff, marketing) and operator when handling customer personal
+    information under contract (support, telemetry, managed services). On-prem architecture materially
+    reduces operator-scenario exposure but does NOT remove POPIA duties; "on-prem = compliant" is a
+    red-flag claim. PB's external position: "designed in alignment with POPIA, with explicit
+    responsible-party / operator role allocation per deployment scenario."
+  scope_decisions:
+    on_prem:
+      coverage: full
+      rationale: >-
+        PB's responsible-party duties for its own corporate processing apply regardless of customer
+        deployment model. PB's operator duties activate per scenario (Table 3 in source pack): pure
+        on-prem with no remote support has minimal operator exposure; on-prem with telemetry / support
+        access / managed services creates operator scenarios with full ss 19-22 duties. Default
+        contractual posture: customer is responsible party for in-environment processing; PB is operator
+        only for explicitly-scoped service layers. The dual-role schedule is published as part of the
+        Customer Shared-Responsibility Matrix.
+    ai_factory:
+      coverage: partial
+      rationale: >-
+        AI Factory ringfenced multi-tenant deployment in a partner DC introduces additional operator and
+        sub-processor relationships. Cross-border concerns (s 72) activate if the partner DC is offshore.
+        Until partner DC is selected (oq-partner-dc-selection), specific operator-chain documentation
+        (s 21 sub-operator notification, s 22 incident notification flow, transfer register under s 72)
+        is incomplete. AI Factory POPIA scope is provisional pending partner-DC decision.
+  top_risks:
+  - >-
+    Misclassification of role — assuming "software vendor only / on-prem means out of scope" when
+    optional services (telemetry, support access, backups, RAG ingestion assistance) make PB an operator
+    under s 20-21. Documented role allocation per deployment scenario is the primary control.
+  - >-
+    Hidden secondary use of customer data for vendor analytics or model training (s 15). High-likelihood
+    challenge from buyers. Mitigation: contractual prohibition + technical separation + no-vendor-training
+    default in DPA.
+  - >-
+    Telemetry leakage of personal information (ss 9-12, 17-18, 19). Telemetry pipeline must have a
+    field-level data dictionary, default-off for customer content, opt-in for operational metadata.
+  - >-
+    Standing or undocumented support access (s 20-21). Just-in-time, customer-approved, fully logged
+    sessions are mandatory; ad-hoc access via Slack / WhatsApp / screen-photos is a finding pattern.
+  - >-
+    Late or partial breach notification (s 22). PB-as-operator must notify customer-as-responsible-party
+    "immediately"; customer then has the s 22 statutory notification duty to Regulator + data subjects.
+    Joint-response tabletop exercise is the maturity indicator.
+  - >-
+    Cross-border support transferring personal information offshore (s 72) without adequacy / binding
+    agreements / consent. Even "temporary support access" by foreign engineer is a transfer.
+  - >-
+    Information Officer designated but not registered with the Regulator (s 55-56 + Regulation 4).
+    Registration is a public filing; auditors and clients verify it. Active operating cadence (training,
+    awareness, framework review) is the additional bar.
+  - >-
+    Special / children's data deployments (ss 26-35) without enhanced controls profile and lawful-basis
+    documentation. Pharmacy / healthcare / education sectors are high-likelihood PB customer
+    deployments — generic deployment templates fail in these sectors.
+
+shared_responsibility_model:
+- area: Responsible-party governance
+  pb_owned: PB's own RP duties for corporate processing — website, CRM, billing, staff, marketing.
+  cl_owned: Customer's RP duties for their AI use cases inside their environment.
+  shared_note: Two parallel RP postures; one trust interface (DPA / MSA).
+- area: Operator (processor) duties when PB processes customer data
+  pb_owned: ss 20-21 operator duties — confidentiality, security same-as-RP, immediate breach notice to RP.
+  cl_owned: RP-side oversight of PB-as-operator including DD and contractual flow-down.
+  shared_note: Activates only for scenarios where PB sees / handles customer personal information.
+- area: Information Officer
+  pb_owned: PB designates and registers its own IO with the Information Regulator.
+  cl_owned: Customer designates its own IO; routes data-subject requests via PB only when contractually agreed.
+  shared_note: Two IOs — distinct legal duties, occasional cross-engagement on incidents.
+- area: Privacy notices
+  pb_owned: PrivateBox's own privacy notice, PAIA manual, marketing notice.
+  cl_owned: Customer's deployment-specific notice to its end-users.
+  shared_note: PB provides deployment-notice template inputs; customer adapts to its context.
+- area: Security safeguards (s 19)
+  pb_owned: Product hardening, signed updates, support-access controls, telemetry boundary, vendor-side stores.
+  cl_owned: Environment-level security (network, physical, endpoint, identity).
+  shared_note: PB ships a security baseline and minimum-spec sheet; customer operates above that baseline.
+- area: Breach notification (s 22)
+  pb_owned: PB-as-operator notifies customer-as-RP "immediately" on suspected unauthorised access.
+  cl_owned: RP statutory notification duty to Regulator + data subjects (within "as soon as reasonably possible").
+  shared_note: Joint IR plan + escalation contacts; tabletop exercise per year.
+- area: Data subject rights (ss 23-25)
+  pb_owned: PB-side records (PB website, billing, support tickets, marketing) — PB answers directly.
+  cl_owned: Customer-side records (in-deployment data, conversations, RAG content) — customer answers.
+  shared_note: PB tooling supports search / export / deletion; routing matrix in MSA.
+- area: Telemetry / vendor-side metadata
+  pb_owned: Telemetry pipeline; data dictionary; PII-free statement; opt-in / opt-out controls.
+  cl_owned: Customer accepts / declines telemetry per opt-in; configures telemetry scope in product.
+  shared_note: Telemetry crosses trust boundary — most-tested control by procurement.
+- area: Support access
+  pb_owned: Just-in-time access workflow; session recording; access reviews; deletion of copied artefacts.
+  cl_owned: Per-session approval; incident-specific authorisation.
+  shared_note: Standing access is forbidden — POPIA-relevant operator scenario.
+- area: RAG / data ingestion
+  pb_owned: Ingestion framework, quality gates, sensitive-data handling controls, ingestion SOP.
+  cl_owned: Customer owns the corpus, content rights, end-of-life data handling.
+  shared_note: PB advisory engagement may briefly process customer documents — operator scenario.
+- area: Backup support
+  pb_owned: Backup infrastructure (when vendor-managed) — encryption, location, retention, customer-managed keys.
+  cl_owned: Customer authorises and configures backups; receives restore approval authority.
+  shared_note: Backups are operator-scenario data flows; cross-border issue if backup location is offshore.
+- area: Cross-border support / sub-processors
+  pb_owned: Foreign-touchpoint review, transfer register, sub-processor list.
+  cl_owned: Customer notice + consent for cross-border transfer where required.
+  shared_note: Section 72 transfer rules apply; offshore engineer access is a transfer.
+- area: Direct marketing (PB's own operations)
+  pb_owned: Consent records; opt-out workflow; suppression lists.
+  cl_owned: N/A (customer's marketing is customer's responsibility).
+  shared_note: Section 69 applies to PB's B2B marketing.
+
+evidence_families:
+- id: governance_and_io
+  name: Information Officer governance and PB privacy programme
+  examples:
+  - IO appointment + Regulator registration record
+  - Deputy IO appointments (where applicable)
+  - PrivateBox Compliance Framework (Regulation 4 duties)
+  - Annual programme review
+  - Training records
+  why_auditor_cares: Without an active IO, POPIA accountability has no anchor; Regulator registration is publicly verifiable.
+  cadence: Annual review + on org change
+  typical_owner: PB
+- id: notices_and_paia
+  name: Privacy notices and PAIA materials
+  examples:
+  - PrivateBox privacy notice (website, customer-facing)
+  - Marketing-specific notice / consent disclosure
+  - Customer deployment notice template
+  - PAIA Manual + access request forms
+  - Notice version history
+  why_auditor_cares: Section 18 collection notice obligations; PAIA manual is hygiene factor for buyers.
+  cadence: Annual review + per material change
+  typical_owner: PB
+- id: dpa_and_operator_terms
+  name: Data Processing Agreement / operator addenda
+  examples:
+  - PB Operator DPA template (s 20-21 covering)
+  - Customer-specific DPAs / addenda
+  - Sub-operator notifications and contractual flow-down
+  - Support-access agreement / authorisation forms
+  why_auditor_cares: Section 20-21 require written operator agreements; missing DPAs is a finding pattern.
+  cadence: Per onboarding + annual review
+  typical_owner: PB
+- id: processing_inventory
+  name: Processing inventory (RoPA-equivalent)
+  examples:
+  - PB processing register (RoPA-style)
+  - Per-processing lawful-basis column
+  - Source / collection method tagging
+  - Cross-border / sub-processor map
+  why_auditor_cares: Section 17 documentation of processing; RoPA-style inventories are common Regulator-request artefact.
+  cadence: Quarterly review + per material change
+  typical_owner: PB
+- id: pia_and_riskassessment
+  name: Personal Information Impact Assessment / privacy risk
+  examples:
+  - PIIA methodology (POPIA Regulation 4 duty)
+  - Per-system PIIA records
+  - Privacy risk register
+  - Treatment plan
+  why_auditor_cares: Regulation 4 duty for IO; PIIA evidences accountability.
+  cadence: Annual + per material change
+  typical_owner: PB
+- id: rights_workflows
+  name: Data subject rights handling
+  examples:
+  - Rights SOP (access / correction / deletion / objection)
+  - Identity verification procedure
+  - Routing matrix (vendor records vs deployment records)
+  - Response templates
+  - Case log
+  why_auditor_cares: Sections 23-25 + PAIA interface; buyers test the workflow live.
+  cadence: Continuous + annual SOP review
+  typical_owner: PB
+- id: security_baseline_and_admin
+  name: Security baseline and administrative controls
+  examples:
+  - Security policy and hardening guide
+  - Access control matrix; PAM / MFA configuration
+  - Vulnerability management programme
+  - Code-signing key management
+  - Annual review records
+  why_auditor_cares: Section 19; Dis-Chem case made admin-access controls a Regulator priority.
+  cadence: Annual + per architecture change
+  typical_owner: PB
+- id: support_access
+  name: Support access governance
+  examples:
+  - Support-Access SOP (just-in-time, customer-approved, recorded)
+  - Bastion / session recording records
+  - Access-approval workflow
+  - Per-incident data-handling protocol
+  why_auditor_cares: Section 20-21 operator scenario; standing access is a finding pattern.
+  cadence: Annual SOP review + continuous operation
+  typical_owner: PB-SH
+- id: telemetry_governance
+  name: Telemetry and vendor-side data governance
+  examples:
+  - Telemetry data dictionary
+  - PII-free guarantee statement
+  - Opt-in / opt-out controls
+  - Telemetry sampling proof
+  - Cross-border routing disclosure
+  why_auditor_cares: Sections 9-12 minimisation + s 17-18 transparency + s 72 transfer rules.
+  cadence: Annual SOP review + per change
+  typical_owner: PB-SH
+- id: incident_response
+  name: Incident response and section 22 notification
+  examples:
+  - IR plan with severity tiers
+  - Section 22 customer-notification template
+  - Operator-to-RP "immediate" notification SOP
+  - Regulator notification form pack (SCN1 readiness)
+  - Tabletop exercise records
+  why_auditor_cares: Section 22 has explicit timing; late notification is regulatory exposure.
+  cadence: Annual exercise + per incident
+  typical_owner: PB
+- id: retention_and_deletion
+  name: Retention schedules and deletion / decommission proof
+  examples:
+  - Retention schedule per data class (incl. logs, backups, support bundles)
+  - Auto-expiry configuration
+  - Decommission / wipe SOP
+  - Wipe / destruction certificates
+  why_auditor_cares: Section 14 retention + s 19 destruction discipline; orphan support copies are a finding pattern.
+  cadence: Per change + annual schedule review
+  typical_owner: PB-SH
+- id: special_data_profile
+  name: Special PI / children deployment profile
+  examples:
+  - Special-data classification scheme
+  - Use-case screening forms (health / biometric / criminal / children)
+  - Restricted-control configurations
+  - Sector-specific deployment addenda (pharmacy, healthcare, education)
+  why_auditor_cares: Sections 26-35; sector deployments are high-stakes customer engagements.
+  cadence: Per deal screening + annual profile review
+  typical_owner: PB
+- id: marketing_consent
+  name: Direct marketing consent and objection records
+  examples:
+  - Marketing consent records
+  - Opt-out / objection workflow
+  - Suppression list
+  - Form 4 (objection form) readiness
+  why_auditor_cares: Section 69 governs PB's own B2B marketing; consent records are sampled.
+  cadence: Continuous
+  typical_owner: PB
+- id: cross_border_register
+  name: Cross-border transfer register and sub-processor disclosures
+  examples:
+  - Transfer register (per cross-border data flow)
+  - Adequacy / binding agreement / consent record per transfer
+  - Sub-processor list with country / safeguard
+  - Customer cross-border notice template
+  why_auditor_cares: Section 72; offshore support / cloud telemetry / hosted services trigger this.
+  cadence: Per change + annual review
+  typical_owner: PB
+- id: trust_pack_and_external_claims
+  name: Trust Pack language and external claims register
+  examples:
+  - Trust-Pack Language Guide (per source pack Table 8)
+  - Public Trust Centre POPIA section
+  - Procurement-response boilerplates
+  - External-claims register with evidence pointers
+  why_auditor_cares: Overclaim creates separate exposure under POPIA + consumer protection.
+  cadence: Quarterly review + per material event
+  typical_owner: PB
+
+scenarios:
+- id: scn-popia-pure-on-prem
+  name: Pure on-prem deployment, no remote support, no telemetry
+  framework_specific_id: PB-Deploy-1
+  description: >-
+    Customer runs PrivateBox entirely within its own infrastructure with no PB telemetry, support
+    access or remote operations. PB's POPIA exposure is limited to its own corporate records (no
+    customer personal information processed by PB).
+  applies_to_business_models: [on-prem]
+  pb_role: out-of-scope
+  customer_role: responsible_party
+  triggered_requirements:
+  - requirement_id: popia-cond-1
+    scenario_specific_note: Customer carries full RP accountability; PB documents non-processing posture.
+  - requirement_id: popia-s-information-officer
+    scenario_specific_note: PB IO governs its own records; customer IO governs deployment.
+  notes: Lowest PB POPIA exposure; documentation rigour the primary control.
+- id: scn-popia-update-delivery
+  name: On-prem with signed offline / pull-only updates
+  framework_specific_id: PB-Deploy-2
+  description: >-
+    PB delivers updates with cryptographic signing and SBOM; customer pulls on schedule. PB does not
+    receive customer personal information through the update channel.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: out-of-scope-for-customer-data
+  customer_role: responsible_party
+  triggered_requirements:
+  - requirement_id: popia-cond-7
+    scenario_specific_note: Update integrity is a security safeguard control PB owns.
+  - requirement_id: popia-s-cross-border
+    scenario_specific_note: Update repository hosting location may be cross-border; disclosed in transfer register.
+  notes: Update channel itself rarely processes PI but supply chain integrity is in scope.
+- id: scn-popia-remote-admin
+  name: On-prem with remote admin
+  framework_specific_id: PB-Deploy-3
+  description: >-
+    PB engineers can perform remote administration of customer environment. Engineering personnel
+    can affect means of processing and may see personal information during admin tasks.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: operator
+  customer_role: responsible_party
+  triggered_requirements:
+  - requirement_id: popia-cond-7
+    scenario_specific_note: Just-in-time access; session logging; MFA; operator confidentiality.
+  - requirement_id: popia-s-information-officer
+    scenario_specific_note: IO involvement on incidents.
+  notes: Operator scenario; DPA / operator addendum mandatory.
+- id: scn-popia-telemetry
+  name: On-prem with operational telemetry
+  framework_specific_id: PB-Deploy-4
+  description: >-
+    Telemetry pipeline returns operational metadata to PB. May contain identifiers, user IDs, device
+    data or usage traces depending on design. PB may be operator OR independent responsible party for
+    the telemetry stream.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: operator-or-rp
+  customer_role: responsible_party
+  triggered_requirements:
+  - requirement_id: popia-cond-2
+    scenario_specific_note: Minimisation — telemetry must collect only what's needed.
+  - requirement_id: popia-cond-6
+    scenario_specific_note: Telemetry must be in privacy notice / data dictionary.
+  - requirement_id: popia-s-cross-border
+    scenario_specific_note: Telemetry endpoint location is cross-border concern.
+  notes: Hidden monitoring becomes notice + transfer problem; opt-in + data dictionary controls.
+- id: scn-popia-support-access
+  name: Support-access troubleshooting using live customer prompts or documents
+  framework_specific_id: PB-Deploy-5
+  description: >-
+    PB engineers gain time-bounded access to customer environment for troubleshooting. May see live
+    prompts, documents, or customer data.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: operator
+  customer_role: responsible_party
+  triggered_requirements:
+  - requirement_id: popia-cond-7
+    scenario_specific_note: ss 20-21 operator confidentiality + s 22 immediate notification on incident.
+  - requirement_id: popia-cond-2
+    scenario_specific_note: Local redaction; support-bundle expiry; minimisation.
+  notes: Strongest operator scenario; per-session authorisation + recording mandatory.
+- id: scn-popia-rag-setup
+  name: Managed RAG / document-ingestion assistance
+  framework_specific_id: PB-Deploy-6
+  description: >-
+    PB advises customer on RAG corpus structure, ingestion pipeline. May stage / inspect / transform
+    documents during implementation. Customer owns content rights and PI decisions.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: operator
+  customer_role: responsible_party
+  triggered_requirements:
+  - requirement_id: popia-cond-7
+    scenario_specific_note: Staging restrictions; secure deletion of staging copies.
+  - requirement_id: popia-cond-4
+    scenario_specific_note: No reuse of staged documents for analytics or model training.
+  notes: SOW + DPA + secure deletion confirmation. "Implementation services" can become ungoverned processing.
+- id: scn-popia-update-repo
+  name: Hosted update repository / model package distribution
+  framework_specific_id: PB-Deploy-7
+  description: >-
+    PB serves software supply chain — signed updates, model packages, SBOMs, vulnerability disclosure.
+    Repository may collect subscriber / admin metadata.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: responsible_party-for-own-records
+  customer_role: responsible_party
+  triggered_requirements:
+  - requirement_id: popia-cond-2
+    scenario_specific_note: Repository metadata minimisation.
+  - requirement_id: popia-cond-7
+    scenario_specific_note: Repository security baseline; abuse monitoring.
+  notes: Vendor-operated; PB is RP for its own repository operations.
+- id: scn-popia-vendor-backup
+  name: Vendor-run backup support involving customer data copy
+  framework_specific_id: PB-Deploy-8
+  description: >-
+    PB provides backup infrastructure that stores customer personal information.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: operator
+  customer_role: responsible_party
+  triggered_requirements:
+  - requirement_id: popia-cond-7
+    scenario_specific_note: Backup encryption; customer-managed keys; restore authority.
+  - requirement_id: popia-s-cross-border
+    scenario_specific_note: Backup location may be cross-border; s 72 applies.
+  - requirement_id: popia-cond-3
+    scenario_specific_note: Backup retention bound by customer's primary retention policy.
+  notes: Strong DPA + sub-processor terms; cross-border-aware deployment.
+- id: scn-popia-offshore-support
+  name: Offshore support engineer accesses incident data
+  framework_specific_id: PB-Deploy-9
+  description: >-
+    Foreign engineer accesses customer environment / incident data during support. Transfer of
+    personal information across jurisdiction.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: operator
+  customer_role: responsible_party
+  triggered_requirements:
+  - requirement_id: popia-s-cross-border
+    scenario_specific_note: s 72 transfer rules; adequacy / binding agreement / consent required.
+  - requirement_id: popia-cond-7
+    scenario_specific_note: Operator + cross-border-aware support.
+  - requirement_id: popia-s-prior-auth
+    scenario_specific_note: Foreign transfer of special / children PI may need prior authorisation.
+  notes: '"Temporary" support is still a transfer; regional support routing is the control.'
+- id: scn-popia-pb-corporate
+  name: PrivateBox website, CRM, bids, billing, staff data (PB's own corporate processing)
+  framework_specific_id: PB-Deploy-10
+  description: >-
+    PrivateBox's own corporate processing of personal information — customer prospects, account
+    contacts, billing data, employees, marketing.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: responsible_party
+  customer_role: not-applicable
+  triggered_requirements:
+  - requirement_id: popia-cond-1
+    scenario_specific_note: PB-as-RP accountability for own processing.
+  - requirement_id: popia-cond-6
+    scenario_specific_note: PB privacy notice + PAIA manual.
+  - requirement_id: popia-s-direct-marketing
+    scenario_specific_note: PB B2B marketing consent + objection workflow.
+  - requirement_id: popia-s-information-officer
+    scenario_specific_note: PB IO governs this processing.
+  notes: Easy to overlook while focused on product; PB is fully accountable as RP.
+
+open_questions:
+- id: oq-popia-io-registration
+  question: Is PrivateBox's Information Officer designated and registered with the Information Regulator?
+  candidate_answers:
+  - Designated and registered (current state should be verified)
+  - Designated, registration pending
+  - Not yet designated
+  decision_owner: Top Management + AI Governance Lead (potentially same as IO)
+  decision_status: pending
+  blocks_requirements:
+  - popia-s-information-officer
+  blocks_scenarios: []
+  notes: >-
+    Section 55 requires designation; Section 56 + Regulation 4 set out the duties. Registration with
+    the Information Regulator is a public filing — buyers verify it. Active operating cadence (training,
+    awareness, framework review) is the additional bar.
+  created: '2026-05-10'
+  resolved_value: null
+  resolved_at: null
+- id: oq-popia-paia-manual
+  question: Does PrivateBox publish a current PAIA Manual and access-request forms?
+  candidate_answers:
+  - Published and current
+  - Drafted, not yet published
+  - Not yet drafted
+  decision_owner: Information Officer
+  decision_status: pending
+  blocks_requirements:
+  - popia-cond-6
+  blocks_scenarios: []
+  notes: >-
+    PAIA Manual is hygiene-factor evidence buyers expect within 5 minutes of asking. Form-based
+    request handling links to POPIA s 23-25 rights workflow.
+  created: '2026-05-10'
+  resolved_value: null
+  resolved_at: null
+- id: oq-popia-cross-border-routing
+  question: Which countries are approved for PrivateBox support engineer access to customer environments?
+  candidate_answers:
+  - South Africa only
+  - SA + named approved countries with safeguards
+  - Per-deal scoping with no default approved list
+  decision_owner: Top Management
+  decision_status: pending
+  blocks_requirements:
+  - popia-s-cross-border
+  blocks_scenarios:
+  - scn-popia-offshore-support
+  notes: >-
+    Section 72 transfer controls require adequacy / binding agreement / consent. Default geography
+    decision must precede customer engagements; per-deal scoping creates audit complexity.
+  created: '2026-05-10'
+  resolved_value: null
+  resolved_at: null
+- id: oq-popia-subprocessor-chain
+  question: What is PrivateBox's documented sub-operator / sub-processor chain and customer-notice approach?
+  candidate_answers:
+  - Maintain a public sub-processor list with email-on-change notifications
+  - Maintain an NDA-gated sub-processor list with per-customer notification
+  - Per-deal disclosure with no maintained list
+  decision_owner: Top Management + Procurement
+  decision_status: pending
+  blocks_requirements:
+  - popia-cond-7
+  blocks_scenarios:
+  - scn-popia-vendor-backup
+  - scn-popia-rag-setup
+  notes: >-
+    Section 21 requires sub-operator authorisation by RP. Public sub-processor lists (Workday,
+    Microsoft, Anthropic patterns) are procurement-friendly but require maintenance discipline.
+  created: '2026-05-10'
+  resolved_value: null
+  resolved_at: null
+- id: oq-popia-marketing-posture
+  question: What is PrivateBox's POPIA-aligned posture for B2B direct marketing?
+  candidate_answers:
+  - Strict opt-in for all electronic marketing including B2B
+  - Soft opt-in (existing customer exception) per s 69(3)
+  - Per-channel decision (email vs SMS vs phone)
+  decision_owner: Top Management + Marketing
+  decision_status: pending
+  blocks_requirements:
+  - popia-s-direct-marketing
+  blocks_scenarios:
+  - scn-popia-pb-corporate
+  notes: >-
+    Section 69 has electronic-marketing rules with limited customer exception. B2B is in scope.
+    Posture decision affects CRM workflow, opt-in records, suppression list maintenance.
+  created: '2026-05-10'
+  resolved_value: null
+  resolved_at: null
+- id: oq-popia-special-data-profile
+  question: Does PrivateBox publish a documented "special data deployment profile" for healthcare, pharmacy, education customers?
+  candidate_answers:
+  - Yes — per-sector profile with restricted-control configurations
+  - Generic deployment with case-by-case scoping
+  - Refer to customer scoping engagement only
+  decision_owner: AI Governance Lead + Sales Engineering
+  decision_status: pending
+  blocks_requirements:
+  - popia-s-special-pi
+  - popia-s-children
+  blocks_scenarios: []
+  notes: >-
+    Sections 26-33 (special PI) + 34-35 (children). Healthcare, pharmacy and education are PB target
+    sectors. Generic templates are a finding pattern in these deployments.
+  created: '2026-05-10'
+  resolved_value: null
+  resolved_at: null
+- id: oq-popia-codes-of-conduct
+  question: Does PrivateBox align to or contribute to a sectoral Code of Conduct under POPIA Chapter 7?
+  candidate_answers:
+  - Track and align where one exists (e.g., financial services Code)
+  - Active participation in Code development
+  - No engagement
+  decision_owner: AI Governance Lead
+  decision_status: pending
+  blocks_requirements: []
+  blocks_scenarios: []
+  notes: >-
+    POPIA Chapter 7 (ss 60-68) provides for sectoral Codes of Conduct. Aligning to a Code can shape
+    sector-specific obligations. Current SA Code landscape is sparse; tracking is sufficient for v1.
+  created: '2026-05-10'
+  resolved_value: null
+  resolved_at: null
+- id: oq-popia-prior-authorisation
+  question: Has PrivateBox screened its current customer use cases for prior-authorisation triggers?
+  candidate_answers:
+  - Annual screening cycle in place
+  - Pre-sales legal questionnaire only
+  - No structured screening yet
+  decision_owner: AI Governance Lead + Legal
+  decision_status: pending
+  blocks_requirements:
+  - popia-s-prior-auth
+  blocks_scenarios: []
+  notes: >-
+    Sections 57-58 trigger prior authorisation for specific high-risk processing (unique identifier
+    linking, criminal-behaviour processing for third parties, credit reporting, certain foreign
+    transfers). Pre-sales screening is the intervention.
+  created: '2026-05-10'
+  resolved_value: null
+  resolved_at: null
+
+requirements:
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Eight Conditions for Lawful Processing (Chapter 3, ss 8-25)
+# ─────────────────────────────────────────────────────────────────────────────
+
+- id: popia-cond-1
+  kind: condition
+  native_id: Condition 1 (s 8)
+  group: chapter-3
+  group_name: Conditions for lawful processing
+  title: Accountability
+  requirement: >-
+    The responsible party must ensure that the conditions set out in Chapter 3, and all the measures
+    that give effect to those conditions, are complied with at the time of determining the purpose and
+    means of processing, and during the processing itself.
+  auditor_intent: >-
+    Regulator / auditor checks that privacy controls exist from design through operation, not only in
+    policy documents — privacy-by-design rather than privacy-by-brochure.
+  pb_interpretation: >-
+    Embed compliance into product governance. Privacy review gate in SDLC; release checklist; exception
+    approval; risk register. Customer accountable for its purposes; PrivateBox accountable for product
+    and service-design controls and for its own corporate processing as RP.
+  owner: SH
+  role_applicability:
+    responsible_party: 'Y'
+    operator: 'Y'
+    information_officer: 'Y'
+  documented_evidence:
+  - PrivateBox compliance framework (Regulation 4)
+  - RACI for privacy responsibilities
+  - Privacy-by-design SOP / SDLC privacy gate
+  - Risk register
+  operational_evidence: >-
+    Sample releases checked for privacy sign-off; risk register reviewed at management cadence.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual + on material change
+  failure_modes: >-
+    Treating accountability as "customer problem"; policy with no approvals, no cadence, no owner.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-popia-pure-on-prem
+  - scn-popia-pb-corporate
+  external_safe_claim: >-
+    PrivateBox implements controls designed to support POPIA-aligned processing from deployment through
+    operations.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: popia-cond-2
+  kind: condition
+  native_id: Condition 2 (ss 9-12)
+  group: chapter-3
+  group_name: Conditions for lawful processing
+  title: Processing limitation
+  requirement: >-
+    Processing must be lawful, in a reasonable manner that does not infringe the privacy of the data
+    subject, adequate, relevant and not excessive (minimality). Processing must have a justification
+    (consent, contract performance, legal obligation, legitimate interests, etc.). Personal information
+    must be collected directly from the data subject unless an exception applies.
+  auditor_intent: >-
+    Regulator / auditor verifies collection is necessary, justified and minimised; logs / debug
+    bundles / telemetry reflect minimisation; indirect collection has documented basis.
+  pb_interpretation: >-
+    Default-minimise data captured by the product and vendor tooling. Disable unnecessary prompt
+    retention by default; minimise telemetry fields; restrict support file collection; define lawful
+    purposes for any vendor-side data received. Indirect-collection sources (connectors, imports,
+    admin syncs) tagged and explicit.
+  owner: SH
+  role_applicability:
+    responsible_party: 'Y'
+    operator: 'Y'
+  documented_evidence:
+  - Data minimisation standard
+  - Logging standard
+  - Support data handling SOP
+  - Telemetry data dictionary
+  - Connector / import inventory
+  operational_evidence: >-
+    Default configurations show minimisation; sample telemetry payload confirms PII-free; sample
+    support bundle confirms scoping.
+  audit_methods:
+  - Insp
+  - Samp
+  - Obs
+  cadence: Annual + per change
+  failure_modes: >-
+    "Debug everything" culture; undefined support collections; collecting "just in case" data; silent
+    background imports.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-popia-telemetry
+  - scn-popia-support-access
+  - scn-popia-rag-setup
+  external_safe_claim: >-
+    PrivateBox is designed to minimise vendor-side handling of customer personal information.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: popia-cond-3
+  kind: condition
+  native_id: Condition 3 (ss 13-14)
+  group: chapter-3
+  group_name: Conditions for lawful processing
+  title: Purpose specification
+  requirement: >-
+    Personal information must be collected for a specific, explicitly defined and lawful purpose.
+    Records must not be retained longer than necessary for the purpose, subject to limited statutory
+    exceptions. On expiry of retention, records must be destroyed or de-identified in a manner that
+    prevents reconstruction.
+  auditor_intent: >-
+    Regulator / auditor checks every dataset, log, cache, backup and exported report has a defined
+    purpose and retention rule, and that destruction is verified.
+  pb_interpretation: >-
+    Define retention by data class; auto-deletion workflows; decommission wipe standard; backup
+    retention logic; local cache expiry. Customer owns primary in-environment retention; PrivateBox
+    owns vendor-side copies and guides customer retention defaults.
+  owner: SH
+  role_applicability:
+    responsible_party: 'Y'
+    operator: 'Y'
+  documented_evidence:
+  - Retention schedule per data class (logs, backups, support bundles, repositories)
+  - Deletion SOP
+  - Decommission checklist
+  - Wipe certificates / proofs
+  operational_evidence: >-
+    Sample expired data shows deletion proof; backup retention configuration matches schedule.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Annual schedule review + per change
+  failure_modes: >-
+    Forgotten support bundles; stale backups; persistent logs; backups outliving production.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-popia-vendor-backup
+  external_safe_claim: >-
+    PrivateBox supports customer-defined retention and secure deletion processes for local deployments.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: popia-cond-4
+  kind: condition
+  native_id: Condition 4 (s 15)
+  group: chapter-3
+  group_name: Conditions for lawful processing
+  title: Further processing limitation
+  requirement: >-
+    Further processing of personal information must be in accordance with, or compatible with, the
+    purpose for which it was collected. Compatibility is assessed against the relationship between
+    purposes, the nature of the information, the consequences of further processing, the manner of
+    collection, and any contractual rights and obligations.
+  auditor_intent: >-
+    Regulator / auditor scrutinises whether vendor reuses customer data for analytics, model
+    improvement, support training or demos without explicit lawful basis and customer agreement.
+  pb_interpretation: >-
+    Ban unapproved secondary use. Contract clause forbidding model training on customer data without
+    explicit agreement; separate support data from product improvement data; approval workflow for
+    any reuse. "De-identified if possible" is not a blanket excuse.
+  owner: SH
+  role_applicability:
+    responsible_party: 'Y'
+    operator: 'Y'
+  documented_evidence:
+  - DPA / operator agreement with reuse-prohibition clause
+  - Internal reuse-approval workflow
+  - Product analytics boundary documentation
+  - Separation of support data from product improvement data
+  operational_evidence: >-
+    Sample vendor-side dataset traces show no customer data beyond support case scope.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual + per material change
+  failure_modes: >-
+    Using support data for product training; "operational analytics" becoming secondary use without
+    review; treating "anonymised" as automatic permission.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-popia-rag-setup
+  - scn-popia-support-access
+  external_safe_claim: >-
+    PrivateBox does not assume any right to repurpose customer data beyond agreed services.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: popia-cond-5
+  kind: condition
+  native_id: Condition 5 (s 16)
+  group: chapter-3
+  group_name: Conditions for lawful processing
+  title: Information quality
+  requirement: >-
+    The responsible party must take reasonably practicable steps to ensure that personal information
+    is complete, accurate, not misleading and updated where necessary, having regard to the purpose
+    for which it is collected or processed.
+  auditor_intent: >-
+    Regulator / auditor checks that ingested records, identity data, tickets, logs and customer-
+    maintained knowledge bases have refresh and correction processes.
+  pb_interpretation: >-
+    For PrivateBox, this is mainly about imported records, identity data, tickets, logs and customer-
+    maintained knowledge bases. Knowledge-base refresh process; metadata versioning; ticket correction
+    process; customer guidance on stale or duplicated data.
+  owner: SH
+  role_applicability:
+    responsible_party: 'Y'
+    operator: 'Y'
+  documented_evidence:
+  - Data quality SOP
+  - Ingestion rules
+  - Version history
+  - Refresh / correction workflow
+  operational_evidence: >-
+    Refresh logs; change history; source metadata visible in samples.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per dataset + annual review
+  failure_modes: >-
+    "Garbage in, garbage out" with no accountability; static knowledge bases that quietly age.
+  maturity_target: AR
+  external_safe_claim: >-
+    PrivateBox supports controlled ingestion and versioned content updates to improve information
+    quality.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: popia-cond-6
+  kind: condition
+  native_id: Condition 6 (ss 17-18)
+  group: chapter-3
+  group_name: Conditions for lawful processing
+  title: Openness
+  requirement: >-
+    The responsible party must maintain the documentation of all processing operations under its
+    responsibility (s 17) and must take reasonably practicable steps to ensure the data subject is
+    aware of specified information at or as soon as reasonably practicable after collection (s 18 —
+    purpose, source, voluntariness, consequences, law, recipients, transfer plans, rights).
+  auditor_intent: >-
+    Regulator / auditor checks both internal records (RoPA-equivalent) and outward-facing notices
+    are maintained and reflect actual processing.
+  pb_interpretation: >-
+    Maintain documented processing inventory and notice set. Record all processing operations;
+    maintain PrivateBox privacy notice; create customer deployment notice template; keep version
+    control. Customer notices end-user processing; PrivateBox notices its own website, sales,
+    support, telemetry and staff processing.
+  owner: SH
+  role_applicability:
+    responsible_party: 'Y'
+    operator: 'Y'
+    information_officer: 'Y'
+  documented_evidence:
+  - Processing inventory (RoPA-style)
+  - PrivateBox privacy notice (current version)
+  - Marketing-specific notice
+  - Customer deployment notice template
+  - PAIA Manual
+  - Notice version history
+  operational_evidence: >-
+    Published notices match actual data flows; version history shows refresh cadence.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Annual + per material change
+  failure_modes: >-
+    Template notices that do not match reality; generic notices that omit telemetry or support flows;
+    inventory and notices drift apart over time.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-popia-telemetry
+  - scn-popia-pb-corporate
+  external_safe_claim: >-
+    We document our processing and provide customers with deployment guidance to support POPIA
+    transparency duties.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: popia-cond-7
+  kind: condition
+  native_id: Condition 7 (ss 19-22)
+  group: chapter-3
+  group_name: Conditions for lawful processing
+  title: Security safeguards
+  requirement: >-
+    Secure the integrity and confidentiality of personal information by taking appropriate, reasonable
+    technical and organisational measures (s 19). Operators must process personal information only
+    with the responsible party's knowledge or authorisation, treat the information as confidential
+    and be contractually bound to maintain s 19 security (s 20-21). Notify the Regulator and affected
+    data subjects of security compromises as soon as reasonably possible; operators notify the
+    responsible party immediately (s 22).
+  auditor_intent: >-
+    Regulator / auditor scrutinises both prevention (controls) and response (notification timeliness).
+    Dis-Chem enforcement notice and Department of Basic Education infringement notice are visible
+    indicators of Regulator priorities.
+  pb_interpretation: >-
+    This is the operational centre of POPIA for PrivateBox. Produce a complete security control
+    baseline. MFA; strong password rules; PAM; audit logs; encryption where applicable; signing of
+    updates; secure config baseline; vulnerability management; secure support access; regular review.
+    Operator scenario: mandatory DPA with confidentiality + immediate-notification clauses;
+    sub-processor flow-down. Section 22 dual-track: PB-as-operator notifies customer-as-RP
+    immediately; customer has statutory notification duty to Regulator + data subjects.
+  owner: SH
+  role_applicability:
+    responsible_party: 'Y'
+    operator: 'Y'
+    information_officer: 'Y'
+  documented_evidence:
+  - Security policy and hardening guide
+  - Access control matrix; PAM / MFA configuration
+  - Vulnerability management programme
+  - Code-signing key management
+  - Operator DPA template
+  - IR plan with section 22 workflow
+  - 15-day Art. 73 / 72-hour s 22 notification SOPs
+  - Sub-processor register
+  - Joint customer-vendor breach tabletop records
+  operational_evidence: >-
+    Pen-test reports; config reviews; access reviews; tabletop exercise records; past incidents trace
+    through notification timelines.
+  audit_methods:
+  - Insp
+  - Int
+  - Samp
+  - Obs
+  cadence: Annual + per architecture change + per incident
+  failure_modes: >-
+    Stopping at "customer hosts it"; ad-hoc Slack/WhatsApp support and screen photos; weak admin
+    controls (Dis-Chem pattern); shared admin passwords; "friendly support" with no operator contract;
+    undeclared subprocessors; waiting for forensic certainty before s 22 notification.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-popia-update-delivery
+  - scn-popia-remote-admin
+  - scn-popia-support-access
+  - scn-popia-rag-setup
+  - scn-popia-vendor-backup
+  - scn-popia-offshore-support
+  external_safe_claim: >-
+    PrivateBox implements security and incident controls consistent with POPIA's safeguard
+    requirements, with clear customer and vendor responsibilities.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: popia-cond-8
+  kind: condition
+  native_id: Condition 8 (ss 23-25)
+  group: chapter-3
+  group_name: Conditions for lawful processing
+  title: Data subject participation
+  requirement: >-
+    A data subject has the right to request confirmation of whether personal information about them
+    is held (s 23), to request access to that information (s 23-25 in the manner provided by PAIA),
+    and to request correction or deletion of inaccurate or non-compliant information (s 24).
+  auditor_intent: >-
+    Regulator / auditor / buyer tests routing — does the right request get to the right party (vendor
+    records vs deployment records), and does the response complete within reasonable time?
+  pb_interpretation: >-
+    Build rights-routing and support workflows. Rights matrix; customer-facing routing clause; admin
+    tools to search / export / delete logs or support bundles; identity verification steps. Customer
+    answers customer-data requests; PrivateBox answers requests about its own records and supports
+    customer retrieval where contractually required.
+  owner: SH
+  role_applicability:
+    responsible_party: 'Y'
+    operator: 'Y'
+    information_officer: 'Y'
+  documented_evidence:
+  - Rights SOP (access / correction / deletion / objection)
+  - Rights routing matrix (vendor vs deployment data)
+  - Identity verification procedure
+  - Response templates
+  - Case log
+  operational_evidence: >-
+    Sample rights request traces from intake to response; routing decisions documented.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Continuous + annual SOP review
+  failure_modes: >-
+    Telling data subjects to contact "whoever" with no routing logic; no distinction between vendor
+    records and customer records; no identity verification.
+  maturity_target: AR
+  external_safe_claim: >-
+    PrivateBox provides documented request-routing and support processes to help customers address
+    POPIA rights requests.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Strategic statutory sections outside the 8 conditions
+# ─────────────────────────────────────────────────────────────────────────────
+
+- id: popia-s-special-pi
+  kind: section
+  native_id: ss 26-33
+  group: chapter-3
+  group_name: Special personal information
+  title: Special personal information
+  requirement: >-
+    Processing of special personal information — religious or philosophical beliefs, race or ethnic
+    origin, trade union membership, political persuasion, health or sex life, biometric information,
+    criminal behaviour — is generally prohibited unless a POPIA exception applies (consent, public
+    interest, legal obligation, etc.).
+  auditor_intent: >-
+    Regulator / auditor scrutinises that special-PI processing has documented lawful basis, enhanced
+    safeguards, and segregated controls. PrivateBox is sold into pharmacy / healthcare / HR contexts —
+    high-likelihood deployment area.
+  pb_interpretation: >-
+    Treat special PI as an enhanced control class. Special-data classification scheme; stricter
+    access controls; safe defaults for logs; no vendor training use; incident severity upgrade;
+    contractual flags. Customer usually decides lawful basis; PrivateBox supports restricted access,
+    segregation, auditability and no unauthorised reuse.
+  owner: SH/CL
+  role_applicability:
+    responsible_party: 'Y'
+    operator: 'Y'
+  documented_evidence:
+  - Special-data SOP / classification scheme
+  - Use-case screening forms
+  - Restricted-control configurations
+  - Sector-specific deployment addenda
+  operational_evidence: >-
+    Pharmacy / healthcare / HR deployments show enhanced-control configurations and sign-off.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per deal screening + annual profile review
+  failure_modes: >-
+    Assuming health data is "safe" merely because hosted locally; treating "student data" as ordinary
+    data; voice / image AI processed without recognising biometric category.
+  maturity_target: AR
+  external_safe_claim: >-
+    PrivateBox supports higher-control deployments for environments handling special personal
+    information.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: popia-s-children
+  kind: section
+  native_id: ss 34-35
+  group: chapter-3
+  group_name: Children's personal information
+  title: Children's personal information
+  requirement: >-
+    Processing of personal information of children is generally prohibited unless a statutory
+    exception applies (e.g., consent of competent person, necessity for legal proceedings, public
+    interest). Re-use of legacy collection requires authorisation.
+  auditor_intent: >-
+    Regulator / auditor scrutinises whether child-data scenarios have explicit lawful basis and
+    enhanced controls. Education and family-services deployments are key triggers.
+  pb_interpretation: >-
+    Add a children-data decision gate. Pre-sales screening for child-data use; parental / competent-
+    person routing guidance; stricter data handling and support rules. No child-data deployment
+    without explicit approval.
+  owner: SH/CL
+  role_applicability:
+    responsible_party: 'Y'
+    operator: 'Y'
+  documented_evidence:
+  - Use-case screening form (child-data)
+  - Child-data deployment checklist
+  - Parental / competent-person routing guidance
+  operational_evidence: >-
+    Education / youth-service deals show completed child-data screening and contract limiters.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Per deal screening
+  failure_modes: >-
+    Treating "student data" as ordinary data; using family or school data without recognising that
+    children are included.
+  maturity_target: AR
+  external_safe_claim: >-
+    Where clients intend to process children's information, PrivateBox applies additional scoping
+    and control measures.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: popia-s-information-officer
+  kind: section
+  native_id: ss 55-56
+  group: chapter-5
+  group_name: Information Officer
+  title: Information Officer designation, duties and registration
+  requirement: >-
+    The head of a private body is the Information Officer for POPIA purposes (s 55) and may delegate
+    in writing. The Information Officer's duties include encouraging compliance, dealing with requests,
+    cooperating with the Regulator, providing the Regulator with information, and additional duties
+    set out in Regulation 4 (compliance framework, PIIA, PAIA Manual maintenance, internal measures,
+    awareness). Registration of the Information Officer with the Information Regulator is required.
+  auditor_intent: >-
+    Regulator registration is publicly verifiable. Operating cadence (training, awareness, framework
+    review, deputies) is the additional bar. Buyers verify both within minutes of asking.
+  pb_interpretation: >-
+    Make privacy governance visible and functioning. Register IO; designate deputies where needed;
+    define RACI; maintain framework; annual review; internal awareness training. PrivateBox IO governs
+    its own organisation; customer IO governs theirs; cross-engagement on incidents.
+  owner: PB
+  role_applicability:
+    information_officer: 'Y'
+    responsible_party: 'Y'
+  documented_evidence:
+  - IO appointment record
+  - Information Regulator registration confirmation
+  - Deputy IO appointments
+  - PrivateBox compliance framework (Regulation 4)
+  - Annual programme review records
+  - Awareness training attendance
+  operational_evidence: >-
+    Public registration verifiable on Regulator portal; current training records; framework recently
+    reviewed.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual + on org change
+  failure_modes: >-
+    Having a policy owner but no registered or active IO; named IO with no operating system around
+    them; framework drafted but not used.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-popia-pure-on-prem
+  - scn-popia-remote-admin
+  - scn-popia-pb-corporate
+  external_safe_claim: >-
+    PrivateBox maintains formal privacy governance and information officer responsibilities for its
+    own operations.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: popia-s-prior-auth
+  kind: section
+  native_id: ss 57-58
+  group: chapter-6
+  group_name: Prior authorisation
+  title: Prior authorisation triggers and procedure
+  requirement: >-
+    Prior authorisation by the Information Regulator is required for certain high-risk processing
+    activities, including: processing unique identifiers for purposes other than originally specified
+    in conjunction with another responsible party's processing; processing information on criminal
+    behaviour or unlawful or objectionable conduct on behalf of third parties; processing for credit
+    reporting; transferring special personal information or personal information of children to a
+    third country that does not provide an adequate level of protection.
+  auditor_intent: >-
+    Regulator / auditor / buyer checks PrivateBox can identify prior-authorisation triggers in
+    scoping and does not blithely assume "not our issue."
+  pb_interpretation: >-
+    Make prior-authorisation screening mandatory for high-risk deals. Pre-sales legal questionnaire;
+    unique-identifier linking review; foreign support review; special-data transfer review. Customer
+    generally applies as RP; PrivateBox identifies triggers and supports evidence.
+  owner: SH
+  role_applicability:
+    responsible_party: 'Y'
+    operator: 'Y'
+  documented_evidence:
+  - Pre-sales legal questionnaire
+  - Prior-authorisation decision log
+  - Deal review checklist
+  - Trigger criteria definition
+  operational_evidence: >-
+    Sample regulated-sector opportunity shows completed screening and decision record.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per deal + annual screening review
+  failure_modes: >-
+    Missing trigger because nobody mapped optional support flows; treating "matching" as purely
+    technical when unique-identifier linking is a statutory trigger.
+  maturity_target: AR
+  external_safe_claim: >-
+    PrivateBox highlights scenarios that may require additional POPIA authorisation or customer
+    legal review.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: popia-s-direct-marketing
+  kind: section
+  native_id: s 69
+  group: chapter-8
+  group_name: Direct marketing
+  title: Direct marketing by means of unsolicited electronic communications
+  requirement: >-
+    Processing of personal information for the purpose of direct marketing by means of any form of
+    electronic communication is prohibited unless the data subject has given consent or is a customer
+    of the responsible party (subject to limited conditions). Each communication must include details
+    of the sender and a means to opt out.
+  auditor_intent: >-
+    Regulator / auditor checks consent records, opt-out workflow and suppression list maintenance.
+    Form 4 (objection form) readiness is the additional indicator.
+  pb_interpretation: >-
+    PrivateBox's own marketing operations are in scope. Obtain proper marketing consent; maintain
+    opt-out; suppression list; Form 4 readiness. B2B is in scope (POPIA does not exempt B2B from s 69).
+  owner: PB
+  role_applicability:
+    responsible_party: 'Y'
+  documented_evidence:
+  - Marketing consent records
+  - Opt-out workflow / unsubscribe capability
+  - Suppression list
+  - Form 4 readiness
+  operational_evidence: >-
+    Sample CRM records show consent capture date and source; suppression list reconciles to opt-outs.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Continuous
+  failure_modes: >-
+    Treating "POPIA does not affect B2B marketing" as a defence; informal opt-out without suppression
+    list; missing consent date / source.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-popia-pb-corporate
+  external_safe_claim: >-
+    Our own marketing practices are governed by consent and objection handling controls.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: popia-s-automated-decisions
+  kind: section
+  native_id: s 71
+  group: chapter-8
+  group_name: Automated decision-making
+  title: Automated decision-making
+  requirement: >-
+    A data subject may not be subject to a decision which results in legal consequences for them, or
+    which affects them substantially, that is based solely on the basis of automated processing of
+    personal information intended to provide a profile of them — subject to specific exceptions
+    (necessary for entering into / performance of a contract subject to safeguards; required by law).
+    Where exception applies, suitable measures must safeguard the data subject's legitimate interests,
+    including the opportunity to make representations.
+  auditor_intent: >-
+    Regulator / auditor / buyer scrutinises whether AI workflows make automated decisions that
+    materially affect individuals. Healthcare diagnosis, credit scoring, hiring recommendations,
+    legal advice are key triggers.
+  pb_interpretation: >-
+    Critical for legal / finance / healthcare sector deployments. Disable "fully autonomous
+    adjudication" without human review support; document all such workflows; provide human-in-the-loop
+    by default for consequential outputs. PB designs controls; customer owns final business decision.
+    Section 71 ↔ EU AI Act Art. 22 (automated processing) + Art. 14 (human oversight) — single
+    integrated approach recommended.
+  owner: SH
+  role_applicability:
+    responsible_party: 'Y'
+    operator: 'Y'
+  documented_evidence:
+  - Automated-decision use-case register
+  - Human-in-the-loop design records per use case
+  - Customer-facing scope disclosure on automated workflows
+  - Representation / appeal pathway for affected data subjects
+  operational_evidence: >-
+    Sample customer deployment shows human review point; customer ack of automated-decision scope.
+  audit_methods:
+  - Insp
+  - Int
+  - Samp
+  cadence: Per release + per deployment
+  failure_modes: >-
+    Saying "AI recommendation" and "automated decision" are obviously different without analysis;
+    workflow that makes the AI determinative in practice while marketed as advisory.
+  maturity_target: AR
+  external_safe_claim: >-
+    PrivateBox is designed to support customer-controlled decision processes with human-review
+    points for consequential workflows.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: popia-s-cross-border
+  kind: section
+  native_id: s 72
+  group: chapter-9
+  group_name: Trans-border information flows
+  title: Trans-border flows of personal information
+  requirement: >-
+    A responsible party may not transfer personal information about a data subject to a third party
+    in a foreign country unless one of the following applies: the recipient is subject to law / binding
+    corporate rules / binding agreement that provides adequate protection; the data subject consents
+    to the transfer; the transfer is necessary for performance of a contract; the transfer is for the
+    benefit of the data subject; or the transfer is necessary for legal proceedings.
+  auditor_intent: >-
+    Regulator / auditor / buyer scrutinises offshore support, cloud telemetry, hosted services. Even
+    "temporary support access" by a foreign engineer is a transfer.
+  pb_interpretation: >-
+    Default local deployment strongly reduces transfer risk. Where transfers occur (offshore support,
+    sub-processors, telemetry endpoints), maintain transfer register with adequacy / binding
+    agreement / consent record per transfer. Cross-border-aware support routing; regional sub-processor
+    selection; customer notice template for cross-border disclosures.
+  owner: SH
+  role_applicability:
+    responsible_party: 'Y'
+    operator: 'Y'
+  documented_evidence:
+  - Transfer register (per cross-border data flow)
+  - Adequacy / binding agreement / consent record per transfer
+  - Sub-processor list with country / safeguard
+  - Customer cross-border notice template
+  - Support geography disclosure
+  operational_evidence: >-
+    Each transfer has documented basis; sub-processor list reconciles to live deployments; support
+    routing matches approved-country list.
+  audit_methods:
+  - Insp
+  - Int
+  - Samp
+  cadence: Per change + annual review
+  failure_modes: >-
+    Assuming remote support access is not a transfer; "temporary" support by foreign engineer
+    treated as ad-hoc rather than transfer; cloud telemetry routed through default offshore endpoint
+    without disclosure.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-popia-update-delivery
+  - scn-popia-telemetry
+  - scn-popia-vendor-backup
+  - scn-popia-offshore-support
+  external_safe_claim: >-
+    Cross-border exposures, where present, are separately scoped and governed; the default local
+    deployment minimises section 72 exposure.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: popia-s-enforcement
+  kind: section
+  native_id: ss 60-68, 89-109
+  group: chapter-7-and-11
+  group_name: Codes of conduct, enforcement, penalties
+  title: Codes of conduct, enforcement and penalties
+  requirement: >-
+    POPIA empowers the Information Regulator to issue, monitor and enforce. Chapter 7 provides for
+    sectoral Codes of Conduct that bind responsible parties in the sector. Chapter 10 sets out
+    enforcement powers (assessments, enforcement notices, civil remedies). Chapter 11 sets out
+    offences, penalties, and administrative fines (up to R10 million or 10 years imprisonment for
+    serious offences).
+  auditor_intent: >-
+    Visible Regulator enforcement (Dis-Chem, Department of Basic Education) signals priorities and
+    sets the bar for evidence quality. "Good intentions" does not satisfy enforcement.
+  pb_interpretation: >-
+    Build for inspectability. Keep complete evidence pack; maintain assessment-ready documentation;
+    monitor sector codes; keep incident and rights logs. Marketing claims must lag evidence maturity,
+    not lead it.
+  owner: SH
+  role_applicability:
+    responsible_party: 'Y'
+    operator: 'Y'
+    information_officer: 'Y'
+  documented_evidence:
+  - Evidence index
+  - Legal register
+  - Control matrix
+  - Sector code tracking
+  - Internal audit / mock assessment records
+  operational_evidence: >-
+    Procurement and legal review can be answered from one evidence pack; mock assessment held
+    annually.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual mock assessment + continuous evidence maintenance
+  failure_modes: >-
+    Marketing claims ahead of evidence maturity; treating Regulator enforcement as theoretical;
+    sector codes ignored.
+  maturity_target: AR
+  external_safe_claim: >-
+    PrivateBox maps its controls to POPIA requirements and maintains evidence to support customer
+    due diligence and Regulator engagement.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []

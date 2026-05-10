@@ -987,6 +987,10 @@ requirements:
       Annex SL High-Level Structure — clauses 4-10 are 1:1 across ISO management-system standards.
   source_refs:
   - ISO/IEC 27701:2025 Cl. 5.2
+  - framework: popia
+    refs:
+    - popia-cond-1
+    note: PIMS leadership commitment supports POPIA accountability principle.
 - id: iso-27701-cl-5.3
   kind: clause
   native_id: '5.3'
@@ -1020,6 +1024,10 @@ requirements:
       Annex SL High-Level Structure — clauses 4-10 are 1:1 across ISO management-system standards.
   source_refs:
   - ISO/IEC 27701:2025 Cl. 5.3
+  - framework: popia
+    refs:
+    - popia-s-information-officer
+    note: PIMS roles overlap with POPIA Information Officer duties (ss 55-56).
 - id: iso-27701-cl-6.1
   kind: clause
   native_id: '6.1'
@@ -1179,6 +1187,14 @@ requirements:
       Annex SL High-Level Structure — clauses 4-10 are 1:1 across ISO management-system standards.
   source_refs:
   - ISO/IEC 27701:2025 Cl. 7.2
+  - framework: popia
+    refs:
+    - popia-s-automated-decisions
+    note: PIA / DPIA cadence supports POPIA s 71 automated-decision impact analysis.
+  - framework: popia
+    refs:
+    - popia-cond-7
+    note: PIA process integrates POPIA s 19 security-safeguard analysis for personal information.
 - id: iso-27701-cl-7.3
   kind: clause
   native_id: '7.3'
@@ -1399,6 +1415,10 @@ requirements:
       Annex SL High-Level Structure — clauses 4-10 are 1:1 across ISO management-system standards.
   source_refs:
   - ISO/IEC 27701:2025 Cl. 9.1
+  - framework: popia
+    refs:
+    - popia-cond-7
+    note: PIMS performance monitoring covers POPIA s 19 security verification and s 22 incident detection.
 - id: iso-27701-cl-9.2
   kind: clause
   native_id: '9.2'
@@ -1557,6 +1577,14 @@ requirements:
   legacy_ref: A.7.2.1 (2019)
   source_refs:
   - ISO/IEC 27701:2025 A.1.2
+  - framework: popia
+    refs:
+    - popia-cond-6
+    note: Controller privacy notice supports POPIA s 17-18 openness and collection-notice obligations.
+  - framework: popia
+    refs:
+    - popia-cond-1
+    note: Privacy programme operationalises POPIA accountability.
 - id: iso-27701-a1-3
   kind: control_ctrl
   native_id: '3'
@@ -1589,6 +1617,10 @@ requirements:
   legacy_ref: A.7.2.2 (2019)
   source_refs:
   - ISO/IEC 27701:2025 A.1.3
+  - framework: popia
+    refs:
+    - popia-s-information-officer
+    note: Controller role assignment maps to POPIA Information Officer duties.
 - id: iso-27701-a1-4
   kind: control_ctrl
   native_id: '4'
@@ -1893,6 +1925,14 @@ requirements:
   legacy_ref: A.7.4.1-5 (2019)
   source_refs:
   - ISO/IEC 27701:2025 A.1.12
+  - framework: popia
+    refs:
+    - popia-s-automated-decisions
+    note: PIA records cover POPIA s 71 automated-decision documentation.
+  - framework: popia
+    refs:
+    - popia-cond-1
+    note: PIA evidences POPIA accountability principle.
 - id: iso-27701-a1-13
   kind: control_ctrl
   native_id: '13'
@@ -2062,6 +2102,10 @@ requirements:
   legacy_ref: B.8.2.1 (2019)
   source_refs:
   - ISO/IEC 27701:2025 A.2.2
+  - framework: popia
+    refs:
+    - popia-cond-7
+    note: Processor controls map to POPIA s 20-21 operator confidentiality and security.
 - id: iso-27701-a2-3
   kind: control_proc
   native_id: '3'
@@ -2095,6 +2139,10 @@ requirements:
   legacy_ref: B.8.2.2 (2019)
   source_refs:
   - ISO/IEC 27701:2025 A.2.3
+  - framework: popia
+    refs:
+    - popia-s-information-officer
+    note: Processor role assignment supports POPIA operator-side accountability.
 - id: iso-27701-a2-4
   kind: control_proc
   native_id: '4'

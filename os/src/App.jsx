@@ -59,6 +59,7 @@ function getFrameworkLabel(fwId) {
     'iso-27701': 'ISO 27701',
     'iso-42001': 'ISO 42001',
     'eu-ai-act': 'EU AI Act',
+    'popia': 'POPIA',
   };
   return labels[fwId] || fwId;
 }
@@ -70,6 +71,7 @@ function frameworkAccent(fwId) {
     'iso-27701': 'bg-emerald-700',
     'iso-42001': 'bg-indigo-700',
     'eu-ai-act': 'bg-amber-700',
+    'popia': 'bg-rose-700',
   }[fwId] || 'bg-stone-400';
 }
 
@@ -79,6 +81,7 @@ function frameworkLabelClass(fwId) {
     'iso-27701': 'text-emerald-800',
     'iso-42001': 'text-indigo-800',
     'eu-ai-act': 'text-amber-800',
+    'popia': 'text-rose-800',
   }[fwId] || 'text-stone-600';
 }
 
@@ -162,6 +165,15 @@ const FRAMEWORK_OVERVIEW = {
       { label: 'AISIA', description: 'AI System Impact Assessment — required by Clause 6.1.4 and Annex A.5; depth defined by ISO/IEC 42005:2025. Foreseeable-misuse coverage is the most-commonly-missed element.' },
       { label: 'Annex A controls', description: '38–39 controls across A.2–A.10 (numbering varies in secondary sources; published ISO PDF is canonical). SoA must address every one — applicability, owner, evidence, justification for exclusions.' },
       { label: 'Designed-in-alignment', description: 'PrivateBox\'s pre-certification posture: "designed in alignment with ISO/IEC 42001:2023" — never claim certified until an accredited body issues a certificate against a defined scope.' },
+    ],
+  },
+  'popia': {
+    plain_english: "The Protection of Personal Information Act (Act No. 4 of 2013) is South Africa's statutory baseline for processing personal information — binding law, not a voluntary standard. Chapter 3 sets out 8 conditions for lawful processing: accountability, processing limitation, purpose specification, further-processing limitation, information quality, openness, security safeguards, and data subject participation. Other chapters cover special PI (health, biometrics, criminal behaviour, children), Information Officer designation and registration, prior authorisation for high-risk processing, direct marketing, automated decisions, trans-border information flows, and enforcement. PrivateBox carries dual POPIA posture — responsible party for its own corporate operations (website, CRM, billing, staff, marketing) and operator when handling customer personal information under contract. Enforcement is real: the Dis-Chem enforcement notice and Department of Basic Education infringement notice show the Information Regulator's priorities.",
+    key_concepts: [
+      { label: 'Responsible Party / Operator', description: 'POPIA\'s controller/processor equivalents. Default: customer is responsible party for in-environment use; PrivateBox is operator only for explicitly-scoped service layers (support, telemetry, managed services). Misclassification is the top risk.' },
+      { label: '8 Conditions', description: 'Chapter 3 backbone (ss 8–25). Accountability, processing limitation, purpose specification, further-processing limitation, information quality, openness, security safeguards, data subject participation. Every processing activity tested against all 8.' },
+      { label: 'Information Officer', description: 'Statutory role (ss 55–56). Head of body is IO by default; deputies designated. Registration with the Information Regulator is publicly verifiable. Regulation 4 sets out compliance-framework, PIIA, PAIA Manual, awareness duties.' },
+      { label: 's 22 + s 72', description: 'Section 22: breach notification "as soon as reasonably possible" — operator notifies responsible party "immediately". Section 72: trans-border transfers need adequacy / binding agreement / consent. Even temporary offshore support is a transfer.' },
     ],
   },
 };

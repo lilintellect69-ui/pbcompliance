@@ -1047,6 +1047,10 @@ requirements:
     refs:
     - eu-ai-act-art-26
     note: Deployer obligations under Art. 26 require designated humans and oversight at organisational level.
+  - framework: popia
+    refs:
+    - popia-cond-1
+    note: POPIA accountability principle (s 8) requires top-management oversight of personal-information processing; AIMS leadership scope covers PB-as-RP duties.
 
 - id: iso-42001-cl-5.2
   kind: clause
@@ -1094,6 +1098,10 @@ requirements:
     refs:
     - iso-27701-cl-5.2
     note: AI Policy aligns with PIMS Privacy Policy.
+  - framework: popia
+    refs:
+    - popia-cond-1
+    note: AI Policy operationalises POPIA accountability for AI-specific processing; cross-policy alignment with PB privacy notice required.
 
 - id: iso-42001-cl-5.3
   kind: clause
@@ -1249,6 +1257,10 @@ requirements:
     refs:
     - eu-ai-act-art-9
     note: EU AI Act Art. 9 risk-management system for high-risk AI is satisfied via AIMS risk methodology.
+  - framework: popia
+    refs:
+    - popia-cond-7
+    note: AI risk methodology must address POPIA s 19 security safeguards as a core risk class for any AI handling personal information.
 
 - id: iso-42001-cl-6.1.3
   kind: clause
@@ -1358,6 +1370,14 @@ requirements:
     - eu-ai-act-art-9
     - eu-ai-act-art-27
     note: AI Act Art. 9 risk mgmt + Art. 27 FRIA align with AISIA — single integrated template recommended.
+  - framework: popia
+    refs:
+    - popia-s-automated-decisions
+    note: AISIA covers POPIA s 71 automated decision-making analysis; integrated AISIA + DPIA template recommended.
+  - framework: popia
+    refs:
+    - popia-cond-7
+    note: AISIA security treatment maps to POPIA s 19 safeguards.
 
 - id: iso-42001-cl-6.2
   kind: clause
@@ -1644,6 +1664,10 @@ requirements:
     refs:
     - iso-27701-cl-7.4
     note: HLS-aligned; PIMS communication includes data-subject notification.
+  - framework: popia
+    refs:
+    - popia-cond-7
+    note: Communication procedure includes POPIA s 22 breach notification timing.
 
 - id: iso-42001-cl-7.5
   kind: clause
@@ -1929,6 +1953,10 @@ requirements:
     refs:
     - eu-ai-act-art-72
     note: EU AI Act Art. 72 post-market monitoring satisfied through AIMS Clause 9.1 + 8.4.
+  - framework: popia
+    refs:
+    - popia-cond-7
+    note: AIMS monitoring includes POPIA s 19 security-safeguard verification and s 22 incident-detection cadence.
 
 - id: iso-42001-cl-9.2
   kind: clause
@@ -2167,6 +2195,10 @@ requirements:
     refs:
     - iso-27701-a1-2
     note: PIMS controllers privacy notice / policy; cross-policy alignment required.
+  - framework: popia
+    refs:
+    - popia-cond-1
+    note: AI Policy aligned to POPIA accountability principle; sales / marketing red-flag list reduces s 69 (direct marketing) and external-claim exposure.
 
 - id: iso-42001-a-2.3
   kind: control_aims
@@ -2210,6 +2242,10 @@ requirements:
     refs:
     - iso-27701-a1-2
     note: Alignment integrates with PIMS privacy notice / policy.
+  - framework: popia
+    refs:
+    - popia-cond-6
+    note: AI Policy must align with PB privacy notice / PAIA Manual under POPIA s 17-18 openness.
 
 - id: iso-42001-a-2.4
   kind: control_aims
@@ -2299,6 +2335,10 @@ requirements:
     refs:
     - iso-27701-a1-3
     note: PIMS information officer role overlaps.
+  - framework: popia
+    refs:
+    - popia-s-information-officer
+    note: AI Governance roles overlap with POPIA Information Officer duties; cross-engagement on incidents and data-subject requests.
 
 - id: iso-42001-a-3.3
   kind: control_aims
@@ -2339,6 +2379,10 @@ requirements:
     note: Management responsibilities; concern channel parallels infosec concern reporting.
 
 # ── A.4 — Resources ──
+  - framework: popia
+    refs:
+    - popia-cond-1
+    note: Concern channel supports POPIA accountability principle; concerns about AI handling of personal information escalate via this route.
 
 - id: iso-42001-a-4.2
   kind: control_aims
@@ -2584,6 +2628,10 @@ requirements:
     - eu-ai-act-art-9
     - eu-ai-act-art-27
     note: EU AI Act Art. 9 risk + Art. 27 FRIA align with AISIA methodology.
+  - framework: popia
+    refs:
+    - popia-s-automated-decisions
+    note: AISIA methodology covers POPIA s 71 automated decision-making analysis where AI makes consequential decisions.
 
 - id: iso-42001-a-5.3
   kind: control_aims
@@ -2670,6 +2718,14 @@ requirements:
     refs:
     - eu-ai-act-art-27
     note: FRIA covers fundamental-rights impacts on individuals.
+  - framework: popia
+    refs:
+    - popia-s-special-pi
+    note: Individual / group impact analysis covers special-PI sensitivity (POPIA ss 26-33) where AI processes health, biometric, or other special data.
+  - framework: popia
+    refs:
+    - popia-s-children
+    note: Children's data impact analysis (POPIA ss 34-35) where AI processes children's personal information.
 
 - id: iso-42001-a-5.5
   kind: control_aims
@@ -2882,6 +2938,10 @@ requirements:
     refs:
     - eu-ai-act-art-10
     note: Data governance and bias mitigation obligations under Art. 10 for high-risk AI.
+  - framework: popia
+    refs:
+    - popia-s-automated-decisions
+    note: Bias methodology supports POPIA s 71 substantial-effect analysis for automated decisions.
 
 - id: iso-42001-a-6.1.5
   kind: control_aims
@@ -3045,6 +3105,10 @@ requirements:
     refs:
     - eu-ai-act-art-14
     note: Human oversight obligations for high-risk AI under Art. 14.
+  - framework: popia
+    refs:
+    - popia-s-automated-decisions
+    note: Human oversight is the primary safeguard for POPIA s 71 automated decision-making in consequential workflows.
 
 - id: iso-42001-a-6.2.4
   kind: control_aims
@@ -3093,6 +3157,14 @@ requirements:
     refs:
     - eu-ai-act-art-12
     note: Record-keeping for high-risk AI under Art. 12.
+  - framework: popia
+    refs:
+    - popia-cond-3
+    note: AI event logs subject to POPIA s 14 retention rules; logs must not be retained longer than necessary.
+  - framework: popia
+    refs:
+    - popia-cond-7
+    note: Event logging supports POPIA s 19 security-safeguard verification and s 22 incident investigation.
 
 - id: iso-42001-a-6.2.5
   kind: control_aims
@@ -3185,6 +3257,10 @@ requirements:
     refs:
     - eu-ai-act-art-10
     note: Data governance for high-risk AI.
+  - framework: popia
+    refs:
+    - popia-cond-2
+    note: Data governance frame applies POPIA processing-limitation conditions (ss 9-12) — minimisation, lawful basis, direct collection.
 
 - id: iso-42001-a-7.3
   kind: control_aims
@@ -3224,6 +3300,10 @@ requirements:
     refs:
     - eu-ai-act-art-10
     note: Data governance / acquisition obligations.
+  - framework: popia
+    refs:
+    - popia-cond-2
+    note: Data acquisition documentation supports POPIA s 11 lawful-basis justification and s 12 direct-collection rules.
 
 - id: iso-42001-a-7.4
   kind: control_aims
@@ -3266,6 +3346,10 @@ requirements:
     refs:
     - eu-ai-act-art-10
     note: Data quality obligations for high-risk AI.
+  - framework: popia
+    refs:
+    - popia-cond-5
+    note: Data quality criteria operationalise POPIA s 16 information-quality condition.
 
 - id: iso-42001-a-7.5
   kind: control_aims
@@ -3322,6 +3406,18 @@ requirements:
     note: Special categories of personal data under Art. 10(5).
 
 # ── A.8 — Information for interested parties ──
+  - framework: popia
+    refs:
+    - popia-cond-2
+    note: PII processing in AI subject to POPIA processing-limitation conditions (ss 9-12).
+  - framework: popia
+    refs:
+    - popia-cond-7
+    note: PII processing in AI subject to POPIA s 19 security safeguards and s 20-21 operator confidentiality.
+  - framework: popia
+    refs:
+    - popia-s-special-pi
+    note: Special-PI handling in AI subject to POPIA ss 26-33 enhanced-control regime.
 
 - id: iso-42001-a-8.2
   kind: control_aims
@@ -3364,6 +3460,10 @@ requirements:
     refs:
     - eu-ai-act-art-13
     note: Transparency and provision of information for high-risk AI under Art. 13.
+  - framework: popia
+    refs:
+    - popia-cond-6
+    note: System characteristics documentation feeds POPIA s 18 collection-notice obligations for AI deployments.
 
 - id: iso-42001-a-8.3
   kind: control_aims
@@ -3443,6 +3543,10 @@ requirements:
     refs:
     - eu-ai-act-art-73
     note: Serious-incident reporting obligations for high-risk AI (15 days).
+  - framework: popia
+    refs:
+    - popia-cond-7
+    note: Incident communication includes POPIA s 22 breach notification (operator notifies RP immediately; RP notifies Regulator + data subjects).
 
 - id: iso-42001-a-8.5
   kind: control_aims
@@ -3638,6 +3742,14 @@ requirements:
     note: Deployer obligations under Art. 26 + transparency under Art. 50.
 
 # ── A.10 — Third-party and customer relationships ──
+  - framework: popia
+    refs:
+    - popia-cond-2
+    note: Intended-use enforcement supports POPIA s 11 lawful-purpose limitation.
+  - framework: popia
+    refs:
+    - popia-s-automated-decisions
+    note: Intended-use scope flags AI workflows that may trigger POPIA s 71 substantial-effect analysis.
 
 - id: iso-42001-a-10.2
   kind: control_aims
@@ -3699,6 +3811,10 @@ requirements:
     refs:
     - eu-ai-act-art-25
     note: Responsibilities along the AI value chain under Art. 25.
+  - framework: popia
+    refs:
+    - popia-cond-7
+    note: Supplier due diligence covers POPIA s 20-21 operator obligations; sub-processor authorisation under s 21.
 
 - id: iso-42001-a-10.3
   kind: control_aims
@@ -3788,4 +3904,12 @@ requirements:
     - eu-ai-act-art-25
     - eu-ai-act-art-26
     note: Value-chain responsibilities + deployer obligations.
+  - framework: popia
+    refs:
+    - popia-cond-1
+    note: Customer-facing AI obligations include accountability flow-down for customer's POPIA RP duties.
+  - framework: popia
+    refs:
+    - popia-cond-7
+    note: Customer relationship terms include POPIA s 22 mutual-notification clause.
 
