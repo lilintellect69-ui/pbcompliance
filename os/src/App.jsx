@@ -60,6 +60,7 @@ function getFrameworkLabel(fwId) {
     'iso-42001': 'ISO 42001',
     'eu-ai-act': 'EU AI Act',
     'popia': 'POPIA',
+    'king-v': 'King V',
   };
   return labels[fwId] || fwId;
 }
@@ -72,6 +73,7 @@ function frameworkAccent(fwId) {
     'iso-42001': 'bg-indigo-700',
     'eu-ai-act': 'bg-amber-700',
     'popia': 'bg-rose-700',
+    'king-v': 'bg-teal-700',
   }[fwId] || 'bg-stone-400';
 }
 
@@ -82,6 +84,7 @@ function frameworkLabelClass(fwId) {
     'iso-42001': 'text-indigo-800',
     'eu-ai-act': 'text-amber-800',
     'popia': 'text-rose-800',
+    'king-v': 'text-teal-800',
   }[fwId] || 'text-stone-600';
 }
 
@@ -174,6 +177,15 @@ const FRAMEWORK_OVERVIEW = {
       { label: '8 Conditions', description: 'Chapter 3 backbone (ss 8–25). Accountability, processing limitation, purpose specification, further-processing limitation, information quality, openness, security safeguards, data subject participation. Every processing activity tested against all 8.' },
       { label: 'Information Officer', description: 'Statutory role (ss 55–56). Head of body is IO by default; deputies designated. Registration with the Information Regulator is publicly verifiable. Regulation 4 sets out compliance-framework, PIIA, PAIA Manual, awareness duties.' },
       { label: 's 22 + s 72', description: 'Section 22: breach notification "as soon as reasonably possible" — operator notifies responsible party "immediately". Section 72: trans-border transfers need adequacy / binding agreement / consent. Even temporary offshore support is a transfer.' },
+    ],
+  },
+  'king-v': {
+    plain_english: "The King V Code on Corporate Governance for South Africa, 2025 (IoDSA, 31 October 2025) is South Africa's principles-based, outcomes-focused corporate-governance code — voluntary, not certifiable. It applies on a financial-year basis from 1 January 2026 and supersedes King IV in its entirety. Four governance outcomes anchor the Code: Ethical Culture, Performance and Value Creation, Conformance and Prudent Control, Legitimacy. Thirteen principles cover Leadership, Ethics, Strategy, Reporting, Composition, Committees, Delegation to Management, Risk, Compliance, Data/Information/Technology (the flagship Principle 10 update — including AI governance under Practice 109c), Remuneration, Assurance, and Stakeholders. Reporting model is apply-and-explain via a mandatory Disclosure Framework with a concluding statement on the four outcomes. King V is the natural board-level overlay above ISO 27001, 27701, 42001, POPIA, NIST AI RMF and EU AI Act — one set of artefacts, one disclosure narrative, multiple framework labels.",
+    key_concepts: [
+      { label: 'Apply-and-explain', description: 'Reporting model. Principles apply universally; recommended practices scale to size/complexity with compensating measures documented where full enterprise practices are not adopted. There is no "King V certified" — making such a claim is a red-flag failure.' },
+      { label: 'Practice 109c (AI)', description: 'Principle 10\'s flagship update vs King IV. AI systems must adhere to ethics, human centricity, accountability, transparency, explainability, security, privacy, fairness and trustworthiness — with human oversight and override mechanisms commensurate with risk. Operationalised through AI System Cards, eval/red-team records, human oversight SOPs.' },
+      { label: 'Disclosure Framework', description: 'Mandatory companion document for any org claiming application of King V. Annual website publication; board-approved; concluding statement on whether the four governance outcomes were realised in the period. Missing the Disclosure is the most visible compliance gap.' },
+      { label: 'Practice 42', description: 'Holistic NED independence assessment against nine factors (significant funder; >9-year tenure; former-executive within 3 yrs; etc.). "Independence by assertion" without holistic 9-factor analysis is the most common King IV-to-King V transition gap.' },
     ],
   },
 };

@@ -1,0 +1,2546 @@
+# King V Code on Corporate Governance for South Africa, 2025 — PrivateBox alignment record (schema v2)
+# Source-of-truth file for the GRC OS. Edits go in version control.
+#
+# Schema: see /docs/schema-v2.md
+# PB-curated source pack: frameworks/king-v/source/privatebox-king-v-architecture-pack.md
+#
+# King V is voluntary, principles-based, outcomes-focused. Apply-and-explain model. Not certifiable.
+# PrivateBox applies King V proportionately as a scaling private SA technology company. Disclosure
+# Framework publication is mandatory for orgs claiming application of King V.
+#
+# Crosswalks: King V is a meta-governance OVERLAY that references INTO all other frameworks. King V
+# outgoing crosswalks point at 27001, 27701, 42001, POPIA, EU AI Act. Reverse graph auto-derived.
+# No retroactive edits to other YAMLs needed.
+
+schema_version: '2.0'
+id: king-v
+version: '2025'
+full_name: King V Code on Corporate Governance for South Africa, 2025
+type: governance_code
+issuer: Institute of Directors in South Africa (IoDSA) / King Committee
+audit_type: disclosure
+certifiable: false
+pb_interpretation_version: '1.0'
+pb_interpretation_owner: null
+pb_interpretation_last_reviewed: null
+roles:
+- governing_body
+- chairperson
+- lead_independent
+- ceo_management
+- audit_risk_tech_committee
+- social_ethics_rem_committee
+- nominations_committee
+- ai_oversight_working_group
+- company_secretary
+- combined_assurance_providers
+tiers: []
+effective_dates:
+- milestone: King V Code launched by IoDSA / King Committee
+  date: '2025-10-31'
+  obligations: []
+- milestone: King V effective for financial years commencing on or after this date
+  date: '2026-01-01'
+  obligations: []
+- milestone: First mandatory King V Disclosure Framework reports (for FY2026)
+  date: '2027-01-01'
+  obligations: []
+
+companion_standards:
+- id: king-v-foundational-concepts
+  name: King V Foundational Concepts
+  version: '2025'
+  role: >-
+    Foundational concepts paper (IoDSA, 2025). Defines the four governance outcomes and integrated-
+    thinking / double-materiality framing. Read alongside the Code.
+- id: king-v-glossary
+  name: King V Glossary
+  version: '2025'
+  role: >-
+    Glossary of King V terminology. Required reading to apply terminology precisely (e.g., "governing
+    body" vs "board"; "Ubuntu-Botho"; "Concluding Statement").
+- id: king-v-disclosure-framework
+  name: King V Disclosure Framework and Disclosure Template
+  version: '2025'
+  role: >-
+    Mandatory companion for any organisation claiming application of King V. Sets the structure for
+    annual disclosure including narratives per principle, recommended-practice deviation register
+    with compensating measures, and the concluding statement on the four outcomes.
+- id: companies-act-71-2008
+  name: Companies Act 71 of 2008 (South Africa) and Companies Amendment Act 16 of 2024
+  version: '2008 (as amended)'
+  role: >-
+    Statutory underpinning. Sections 7, 30, 66, 72, 75–76 and Regulation 43 set out fiduciary duties,
+    statutory audit triggers (PI Score), and the social and ethics committee. Amendment Act 16 of
+    2024 introduces new remuneration provisions (not yet in force at time of authoring).
+
+pb_application:
+  why_chosen: >-
+    King V is the natural board-level overlay above PrivateBox's parallel work on ISO 27001, ISO 27701,
+    POPIA, ISO 42001, NIST AI RMF, NIST SSDF, and the EU AI Act. PB is a South African private (Pty)
+    Ltd, founder-led, scaling, not JSE-listed, but sells into JSE-listed and regulated enterprise
+    clients (banks, insurers, law firms, healthcare, professional services). Those clients' procurement
+    diligence expects evidence of governance maturity calibrated to the SA corporate-governance code
+    of record. King V (binding for FYs commencing on or after 2026-01-01) supersedes King IV in its
+    entirety and adds an explicit AI-governance flagship in Principle 10 Practice 109c covering
+    ethics, human centricity, accountability, transparency, explainability, security, privacy,
+    fairness, trustworthiness and human oversight. Commercially, King V lets PB consolidate cyber,
+    privacy, AI, supplier and customer-trust governance under one board-evidenced narrative — one set
+    of artefacts, one disclosure document, multiple framework labels. Apply-and-explain is the
+    reporting model; certification is not a thing in King V.
+  scope_decisions:
+    on_prem:
+      coverage: full
+      rationale: >-
+        King V applies to PrivateBox as a South African organisation regardless of deployment model.
+        Proportionality means recommended practices are scaled to PB's stage and complexity; the
+        thirteen principles themselves apply universally. Compensating measures are documented where
+        full enterprise practices are not adopted (e.g., combined committees, co-sourced internal
+        audit, cosec-as-a-service).
+    ai_factory:
+      coverage: partial
+      rationale: >-
+        AI Factory ringfenced multi-tenant deployment in a partner DC introduces additional board-level
+        oversight questions: partner-DC supplier relationship governance (P10 108f third-party
+        assurance), elevated AI risk profile (P8 + P10 109c), and cross-jurisdictional regulator
+        exposure (P9). Until partner DC is selected (oq-partner-dc-selection), some King V P6
+        committee work plans, P8 risk treatments, and P10 supplier assurance arrangements are
+        provisional.
+  top_risks:
+  - >-
+    Founder/CEO dual-hatting as Chair without a Lead Independent NED designated (Practice 48
+    prohibits the former; Practice 47 requires the compensating measure). Visible governance gap in
+    procurement diligence.
+  - >-
+    Independence-by-assertion — NED labelled "independent" without holistic assessment against the
+    nine factors of Practice 42 (significant funder, securities-significance, former-executive within
+    3 yrs, former-audit-team within 3 yrs, significant supplier/customer, related-party, >9 yrs
+    tenure, performance-contingent remuneration). Webber Wentzel and ENSafrica both flag this as a
+    common King IV-to-King V transition gap.
+  - >-
+    King V Disclosure Framework absent from website. Mandatory for any organisation claiming
+    application of King V. Failure to publish weakens every external claim about King V alignment.
+  - >-
+    AI governance under Practice 109c not operationalised through System Cards, eval/red-team
+    records, and human-override SOPs. "Human in the loop" as decoration is a known failure pattern.
+  - >-
+    Combined committees lack at least one independent NED member. King V requires independent NED
+    on audit, risk and social-and-ethics committees; failure is a Practice 66 / Practice 75 gap.
+  - >-
+    Whistleblower channel routed to the implicated party rather than an independent provider
+    (Practice 13d failure pattern).
+  - >-
+    Conflating ISO 27001 certification or SOC 2 attestation with "King V compliance" in marketing.
+    These are complementary but not substitutable; equating them is a red-flag claim per source §16.
+  - >-
+    PI Score crossing Companies Act thresholds without architecture pre-built — statutory S&E
+    committee and statutory audit suddenly required without preparation.
+  - >-
+    Going-concern, solvency, liquidity reporting absent from CFO board pack — Practice 22 obligation.
+
+disclosure_framework:
+  reporting_model: apply and explain
+  primary_artefact: >-
+    King V Governance Disclosure (annual; board-approved; published on PrivateBox website).
+    Accompanies an integrated Trust & Governance Pack covering ISO 27001/27701, POPIA, ISO 42001,
+    NIST AI RMF and EU AI Act posture for procurement diligence.
+  proportionality_rules: >-
+    Principles apply universally; recommended practices are scaled to PrivateBox's size, business-
+    model complexity, ownership structure and economic/social/environmental impact. Compensating
+    measures are documented where full enterprise practices are not adopted (e.g., combined
+    Audit/Risk/Technology Committee; combined Social, Ethics and Remuneration Committee; co-sourced
+    internal audit; cosec-as-a-service; AI Oversight Working Group at management level instead of a
+    dedicated board AI committee). Proportionality is not licence to dilute the principles
+    themselves.
+  concluding_statement_required: true
+  required_outcomes:
+  - Ethical Culture
+  - Performance and Value Creation
+  - Conformance and Prudent Control
+  - Legitimacy
+  jse_listing_overlap: >-
+    PrivateBox is not JSE-listed. Its customers (banks, insurers, listed enterprises) are subject to
+    JSE Listings Requirements which incorporate King-style governance expectations. PB's King V
+    alignment is therefore a downstream procurement / supplier-diligence signal rather than a direct
+    listing obligation.
+
+shared_responsibility_model:
+- area: Governance leadership and oversight
+  pb_owned: All King V principles, practices and disclosure obligations belong to PrivateBox as the organisation.
+  cl_owned: Customer governs its own organisation under whatever governance code applies to them.
+  shared_note: King V is PB-organisation-bound; customer governance is its own domain.
+- area: AI governance (Practice 109c)
+  pb_owned: PB Board-approved AI Governance Policy; AI System Cards; Human Oversight SOP for PB-built features.
+  cl_owned: Customer's deployment-side AI governance for their use cases.
+  shared_note: Practice 109c values (ethics, human centricity, accountability, transparency, explainability, security, privacy, fairness, trustworthiness) propagate to both governance domains.
+- area: Supplier / sub-processor governance (Practice 108f)
+  pb_owned: PB-side supplier programme covering model providers, sub-processors, hosting partners.
+  cl_owned: Customer-side supplier programme covering PrivateBox as their vendor.
+  shared_note: Visible bidirectional supplier diligence — PB carries DD on its suppliers; customers carry DD on PB.
+- area: Trust pack and disclosure
+  pb_owned: PB's King V Governance Disclosure (annual website publication); Trust & Governance Pack (NDA-gated).
+  cl_owned: Customer determines what to include in its own disclosures about PB as supplier.
+  shared_note: PB's disclosure aims to be procurement-ready so customer disclosure inherits substantive evidence.
+
+evidence_families:
+- id: board_charter_and_governance_anchors
+  name: Board Charter and governance anchors
+  examples:
+  - Board Charter (King V-mapped; reserved matters; conflicts framework)
+  - Director letters of appointment
+  - Induction pack
+  - Conflicts / Declaration of Interest Register
+  why_auditor_cares: Anchors Principles 1, 5, 6, 7. First document procurement / investor diligence requests.
+  cadence: Annual review + on appointment
+  typical_owner: PB
+- id: board_evaluation
+  name: Board, committee and director evaluation
+  examples:
+  - Biennial evaluation methodology
+  - Evaluation reports and action plans
+  - External-facilitator engagement (Practice 8 trigger)
+  why_auditor_cares: Practice 8 cadence; lack of follow-up is a known failure pattern.
+  cadence: At least every 2 years; externally facilitated at maturity
+  typical_owner: PB
+- id: skills_and_composition
+  name: Skills matrix and independence assessment
+  examples:
+  - Board Skills Matrix (cyber, AI, privacy, financial, sector)
+  - Per-NED Independence Assessment Memo (against Practice 42 nine factors)
+  - Director CVs
+  - Diversity statement
+  why_auditor_cares: Practice 42 holistic independence assessment is a common King V gap.
+  cadence: Annual + on appointment
+  typical_owner: PB
+- id: committee_tors
+  name: Committee terms of reference and minutes
+  examples:
+  - Combined Audit / Risk / Technology Committee TOR
+  - Combined Social, Ethics and Remuneration Committee TOR
+  - Nominations TOR (or section in Board Charter while combined)
+  - Quarterly minutes; chair reports to board
+  why_auditor_cares: Principle 6; committee architecture is procurement-visible.
+  cadence: Annual TOR review + quarterly minutes
+  typical_owner: PB
+- id: code_of_ethics_and_whistleblower
+  name: Code of Ethics, AI Ethics Statement, Whistleblowing
+  examples:
+  - Code of Ethics (board-approved)
+  - AI Ethics Statement
+  - Anti-Corruption Policy + Gifts Register
+  - Whistleblowing Policy + independent reporting channel
+  - Whistleblower stats (anonymised) to S&E committee
+  why_auditor_cares: Principle 2; ethics treated as a poster on the wall is a common failure.
+  cadence: Annual review + continuous channel operation
+  typical_owner: PB
+- id: strategy_and_kpis
+  name: Strategy, KPIs and integrated thinking
+  examples:
+  - Board-approved strategy and operational plan
+  - KPI scorecard
+  - Integrated-thinking review of the six capitals (financial, intellectual, human, social, natural, manufactured)
+  - Going-concern / solvency / liquidity reporting (CFO)
+  why_auditor_cares: Principle 3; "strategy = sales targets" is a known failure pattern.
+  cadence: Annual strategy approval + quarterly review
+  typical_owner: PB
+- id: external_reports_and_disclosure
+  name: External reports and King V Disclosure Framework
+  examples:
+  - King V Governance Disclosure (annual; published on website)
+  - Integrated Trust & Governance Pack (NDA-gated for procurement diligence)
+  - Concluding statement on four outcomes
+  - Double-materiality assessment summary
+  - Board approval minutes for each external report
+  why_auditor_cares: Principle 4; missing King V Disclosure is a mandatory-element failure.
+  cadence: Annual + on material change
+  typical_owner: PB
+- id: ceo_mandate_and_doa
+  name: CEO Mandate and Delegation of Authority Framework
+  examples:
+  - CEO appointment letter and mandate
+  - Delegation of Authority Framework (monetary, contractual, hiring, sub-processor, security exception, AI deployment thresholds)
+  - CEO succession plan
+  why_auditor_cares: Principle 7; "founder retains undocumented decision-making power" is a known failure.
+  cadence: Annual + on org change
+  typical_owner: PB
+- id: risk_governance
+  name: Risk policy, register and appetite
+  examples:
+  - Risk Management Policy
+  - Risk Appetite Statement
+  - Enterprise Risk Register (with cyber, AI, supplier, key-person, BCM, regulatory, commercial sub-registers)
+  - BCM / DR plan + last test report
+  why_auditor_cares: Principle 8; separate cyber/AI/privacy registers with no integration is a failure pattern.
+  cadence: Quarterly register review + annual appetite review
+  typical_owner: PB
+- id: compliance_governance
+  name: Compliance framework and obligations register
+  examples:
+  - Compliance Framework
+  - Obligations Register (POPIA, Cybercrimes, ECTA, Companies Act, EU AI Act, sector pass-through)
+  - Adopted-standards register (ISO 27001, ISO 27701, ISO 42001, NIST AI RMF, NIST SSDF, King V)
+  - Regulatory horizon-scanning log
+  why_auditor_cares: Principle 9; conflating King V (voluntary) with binding obligations is a failure pattern.
+  cadence: Annual + per regulatory change
+  typical_owner: PB
+- id: information_and_tech_governance
+  name: Technology, information, data and AI governance policies
+  examples:
+  - Technology and Information Governance Policy
+  - Data classification scheme + retention schedule
+  - Privacy Governance Policy + POPIA Programme
+  - Information Officer designation + Regulator registration
+  - Cybersecurity Policy + ISMS SoA (ISO 27001)
+  - AI Governance Policy + AI Ethics Statement
+  - AI System Cards per production model
+  - Human Oversight SOP
+  - Model evaluation / red-team records
+  why_auditor_cares: Principle 10 flagship — Practice 109c AI governance is the highest-leverage King V update.
+  cadence: Annual policy review + per release / per AI change
+  typical_owner: PB
+- id: ai_oversight_working_group
+  name: AI Oversight Working Group records
+  examples:
+  - Working-group charter (reports into Audit / Risk / Tech committee)
+  - System Card change-control log
+  - AI eval / red-team review minutes
+  - AI incident log
+  why_auditor_cares: Practice 109c human oversight commensurate with risk; proportionate substitute for a dedicated AI committee.
+  cadence: Monthly working-group meetings + escalation to committee
+  typical_owner: PB
+- id: remuneration
+  name: Remuneration policy and implementation report
+  examples:
+  - Remuneration Policy
+  - Implementation report
+  - Fair-and-responsible test between executive and overall employee remuneration
+  - Malus / clawback clauses
+  - Non-binding advisory votes (if S&E committee triggered)
+  why_auditor_cares: Principle 11; founder-set salaries with no committee discipline is a failure pattern.
+  cadence: Annual + on material change
+  typical_owner: PB
+- id: combined_assurance
+  name: Combined assurance map and internal audit charter
+  examples:
+  - Combined Assurance Map (per significant risk × assurance provider × cadence)
+  - Internal Audit Charter (co-sourced acceptable)
+  - Risk-based internal audit plan
+  - External IA quality review (Practice 131f — every 5 years)
+  - Pen-test reports
+  - Model red-team reports
+  - Statutory audit (when triggered by PI Score)
+  why_auditor_cares: Principle 12; audit fatigue with no remediation is a failure pattern.
+  cadence: Continuous; assurance map refreshed annually
+  typical_owner: PB
+- id: stakeholder_engagement
+  name: Stakeholder engagement framework and trust pack
+  examples:
+  - Stakeholder Engagement Framework
+  - Stakeholder Map (clients, end-users, regulators, sub-processors, model providers, employees, investors, community)
+  - Engagement log
+  - AI Transparency Disclosure pack for clients
+  - Investor briefing protocol
+  why_auditor_cares: Principle 13; founder-only stakeholder relationships with no institutional memory is a failure pattern.
+  cadence: Annual framework review + continuous engagement log
+  typical_owner: PB
+
+scenarios:
+- id: scn-kingv-pre-pi-score
+  name: Pre-PI-Score threshold (combined committees, founder-led)
+  framework_specific_id: KV-Trigger-1
+  description: >-
+    PB is below Public Interest Score thresholds for statutory audit and Reg 43 social-and-ethics
+    committee. Combined Audit/Risk/Technology and combined Social/Ethics/Remuneration committees are
+    proportionate. Founder/CEO leads; at least one independent NED present.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: governing_body
+  customer_role: not-applicable
+  triggered_requirements:
+  - requirement_id: king-v-p-5
+    scenario_specific_note: Composition target — at least one independent NED, scaling toward majority NED.
+  - requirement_id: king-v-p-6
+    scenario_specific_note: Combined committee architecture proportionate at this stage.
+  - requirement_id: king-v-rp-45
+    scenario_specific_note: If founder is Chair, Lead Independent NED must be designated.
+  notes: Starting posture; build statutory architecture pre-emptively.
+- id: scn-kingv-pi-score-threshold
+  name: PI Score crossing Reg 43 threshold (statutory S&E committee mandatory)
+  framework_specific_id: KV-Trigger-2
+  description: >-
+    Public Interest Score crosses the threshold requiring a statutory Social and Ethics Committee
+    under Companies Act s 72(4) and Regulation 43. Combined committee must be reconstituted.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: governing_body
+  customer_role: not-applicable
+  triggered_requirements:
+  - requirement_id: king-v-p-6
+    scenario_specific_note: Combined S&E/Remuneration committee splits into separate statutory S&E.
+  - requirement_id: king-v-rp-74
+    scenario_specific_note: Statutory S&E committee composition and Reg 43 reporting cadence triggers.
+  notes: Architecture should be pre-built to make this transition incremental, not disruptive.
+- id: scn-kingv-first-independent-ned
+  name: First Independent NED appointed
+  framework_specific_id: KV-Trigger-3
+  description: >-
+    First independent non-executive director joins the board. Independence assessment against the
+    nine factors of Practice 42 documented. Lead Independent designation may transfer or be retired
+    depending on Chair status.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: governing_body
+  customer_role: not-applicable
+  triggered_requirements:
+  - requirement_id: king-v-p-5
+    scenario_specific_note: Composition rebalanced toward NED majority target.
+  - requirement_id: king-v-rp-42
+    scenario_specific_note: Independence rationale documented in writing.
+  - requirement_id: king-v-rp-45
+    scenario_specific_note: Chair / Lead Independent status reassessed.
+  notes: Procurement-visible milestone; signals governance maturity to enterprise buyers.
+- id: scn-kingv-material-ai-incident
+  name: First material AI incident
+  framework_specific_id: KV-Trigger-4
+  description: >-
+    Material AI-related incident (significant model failure, harm to data subjects, regulator
+    concern, customer-impacting outage). Triggers escalation from AI Oversight Working Group to
+    Audit/Risk/Technology Committee, board notification, and external disclosure consideration.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: governing_body
+  customer_role: affected_or_informed
+  triggered_requirements:
+  - requirement_id: king-v-p-10
+    scenario_specific_note: AI governance under Practice 109c — incident triggers comprehensive review.
+  - requirement_id: king-v-p-8
+    scenario_specific_note: Risk governance — incident updates risk register and treatment plan.
+  - requirement_id: king-v-rp-109
+    scenario_specific_note: AI Oversight escalation to committee; post-incident System Card update.
+  notes: Tests the human-oversight and accountability machinery; visible to regulators and customers.
+- id: scn-kingv-first-eu-customer
+  name: First EU enterprise customer onboarded
+  framework_specific_id: KV-Trigger-5
+  description: >-
+    First EU-based enterprise customer activates EU AI Act extraterritorial reach. Triggers EU AI Act
+    high-risk assessment, deployer/provider role analysis, and elevated disclosure obligations.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: governing_body
+  customer_role: deployer
+  triggered_requirements:
+  - requirement_id: king-v-p-9
+    scenario_specific_note: Compliance universe expands to include EU AI Act.
+  - requirement_id: king-v-p-10
+    scenario_specific_note: AI governance must satisfy EU AI Act Articles 9, 10, 13, 14, 15, 26.
+  notes: Regulatory horizon-scanning signal; documented in obligations register.
+- id: scn-kingv-founder-transition
+  name: Founder transition / CEO succession activates
+  framework_specific_id: KV-Trigger-6
+  description: >-
+    Founder-CEO succession plan activates — planned transition, departure, or incapacity. Tests
+    Practice 79 succession plan and Practice 80 chair-led CEO performance review machinery.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: governing_body
+  customer_role: not-applicable
+  triggered_requirements:
+  - requirement_id: king-v-p-7
+    scenario_specific_note: Delegation framework and succession plan tested.
+  - requirement_id: king-v-rp-82
+    scenario_specific_note: DoA framework holds without founder personal authority.
+  notes: Key-person risk realised; institutional memory and documented authority become critical.
+- id: scn-kingv-series-b-investment
+  name: Series B / institutional investment round
+  framework_specific_id: KV-Trigger-7
+  description: >-
+    Institutional investment round (Series B+ or equivalent) — investor diligence demands board
+    independence, externally facilitated evaluation, formal committee architecture, and integrated
+    disclosure.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: governing_body
+  customer_role: not-applicable
+  triggered_requirements:
+  - requirement_id: king-v-p-5
+    scenario_specific_note: Majority NED / most independent target accelerated.
+  - requirement_id: king-v-p-4
+    scenario_specific_note: External reporting matures — investor-facing King V Disclosure becomes mandatory in diligence pack.
+  - requirement_id: king-v-rp-8
+    scenario_specific_note: Externally facilitated board evaluation expected by investor.
+  notes: Trigger for "Later" phase of source pack §14 roadmap.
+
+open_questions:
+- id: oq-kingv-independent-ned-appointment
+  question: When does PrivateBox appoint its first independent NED, and what is the target trajectory for board independence?
+  candidate_answers:
+  - Within 90 days (signals early-adoption commitment)
+  - Within 6 months (with Lead Independent designation in interim)
+  - Tied to Series B / institutional investment milestone
+  decision_owner: Founder + existing board
+  decision_status: pending
+  blocks_requirements:
+  - king-v-p-5
+  - king-v-rp-29
+  - king-v-rp-45
+  blocks_scenarios: []
+  notes: >-
+    First independent NED is the foundational governance signal. Until appointed, Lead Independent
+    NED designation is the compensating measure if founder is Chair. Source §14 "Now (0-90 days)"
+    recommends immediate appointment.
+  created: '2026-05-10'
+  resolved_value: null
+  resolved_at: null
+- id: oq-kingv-committee-split-timing
+  question: At what stage does PrivateBox split combined committees into separate Audit, Risk, Technology, S&E, and Remuneration committees?
+  candidate_answers:
+  - At PI Score threshold (statutory S&E split mandatory)
+  - At Series B (investor expectation)
+  - Phased — Audit first, then Risk/Technology, then S&E and Remuneration
+  decision_owner: Board + Cosec
+  decision_status: pending
+  blocks_requirements:
+  - king-v-p-6
+  - king-v-rp-59
+  - king-v-rp-74
+  blocks_scenarios:
+  - scn-kingv-pi-score-threshold
+  notes: >-
+    Combined committees are proportionate at PB's current stage but architecture must pre-build the
+    split so the PI Score crossing is incremental, not disruptive.
+  created: '2026-05-10'
+  resolved_value: null
+  resolved_at: null
+- id: oq-kingv-cosec-arrangement
+  question: Cosec-as-a-service vs in-house company secretary?
+  candidate_answers:
+  - Cosec-as-a-service (proportionate; arms-length)
+  - In-house cosec (signals scale)
+  - Hybrid — outsourced filings, in-house governance support
+  decision_owner: Board + CFO
+  decision_status: pending
+  blocks_requirements:
+  - king-v-p-7
+  - king-v-rp-84
+  blocks_scenarios: []
+  notes: >-
+    Source §14 "Now" recommends cosec-as-a-service. Practice 84-90 governance support function must
+    be arms-length from management.
+  created: '2026-05-10'
+  resolved_value: null
+  resolved_at: null
+- id: oq-kingv-ai-oversight-constitution
+  question: How is the AI Oversight Working Group constituted and what does it formally report into?
+  candidate_answers:
+  - Cross-functional management group reporting into Audit/Risk/Technology committee
+  - Standalone board AI sub-committee
+  - AI oversight responsibility absorbed into existing CTO mandate
+  decision_owner: CTO + Head of AI + Board
+  decision_status: pending
+  blocks_requirements:
+  - king-v-p-10
+  - king-v-rp-109
+  blocks_scenarios: []
+  notes: >-
+    Source pack §7 recommends cross-functional management working group reporting into Audit/Risk/Tech
+    committee — proportionate substitute for a full AI committee. Practice 109c human oversight
+    requirements must trace through the working group's records.
+  created: '2026-05-10'
+  resolved_value: null
+  resolved_at: null
+- id: oq-kingv-disclosure-publication
+  question: When does PrivateBox publish its first King V Governance Disclosure?
+  candidate_answers:
+  - v0.5 draft now (early-adoption signal in Trust Pack)
+  - Full v1.0 within 12 months (with FY2026 reporting cycle)
+  - Wait for FY2026 reports issued in 2027 (mandatory cycle)
+  decision_owner: Board + Cosec
+  decision_status: pending
+  blocks_requirements:
+  - king-v-p-4
+  - king-v-rp-27
+  blocks_scenarios: []
+  notes: >-
+    Source §1 recommends early-adoption signal in Trust Pack from now. First mandatory cycle is
+    FY2026 reports issued in 2027. Publishing earlier is procurement-friendly.
+  created: '2026-05-10'
+  resolved_value: null
+  resolved_at: null
+- id: oq-kingv-pi-score-current
+  question: What is PrivateBox's current Public Interest Score and projected threshold-crossing date?
+  candidate_answers:
+  - Below all thresholds (current state)
+  - Approaching Reg 43 statutory S&E threshold (projected within 12 months)
+  - Above statutory audit threshold (already triggered)
+  decision_owner: CFO + Cosec
+  decision_status: pending
+  blocks_requirements:
+  - king-v-rp-74
+  blocks_scenarios:
+  - scn-kingv-pi-score-threshold
+  notes: >-
+    PI Score is calculated per Companies Act formula (staff, turnover, beneficial interests,
+    third-party liabilities). Knowing current value and trajectory enables architecture-ahead-of-
+    requirement planning.
+  created: '2026-05-10'
+  resolved_value: null
+  resolved_at: null
+- id: oq-kingv-internal-audit-arrangement
+  question: How does PrivateBox staff internal audit — co-sourced, outsourced, or build in-house?
+  candidate_answers:
+  - Co-sourced with named accountable executive (proportionate)
+  - Fully outsourced
+  - Build in-house CAE function
+  decision_owner: Board + Audit/Risk/Tech committee
+  decision_status: pending
+  blocks_requirements:
+  - king-v-p-12
+  - king-v-rp-129
+  blocks_scenarios: []
+  notes: >-
+    Practice 131c permits co-sourced for a scaling firm. External quality review every 5 years
+    (Practice 131f) applies regardless of arrangement.
+  created: '2026-05-10'
+  resolved_value: null
+  resolved_at: null
+- id: oq-kingv-founder-succession
+  question: Is the founder-CEO succession plan documented and refreshed?
+  candidate_answers:
+  - Documented + refreshed annually
+  - Drafted but not refreshed
+  - Not yet documented
+  decision_owner: Board + Chair (or Lead Independent)
+  decision_status: pending
+  blocks_requirements:
+  - king-v-p-7
+  blocks_scenarios:
+  - scn-kingv-founder-transition
+  notes: >-
+    Practice 79 explicit. Investor diligence pre-Series B will demand evidence. Key-person risk
+    materialises if not documented.
+  created: '2026-05-10'
+  resolved_value: null
+  resolved_at: null
+
+requirements:
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Principles (P1–P13)
+# ─────────────────────────────────────────────────────────────────────────────
+
+- id: king-v-p-1
+  kind: principle
+  native_id: P1
+  group: leadership
+  group_name: Leadership
+  title: Leadership
+  requirement: >-
+    The governing body leads ethically and effectively as the focal point of corporate governance in
+    the organisation, embodying tone-from-the-top through integrity, competence, responsibility,
+    accountability, fairness and transparency.
+  auditor_intent: >-
+    Adviser / procurement / investor reviewer checks that founder-led culture is balanced with
+    collective board accountability and that the board operates under a written charter.
+  pb_interpretation: >-
+    Founder-led culture must be balanced with collective board accountability. Board operates under a
+    written charter (Practice 4) reviewed annually. Each director cultivates the six characteristics
+    (Practice 1) with declared interests at least annually and at every meeting (Practices 39-40).
+    Performance evaluation at least every two years (Practices 6-9).
+  owner: PB
+  role_applicability:
+    governing_body: 'Y'
+    chairperson: 'Y'
+  documented_evidence:
+  - Board Charter v1.0+
+  - Signed director letters of appointment
+  - Conflicts / Declaration of Interest Register
+  - Board evaluation report (biennial)
+  operational_evidence: >-
+    Directors can describe the charter and how it was last reviewed; evaluation actions tracked.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual charter review + biennial evaluation
+  failure_modes: >-
+    Founder/CEO acting as both Chair and CEO without Lead Independent designation; charter copied
+    from a template and not lived.
+  maturity_target: AR
+  external_safe_claim: >-
+    PrivateBox's governing body operates under a board charter and director conduct expectations
+    aligned with King V Principle 1.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-5.1
+    note: ISMS leadership maps to King V leadership at organisational level.
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-5.1
+    note: PIMS leadership analogue.
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-5.1
+    note: AIMS leadership analogue.
+  - framework: popia
+    refs:
+    - popia-cond-1
+    note: POPIA accountability principle is the statutory underpinning King V Principle 1 instantiates.
+
+- id: king-v-p-2
+  kind: principle
+  native_id: P2
+  group: ethics
+  group_name: Ethics
+  title: Ethics
+  requirement: >-
+    The governing body governs the ethics of the organisation in a way that enables an ethical
+    culture and responsible corporate citizenship.
+  auditor_intent: >-
+    Procurement / investor reviewer tests that ethics is governed (board-approved code, training
+    cadence, whistleblower channel, sanctions log) rather than assumed.
+  pb_interpretation: >-
+    Critical because clients trust PrivateBox not to misuse data. Board approves ethics policy / code
+    of conduct (Practice 12), AI ethics statement (linked to Principle 10 AI values), anti-corruption
+    / anti-fraud / anti-money-laundering programmes (Practice 12c), protected whistleblowing channel
+    (Practice 13d). Ethics built into hiring, performance, supplier onboarding.
+  owner: PB
+  role_applicability:
+    governing_body: 'Y'
+    social_ethics_rem_committee: 'Y'
+  documented_evidence:
+  - Code of Ethics (board-approved)
+  - AI Ethics Statement
+  - Anti-Corruption Policy
+  - Whistleblowing Policy + independent reporting channel
+  - Training records
+  - Whistleblower stats (anonymised) to S&E committee
+  operational_evidence: >-
+    Trace a reported ethics matter from intake to closure; periodic assurance on ethics effectiveness
+    (Practice 14).
+  audit_methods:
+  - Insp
+  - Int
+  - Samp
+  cadence: Annual review + continuous channel operation
+  failure_modes: >-
+    Ethics conflated with compliance; whistleblower channel that routes to the implicated party;
+    "ethics" treated as a poster on the wall.
+  maturity_target: AR
+  external_safe_claim: >-
+    PrivateBox's ethics framework, anti-corruption controls and protected whistleblowing process are
+    governed by the board in accordance with King V Principle 2.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.4
+    note: Management responsibilities; ethics overlay.
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-5.2
+    note: AI Policy operationalises the AI-specific portion of King V ethics.
+  - framework: popia
+    refs:
+    - popia-cond-1
+    note: POPIA accountability principle reaches ethics governance.
+
+- id: king-v-p-3
+  kind: principle
+  native_id: P3
+  group: strategy
+  group_name: Strategy, performance and sustainable value creation
+  title: Strategy, performance and sustainable value creation
+  requirement: >-
+    The governing body ensures that the organisation's purpose, strategy and business model support
+    performance that creates sustainable value within the organisation's economic, social and
+    environmental context.
+  auditor_intent: >-
+    Reviewer expects board-approved strategy with SMART KPIs, integrated-thinking framing across the
+    six capitals, and explicit negative-impact mitigation.
+  pb_interpretation: >-
+    Articulate purpose, business model, strategy and KPIs. Tie product roadmap to sustainable client
+    outcomes — data sovereignty, on-prem assurance, lower regulatory risk for clients. Apply
+    integrated thinking to financial, intellectual, human, social/relationship, natural (energy
+    footprint), manufactured capitals.
+  owner: PB
+  role_applicability:
+    governing_body: 'Y'
+    ceo_management: 'Y'
+  documented_evidence:
+  - Board-approved strategy
+  - Operational plan with KPIs
+  - Integrated narrative / capital-impact summary
+  - Double-materiality assessment summary
+  - CFO going-concern / solvency / liquidity reporting
+  operational_evidence: >-
+    Board minute approving strategy and budget; quarterly KPI review; founder/CEO performance review
+    against strategic targets.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual strategy approval + quarterly review
+  failure_modes: >-
+    Performance reduced to ARR; no link to systems value; strategy not refreshed; sustainability
+    ignored on assumption that "we're a small tech company".
+  maturity_target: AR
+  external_safe_claim: >-
+    PrivateBox's strategy is approved and overseen by the governing body using integrated thinking
+    aligned with King V Principle 3.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-6.2
+    note: ISMS objectives integrated with strategy.
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-6.2
+    note: AIMS objectives integrated with strategy.
+
+- id: king-v-p-4
+  kind: principle
+  native_id: P4
+  group: reporting
+  group_name: Reporting
+  title: Reporting
+  requirement: >-
+    The governing body ensures that external reports enable stakeholders to make informed assessments
+    of how the organisation creates, preserves and erodes value, applying double-materiality concepts
+    and integrity controls over reports.
+  auditor_intent: >-
+    Procurement / investor reviewer expects King V Disclosure Framework published on website with a
+    concluding statement on the four outcomes; integrated narrative across strategy / risk / AI /
+    security / privacy.
+  pb_interpretation: >-
+    Even as a private company, the trust pack, security disclosures, AI factsheets and governance
+    section function as external reports. Board approves the suite (Practice 25b). Annual integrated
+    report or proportionate equivalent. King V Disclosure Framework published on the website
+    (Practice 27c). Double-materiality applied (Practice 26).
+  owner: PB
+  role_applicability:
+    governing_body: 'Y'
+    audit_risk_tech_committee: 'Y'
+  documented_evidence:
+  - King V Governance Disclosure (annual; website-published)
+  - Integrated Trust & Governance Pack
+  - AI factsheets / System Cards summary
+  - Cybersecurity disclosure
+  - Governance section on website
+  - Board approval minutes for each external report
+  operational_evidence: >-
+    Each external report has a board approval minute and accessible publication record; concluding
+    statement on outcomes signed off.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual + on material change
+  failure_modes: >-
+    Marketing copy mistaken for governance disclosure; King V Disclosure Framework absent (mandatory
+    failure); concluding statement copied without evidence trail.
+  maturity_target: AR
+  external_safe_claim: >-
+    PrivateBox publishes a governance disclosure structured in accordance with the King V Disclosure
+    Framework.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.34
+    note: Privacy / external disclosure overlap.
+  - framework: iso-27701
+    refs:
+    - iso-27701-a1-3
+    note: PIMS controllers transparency / notice obligation overlap.
+  - framework: popia
+    refs:
+    - popia-cond-6
+    note: POPIA s 17-18 openness condition; external disclosure obligations.
+
+- id: king-v-p-5
+  kind: principle
+  native_id: P5
+  group: composition
+  group_name: Composition of the governing body
+  title: Composition of the governing body
+  requirement: >-
+    The governing body ensures that its composition is balanced with respect to the mix of
+    competencies, diversity and independence appropriate to the organisation's purpose and context.
+  auditor_intent: >-
+    Reviewer expects majority NED, most independent, diverse, with independence holistically assessed
+    against Practice 42 nine factors.
+  pb_interpretation: >-
+    Founder-led — must consciously over-correct for independence. Target at least one independent NED
+    at minimum, scaling to majority pre-IPO. CEO + at least one other executive on the board
+    (Practice 30). Diversity across competencies, age, culture, race, gender (Practice 31). Staggered
+    rotation (Practice 32). Succession plan (Practice 33). Skills matrix. Independence assessed
+    against the nine Practice 42 factors. Background checks and verified qualifications for nominees
+    (Practice 37c).
+  owner: PB
+  role_applicability:
+    governing_body: 'Y'
+    nominations_committee: 'Y'
+  documented_evidence:
+  - Skills matrix
+  - Director CVs
+  - Appointment letters
+  - Conflicts register
+  - Nominations committee TOR
+  - Succession plan
+  - Per-NED independence assessment memo (against Practice 42 nine factors)
+  operational_evidence: >-
+    Independence rationale documented for any director near the line; nine-year tenure reviewed
+    annually.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual + on appointment
+  failure_modes: >-
+    Founder-controlled board with no independents; cosmetic NED who is in fact a customer/supplier;
+    "independence by assertion".
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-kingv-pre-pi-score
+  - scn-kingv-first-independent-ned
+  - scn-kingv-series-b-investment
+  external_safe_claim: >-
+    PrivateBox's board composition is structured to deliver the balance of competencies, diversity
+    and independence contemplated by King V Principle 5, applied proportionately to a scaling private
+    technology company.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-5.3
+    note: Roles, responsibilities and authorities under ISMS map to board composition discipline.
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-5.3
+    note: PIMS roles analogue.
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-5.3
+    note: AIMS roles analogue.
+  - framework: popia
+    refs:
+    - popia-s-information-officer
+    note: Information Officer designation under POPIA overlaps with King V board composition discipline.
+
+- id: king-v-p-6
+  kind: principle
+  native_id: P6
+  group: committees
+  group_name: Committees of the governing body
+  title: Committees of the governing body
+  requirement: >-
+    Arrangements for delegation to committees and individuals promote the objective and effective
+    discharge of the governing body's obligations.
+  auditor_intent: >-
+    Reviewer expects committees with written TORs, at least 3 members, balanced; combined committee
+    architecture proportionate at smaller scale; statutory S&E committee triggered by PI Score.
+  pb_interpretation: >-
+    Proportionate model — combined Audit/Risk/Technology Committee (one TOR, 3 members, majority
+    NED, at least one independent NED, chaired by independent NED who is not Chair of board);
+    combined Social/Ethics/Remuneration Committee (incorporates corporate citizenship and
+    remuneration governance); optional AI Oversight Sub-committee or working group reporting in. PI
+    Score crossing triggers mandatory statutory S&E committee under Companies Act s 72(4) and
+    Regulation 43.
+  owner: PB
+  role_applicability:
+    governing_body: 'Y'
+    audit_risk_tech_committee: 'Y'
+    social_ethics_rem_committee: 'Y'
+  documented_evidence:
+  - Combined Audit/Risk/Technology Committee TOR
+  - Combined Social/Ethics/Remuneration Committee TOR
+  - Quarterly minutes
+  - Chair reports to board
+  - PI Score tracking (CFO)
+  operational_evidence: >-
+    Each committee has documented terms of reference, named members, attendance records, and chair
+    reports to board.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual TOR review + quarterly minutes
+  failure_modes: >-
+    Chair of board chairing the audit committee (Practice 49a prohibits); CEO sitting on
+    audit/remuneration/nominations as a member (Practice 78 prohibits, may attend by invitation).
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-kingv-pre-pi-score
+  - scn-kingv-pi-score-threshold
+  external_safe_claim: >-
+    PrivateBox operates a proportionate committee architecture aligned to King V Principle 6,
+    including a combined audit, risk and technology committee and a social, ethics and remuneration
+    committee.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-9.3.1
+    - iso-27001-cl-9.3.2
+    - iso-27001-cl-9.3.3
+    note: ISMS management-review committees overlap with King V committee discipline.
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-9.3
+    note: PIMS management review analogue.
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-9.3
+    note: AIMS management review analogue.
+
+- id: king-v-p-7
+  kind: principle
+  native_id: P7
+  group: delegation
+  group_name: Appointment and delegation to management
+  title: Appointment and delegation to management
+  requirement: >-
+    Arrangements for appointment of and delegation to management promote operational effectiveness
+    and ensure that the respective roles and decision-making powers of the governing body and
+    management are clearly defined.
+  auditor_intent: >-
+    Reviewer expects CEO formally appointed, not on audit/remuneration/nominations (Practice 78),
+    board-approved Delegation of Authority framework, CEO succession plan, access to professional
+    corporate-governance services.
+  pb_interpretation: >-
+    Founder/CEO must not also chair (Practice 48); 3-year cooling-off applies before retired CEO can
+    chair. CEO formally appointed (Practice 76). Board-approved Delegation of Authority framework
+    (Practice 82). CEO succession plan (Practice 79). Cosec or equivalent provides independent
+    corporate-governance services (Practices 84-90).
+  owner: PB
+  role_applicability:
+    governing_body: 'Y'
+    ceo_management: 'Y'
+    company_secretary: 'Y'
+  documented_evidence:
+  - CEO appointment letter and mandate
+  - Delegation of Authority Framework
+  - CEO succession plan
+  - Cosec engagement / mandate
+  operational_evidence: >-
+    DoA framework demonstrably operates — recent material decisions trace through documented authority.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual + on org change
+  failure_modes: >-
+    Founder retains undocumented decision-making power; no cosec equivalent; CEO succession plan
+    absent.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-kingv-founder-transition
+  external_safe_claim: >-
+    PrivateBox operates a board-approved delegation-of-authority framework and CEO succession
+    discipline aligned with King V Principle 7.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-5.3
+    note: Roles and authorities under ISMS overlap with King V management delegation.
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-5.3
+    note: AIMS roles analogue.
+
+- id: king-v-p-8
+  kind: principle
+  native_id: P8
+  group: risk
+  group_name: Risk
+  title: Risk
+  requirement: >-
+    The governing body governs risk in a way that enables the organisation to sustain and optimise
+    its strategy and objectives — opportunity-aware, integrated, iterative, resilient.
+  auditor_intent: >-
+    Reviewer expects approved risk policy, documented risk appetite and tolerance, integrated risk
+    register, BCM with testing, iterative change-responsive process, periodic assurance.
+  pb_interpretation: >-
+    Cyber, AI model, supplier, business-continuity, key-person, regulatory, and reputational risks
+    are the dominant cluster. Model drift, prompt-injection, supply-chain compromise of foundation
+    models / model weights / containers, telemetry channel abuse, on-prem update channel integrity,
+    key-person dependency on founder.
+  owner: PB
+  role_applicability:
+    governing_body: 'Y'
+    audit_risk_tech_committee: 'Y'
+  documented_evidence:
+  - Risk Management Policy
+  - Risk Appetite Statement
+  - Enterprise Risk Register (cyber, AI, supplier, key-person, BCM, regulatory, commercial sub-registers)
+  - BCM/DR plan
+  - Last BCM test report
+  operational_evidence: >-
+    Risk register reviewed quarterly; appetite breaches escalated; BCM exercised annually.
+  audit_methods:
+  - Insp
+  - Int
+  - Samp
+  cadence: Quarterly register review + annual appetite review + annual BCM exercise
+  failure_modes: >-
+    Separate cyber/AI/privacy registers with no integration; treating ISO 27001 as a substitute for
+    board-level risk governance; static appetite that never changes.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-kingv-material-ai-incident
+  external_safe_claim: >-
+    Risk governance at PrivateBox is structured to deliver the outcomes contemplated by King V
+    Principle 8, with explicit treatment of cyber, AI model, supplier, and business-continuity risks.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-6.1.1
+    - iso-27001-cl-6.1.2
+    - iso-27001-cl-6.1.3
+    note: ISMS risk framework feeds King V P8 enterprise risk view.
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-6.1
+    note: PIMS risk analogue.
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-6.1.2
+    note: AIMS risk methodology feeds King V P8 enterprise risk view.
+  - framework: popia
+    refs:
+    - popia-cond-7
+    note: POPIA security safeguards (s 19) are a sub-register of enterprise risk under King V P8.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-9
+    note: EU AI Act risk-management for high-risk AI feeds King V P8 enterprise risk.
+
+- id: king-v-p-9
+  kind: principle
+  native_id: P9
+  group: compliance
+  group_name: Compliance
+  title: Compliance
+  requirement: >-
+    The governing body governs compliance with applicable laws and adopted policies, non-binding
+    rules, codes and standards in a way that promotes ethics and responsible corporate citizenship.
+  auditor_intent: >-
+    Reviewer expects board-approved compliance framework, obligations register naming binding and
+    adopted standards, regulatory horizon scanning.
+  pb_interpretation: >-
+    Obligations register covers POPIA, Cybercrimes Act, ECTA, Companies Act, EU AI Act extra-
+    territorial reach, sector pass-through obligations. Adopted non-binding standards explicitly
+    listed (ISO 27001, ISO 27701, ISO 42001, NIST AI RMF, NIST SSDF, EU AI Act voluntary GPAI code,
+    King V itself). Regulatory horizon scanning (Practice 98d). Periodic assurance on compliance
+    function (Practice 99).
+  owner: PB
+  role_applicability:
+    governing_body: 'Y'
+    audit_risk_tech_committee: 'Y'
+  documented_evidence:
+  - Compliance Framework
+  - Obligations Register
+  - Adopted-standards register
+  - Regulatory horizon-scanning log
+  operational_evidence: >-
+    Regulatory changes trace from horizon scan to register update to control adjustment.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual + per regulatory change
+  failure_modes: >-
+    Confusing King V (voluntary) with binding obligations; obligations register stale; no horizon
+    scanning.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-kingv-first-eu-customer
+  external_safe_claim: >-
+    PrivateBox's compliance framework is governed at board level and addresses both binding
+    obligations and adopted non-binding standards in alignment with King V Principle 9.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.31
+    - iso-27001-a-5.34
+    note: Legal / regulatory / contractual compliance under ISMS; privacy and PII.
+  - framework: popia
+    refs:
+    - popia-cond-1
+    note: POPIA accountability principle underpins compliance governance.
+
+- id: king-v-p-10
+  kind: principle
+  native_id: P10
+  group: technology
+  group_name: Data, information and technology (incl. AI)
+  title: Data, information and technology
+  requirement: >-
+    The governing body governs data, information and technology in a way that enables the
+    organisation to sustain and optimise its strategy and objectives — including emerging-technology
+    risk and AI governance under Practice 109c covering ethics, human centricity, accountability,
+    transparency, explainability, security, privacy, fairness, trustworthiness, and human oversight
+    commensurate with risk.
+  auditor_intent: >-
+    Reviewer expects board-approved data and technology policies, AI governance under Practice 109c,
+    cyber dashboard, privacy programme, third-party assurance. This is the King V flagship update
+    versus King IV — the AI governance limb is the highest-leverage clause.
+  pb_interpretation: >-
+    Highest-leverage principle for PrivateBox. Data and Information branch (Practices 100-104):
+    lifecycle controls, classification, CIA, privacy, third-party / cross-border risk, periodic
+    assurance. Technology branch (Practices 105-110): legal compliance, resilience, benefit
+    realisation, responsible disposal, effective cybersecurity, outsourced/third-party tech
+    assurance. Emerging tech / AI checklist (109c): AI ethics, human centricity, accountability,
+    transparency, explainability, security, privacy, fairness, trustworthiness; clear accountability
+    for AI decisions/actions/outputs/outcomes; human oversight and override mechanisms commensurate
+    with risk. On-prem architecture earns its keep here — policy explicitly states telemetry / update
+    / support / connector channels, what data they touch, what consent and control client has, and
+    how human override works for AI outputs.
+  owner: PB
+  role_applicability:
+    governing_body: 'Y'
+    audit_risk_tech_committee: 'Y'
+    ai_oversight_working_group: 'Y'
+  documented_evidence:
+  - Technology and Information Governance Policy
+  - Data classification scheme + lifecycle policy
+  - Cybersecurity Policy + ISMS SoA (ISO 27001)
+  - Privacy Governance Policy + POPIA Programme + IO designation
+  - AI Governance Policy + AI Ethics Statement
+  - AI System Cards per production model
+  - Human Oversight SOP
+  - Model evaluation / red-team records
+  - AI Oversight Working Group charter + minutes
+  - Sub-processor register with assurance evidence
+  operational_evidence: >-
+    Board pack includes cyber dashboard, AI risk dashboard, privacy dashboard; AI System Cards trace
+    to production deployments; human-override mechanisms tested.
+  audit_methods:
+  - Insp
+  - Int
+  - Samp
+  - Obs
+  cadence: Annual policy review + per release / per AI change
+  failure_modes: >-
+    AI deployed before policy in place; "human in the loop" as decoration; telemetry treated as
+    "metadata not personal" without analysis; CISO reporting only annually; cyber treated as IT;
+    foundation-model provider treated as untouchable.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-kingv-material-ai-incident
+  - scn-kingv-first-eu-customer
+  external_safe_claim: >-
+    PrivateBox governs data, information, technology and AI through board-approved policies designed
+    to deliver the human-oversight, accountability, transparency, explainability, security, privacy,
+    fairness and trustworthiness expectations of King V Principle 10.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.9
+    - iso-27001-a-5.12
+    - iso-27001-a-5.34
+    note: ISMS asset inventory + data classification + privacy overlay.
+  - framework: iso-27701
+    refs:
+    - iso-27701-a1-12
+    note: PIMS PIA / records underpin King V P10 data branch.
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-6.1.4
+    - iso-42001-a-6.2.3
+    - iso-42001-a-6.1.4
+    note: AIMS AISIA + human oversight + bias methodology operationalise Practice 109c.
+  - framework: popia
+    refs:
+    - popia-cond-2
+    - popia-cond-7
+    - popia-s-automated-decisions
+    note: POPIA processing limitation, security safeguards, s 71 automated decisions feed P10.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-9
+    - eu-ai-act-art-10
+    - eu-ai-act-art-13
+    - eu-ai-act-art-14
+    - eu-ai-act-art-15
+    - eu-ai-act-art-26
+    note: EU AI Act high-risk articles align with Practice 109c values and oversight requirements.
+
+- id: king-v-p-11
+  kind: principle
+  native_id: P11
+  group: remuneration
+  group_name: Remuneration
+  title: Remuneration
+  requirement: >-
+    The organisation remunerates fairly, responsibly and transparently to promote sustainable value
+    creation. King V is less prescriptive than King IV, deferring to s 30(4) Companies Act and
+    Companies Amendment Act 16 of 2024 (not yet in force at time of authoring).
+  auditor_intent: >-
+    Reviewer expects board-approved remuneration policy, fair-and-responsible test between executive
+    and overall employee remuneration, malus/clawback for variable pay.
+  pb_interpretation: >-
+    Board-approved remuneration policy (Practice 113). Fair-and-responsible test between executive
+    and overall employee remuneration (Practice 114b). Malus/clawback for variable pay (Practice
+    114e). NED fee policy submitted to shareholders if applicable (Practice 115). Shareholder
+    engagement on remuneration (Practice 116). For entities required to have a S&E committee, non-
+    binding advisory votes on policy (every 3 years or material change) and on implementation report
+    (annual) (Practice 118).
+  owner: PB
+  role_applicability:
+    governing_body: 'Y'
+    social_ethics_rem_committee: 'Y'
+  documented_evidence:
+  - Remuneration Policy
+  - Implementation report
+  - Fair-and-responsible analysis
+  - Malus / clawback clauses for variable pay
+  - Non-binding advisory vote records (when applicable)
+  operational_evidence: >-
+    Remuneration decisions trace through documented policy; fair-and-responsible test recalculated
+    annually.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual + on material change
+  failure_modes: >-
+    Founder-set salaries with no committee discipline; absence of malus/clawback for AI-misuse-linked
+    variable pay; no fair-and-responsible analysis.
+  maturity_target: AR
+  external_safe_claim: >-
+    PrivateBox operates a fair, responsible and transparent remuneration framework aligned to King V
+    Principle 11.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: king-v-p-12
+  kind: principle
+  native_id: P12
+  group: assurance
+  group_name: Assurance
+  title: Assurance
+  requirement: >-
+    Assurance functions and services promote an effective internal control environment and safeguard
+    the integrity of external reports through combined assurance across line management, specialist
+    functions, internal audit, external audit, specialist providers and regulators.
+  auditor_intent: >-
+    Reviewer expects combined assurance map covering all significant risks × assurance providers ×
+    cadence; internal audit charter (co-sourced acceptable for proportionate scale); external IA
+    quality review every 5 years.
+  pb_interpretation: >-
+    Combined assurance map covers ISO 27001/27701 surveillance, NIST AI RMF self-assessment, SOC 2
+    Type II (if pursued), penetration testing, internal financial controls review, statutory audit
+    (when triggered), product-level red-team / model-evaluation reports. For each external report
+    state level of assurance and criteria (Practice 126). Internal audit charter and risk-based plan
+    (Practices 129-130) — may be co-sourced (Practice 131c). External independent review of internal
+    audit at least once every 5 years (Practice 131f).
+  owner: PB
+  role_applicability:
+    governing_body: 'Y'
+    audit_risk_tech_committee: 'Y'
+    combined_assurance_providers: 'Y'
+  documented_evidence:
+  - Combined Assurance Map
+  - Internal Audit Charter (co-sourced acceptable)
+  - Risk-based internal audit plan
+  - Pen-test reports
+  - Model red-team reports
+  - External IA quality review (Practice 131f)
+  operational_evidence: >-
+    Assurance providers operate per cadence; remediation tracked through closure; map refreshed
+    annually.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual map review + per assurance cycle
+  failure_modes: >-
+    Audit fatigue with no remediation; same team auditing itself; gaps in coverage of AI risk;
+    external IA quality review skipped.
+  maturity_target: AR
+  external_safe_claim: >-
+    PrivateBox operates a combined assurance model designed to support effective internal controls
+    and the integrity of external reports in alignment with King V Principle 12.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-9.2.1
+    - iso-27001-cl-9.2.2
+    note: ISMS internal audit feeds King V P12 combined assurance.
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-9.2
+    note: PIMS internal audit analogue.
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-9.2
+    note: AIMS internal audit analogue.
+
+- id: king-v-p-13
+  kind: principle
+  native_id: P13
+  group: stakeholders
+  group_name: Stakeholders
+  title: Stakeholders
+  requirement: >-
+    The governing body adopts a stakeholder-inclusive approach in the execution of its duties in the
+    long-term best interests of the organisation within its economic, social and environmental
+    context, upholding Ubuntu-Botho.
+  auditor_intent: >-
+    Reviewer expects stakeholder map, engagement framework, dispute-resolution mechanism, periodic
+    assurance on stakeholder management; for organisations with shareholders, AGM cadence and
+    accessibility.
+  pb_interpretation: >-
+    Stakeholder map covers clients (especially regulated-sector procurement and CISO/DPO functions),
+    client end-users (data subjects), regulators (Information Regulator, sector regulators),
+    sub-processors and model / foundation-model providers, employees, founders/investors,
+    community/society. Board-approved stakeholder engagement framework (Practice 134). Stakeholder
+    methodology (135a). Risk/opportunity analysis from stakeholder interests (135b). Dispute
+    resolution (135c). Periodic assurance on stakeholder management (136). For PrivateBox,
+    shareholder engagement scales to investor relations and material customer relationship
+    management. Group governance framework if subsidiaries exist (Practices 145-150).
+  owner: PB
+  role_applicability:
+    governing_body: 'Y'
+    ceo_management: 'Y'
+  documented_evidence:
+  - Stakeholder Engagement Framework
+  - Stakeholder Map
+  - Engagement log
+  - AI Transparency Disclosure pack for clients
+  - Investor briefing protocol
+  operational_evidence: >-
+    Quarterly stakeholder report to board; documented client / customer engagement minutes;
+    published governance section on website.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual framework review + continuous engagement log
+  failure_modes: >-
+    "Marketing trust" without substance; opaque telemetry; missing AI transparency; founder-only
+    stakeholder relationships with no institutional memory.
+  maturity_target: AR
+  external_safe_claim: >-
+    PrivateBox applies a stakeholder-inclusive approach to governance, designed to support the King V
+    outcomes of legitimacy and sustainable value creation.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-4.2
+    note: ISMS interested-parties identification underpins King V stakeholder framework.
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-4.2
+    note: PIMS interested-parties analogue.
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-4.2
+    note: AIMS interested-parties analogue.
+  - framework: popia
+    refs:
+    - popia-cond-8
+    note: POPIA data subject participation underpins stakeholder rights handling.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Selected high-impact Recommended Practices
+# ─────────────────────────────────────────────────────────────────────────────
+
+- id: king-v-rp-4
+  kind: practice
+  native_id: Practice 4
+  group: leadership
+  group_name: Leadership
+  title: Board Charter
+  objective: >-
+    The governing body approves and periodically reviews a Board Charter setting out its roles,
+    responsibilities, membership, conduct, meeting procedures, reserved matters, and delegation.
+  pb_interpretation: >-
+    PrivateBox Board Charter v1.0+ is King V-mapped with PrivateBox-specific reserved matters
+    including: approval of new sub-processor, approval of foundation-model change, approval of
+    telemetry policy change, approval of AI Governance Policy, approval of King V Disclosure
+    Framework publication.
+  owner: PB
+  role_applicability:
+    governing_body: 'Y'
+    company_secretary: 'Y'
+  documented_evidence:
+  - Board Charter (King V-mapped)
+  - Reserved-matters schedule
+  - Annual review record
+  operational_evidence: >-
+    Charter referenced in board minutes; reserved matters traced to approval decisions.
+  audit_methods:
+  - Insp
+  cadence: Annual review
+  failure_modes: >-
+    Template charter with no PrivateBox-specific reserved matters; charter approved but not lived.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    The PrivateBox Board operates under a King V-mapped Board Charter with explicit reserved-matters
+    discipline for sub-processor approvals, AI changes and telemetry policy.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-5.1
+    note: ISMS leadership commitment instantiates through board-level chartering.
+
+- id: king-v-rp-8
+  kind: practice
+  native_id: Practice 8
+  group: leadership
+  group_name: Leadership
+  title: Board evaluation cadence
+  objective: >-
+    The governing body undertakes formal performance evaluation of the board, committees, chair and
+    individuals at least every two years, with methodology approved and external facilitation
+    considered.
+  pb_interpretation: >-
+    Biennial internal evaluation; externally facilitated evaluation expected at maturity (Series B
+    onwards). Methodology approved by board / nominations. Evaluation report and action plan
+    maintained.
+  owner: PB
+  role_applicability:
+    governing_body: 'Y'
+    nominations_committee: 'Y'
+  documented_evidence:
+  - Evaluation methodology
+  - Evaluation report and action plan
+  - External-facilitator engagement (at maturity)
+  operational_evidence: >-
+    Most recent evaluation traceable; actions closed through subsequent agenda items.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: At least every 2 years; externally facilitated at maturity
+  failure_modes: >-
+    Evaluation done but no follow-up; methodology never reviewed; external facilitation skipped at
+    maturity.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-kingv-series-b-investment
+  external_safe_phrasing: >-
+    PrivateBox conducts formal board, committee, chair and director performance evaluations at least
+    every two years.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: king-v-rp-12
+  kind: practice
+  native_id: Practice 12
+  group: ethics
+  group_name: Ethics
+  title: Code of Ethics
+  objective: >-
+    The governing body approves a Code of Ethics / Code of Conduct addressing values, ethical
+    standards, anti-corruption / anti-fraud / anti-money-laundering programmes, and the
+    organisation's expectations of conduct.
+  pb_interpretation: >-
+    Includes explicit AI Ethics Statement (linked to Principle 10 109c values). Anti-corruption
+    programme covers gifts, hospitality, facilitation payments. Built into hiring, performance, and
+    supplier onboarding.
+  owner: PB
+  role_applicability:
+    governing_body: 'Y'
+    social_ethics_rem_committee: 'Y'
+  documented_evidence:
+  - Code of Ethics
+  - AI Ethics Statement
+  - Anti-Corruption Policy
+  - Gifts Register
+  - Training records
+  operational_evidence: >-
+    Code referenced in employment contracts and supplier onboarding; training completion sampled.
+  audit_methods:
+  - Insp
+  - Int
+  - Samp
+  cadence: Annual review
+  failure_modes: >-
+    Code on the wall but not lived; ethics confused with compliance.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox operates a board-approved Code of Ethics including an AI Ethics Statement and
+    anti-corruption programmes.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.4
+    note: Management responsibilities under ISMS overlap with code-of-ethics governance.
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-5.2
+    note: AI Policy operationalises the AI-specific portion of Practice 12.
+
+- id: king-v-rp-13
+  kind: practice
+  native_id: Practice 13d
+  group: ethics
+  group_name: Ethics
+  title: Protected whistleblowing channel
+  objective: >-
+    The governing body ensures the existence of a protected whistleblowing channel that is
+    independent and accessible to internal and external whistleblowers.
+  pb_interpretation: >-
+    Independent third-party provider preferred. Anonymity and protection from retaliation enforced.
+    Periodic stats to S&E committee (anonymised). Channel covers ethics matters, fraud, AI misuse
+    concerns.
+  owner: PB
+  role_applicability:
+    governing_body: 'Y'
+    social_ethics_rem_committee: 'Y'
+  documented_evidence:
+  - Whistleblowing Policy
+  - Independent channel provider engagement
+  - Whistleblower stats (anonymised) to S&E committee
+  - Sanctions log
+  operational_evidence: >-
+    Trace a reported ethics matter from intake to closure; non-retaliation enforced.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Continuous channel + quarterly stats to S&E
+  failure_modes: >-
+    Channel routes to the implicated party; no independence; staff don't know how to raise concerns.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox operates an independent, protected whistleblowing channel with periodic reporting to
+    the Social and Ethics function.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-a-3.3
+    note: AIMS reporting of concerns is the AI-specific instantiation of King V protected whistleblowing.
+
+- id: king-v-rp-27
+  kind: practice
+  native_id: Practice 27
+  group: reporting
+  group_name: Reporting
+  title: King V Disclosure Framework publication
+  objective: >-
+    The governing body approves and publishes on the website an annual King V Governance Disclosure
+    structured in accordance with the King V Disclosure Framework, including a concluding statement
+    on the four governance outcomes.
+  pb_interpretation: >-
+    Mandatory for any organisation claiming application of King V. PrivateBox publishes an annual
+    King V Governance Disclosure on its website. Concluding statement on Ethical Culture, Performance
+    and Value Creation, Conformance and Prudent Control, Legitimacy. Companion Trust & Governance
+    Pack NDA-gated for procurement diligence.
+  owner: PB
+  role_applicability:
+    governing_body: 'Y'
+    company_secretary: 'Y'
+  documented_evidence:
+  - King V Governance Disclosure (annual)
+  - Board approval minute
+  - Published website URL
+  - Concluding statement
+  - Trust & Governance Pack
+  operational_evidence: >-
+    Disclosure accessible on website; board minute approving each annual edition.
+  audit_methods:
+  - Insp
+  cadence: Annual
+  failure_modes: >-
+    Disclosure absent from website; copy-paste concluding statement with no evidence trail; marketing
+    copy posing as disclosure.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-kingv-series-b-investment
+  external_safe_phrasing: >-
+    PrivateBox publishes an annual King V Governance Disclosure structured in accordance with the
+    King V Disclosure Framework.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: popia
+    refs:
+    - popia-cond-6
+    note: POPIA s 17-18 openness condition; external disclosure overlap.
+
+- id: king-v-rp-29
+  kind: practice
+  native_id: Practice 29
+  group: composition
+  group_name: Composition of the governing body
+  title: Majority non-executive directors
+  objective: >-
+    The governing body has a majority of non-executive members, most of whom are independent
+    (assessed holistically against Practice 42).
+  pb_interpretation: >-
+    Target: at least one independent NED at minimum, scaling to majority pre-IPO. Founder-led — must
+    consciously over-correct for independence.
+  owner: PB
+  role_applicability:
+    governing_body: 'Y'
+    nominations_committee: 'Y'
+  documented_evidence:
+  - Board composition snapshot
+  - Per-NED independence assessment
+  - Skills matrix
+  operational_evidence: >-
+    Composition reviewed at least annually; rationale documented for any director near the
+    independence line.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual + on appointment
+  failure_modes: >-
+    Founder-controlled board with no independents; cosmetic NEDs in fact customers/suppliers.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-kingv-first-independent-ned
+  - scn-kingv-series-b-investment
+  external_safe_phrasing: >-
+    PrivateBox's board composition includes independent non-executive representation appropriate to
+    its stage and scale, with documented trajectory toward majority NED.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-5.3
+    note: Roles and authorities under ISMS overlap with NED composition discipline.
+
+- id: king-v-rp-42
+  kind: practice
+  native_id: Practice 42
+  group: composition
+  group_name: Composition of the governing body
+  title: Holistic independence assessment
+  objective: >-
+    The governing body assesses each non-executive director's independence holistically against the
+    nine factors set out in Practice 42 (significant funder; securities-significance; former-executive
+    within 3 years; former-audit-team within 3 years; significant supplier/customer; related-party;
+    tenure exceeding 9 years; performance-contingent remuneration; other reasonable factors).
+  pb_interpretation: >-
+    Documented per-NED independence assessment memo, signed by board, refreshed annually. Tenure
+    exceeding 9 years assessed annually with explicit rationale. "Independence by assertion" is a
+    common King V transition failure.
+  owner: PB
+  role_applicability:
+    governing_body: 'Y'
+    nominations_committee: 'Y'
+  documented_evidence:
+  - Per-NED independence assessment memo
+  - Board approval minute
+  - Annual refresh records
+  operational_evidence: >-
+    Assessment memo references all nine factors; signed by board.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual + on appointment
+  failure_modes: >-
+    Ticking only the ">9 yrs" box; independence by assertion without nine-factor analysis.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-kingv-first-independent-ned
+  external_safe_phrasing: >-
+    PrivateBox assesses non-executive director independence holistically against the King V Practice
+    42 factors with documented per-director rationale.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: king-v-rp-45
+  kind: practice
+  native_id: Practice 45
+  group: composition
+  group_name: Composition of the governing body
+  title: Chair and Lead Independent NED
+  objective: >-
+    The chair is an independent non-executive director; where this is not the case (e.g., founder-CEO
+    is Chair), a Lead Independent NED is appointed as compensating measure.
+  pb_interpretation: >-
+    For PrivateBox, until an independent Chair is appointed, the Lead Independent NED designation is
+    the mandatory compensating measure. Lead Independent leads board in Chair's absence/conflict,
+    leads Chair evaluation, acts as sounding board.
+  owner: PB
+  role_applicability:
+    governing_body: 'Y'
+    chairperson: 'Y'
+    lead_independent: 'Y'
+  documented_evidence:
+  - Chair appointment letter
+  - Lead Independent appointment letter (where applicable)
+  - Minutes of NED-only sessions
+  operational_evidence: >-
+    Lead Independent operates with actual authority; trace NED-only session attendance.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: On appointment + annual review
+  failure_modes: >-
+    Founder/CEO dual-hatting as Chair with no Lead Independent; Lead Independent title without
+    authority.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-kingv-pre-pi-score
+  - scn-kingv-first-independent-ned
+  external_safe_phrasing: >-
+    PrivateBox's board operates with either an independent Chair or a Lead Independent NED
+    designation in accordance with King V Practice 45.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: king-v-rp-59
+  kind: practice
+  native_id: Practice 59
+  group: committees
+  group_name: Committees of the governing body
+  title: Audit committee scope and oversight
+  objective: >-
+    The audit committee oversees external assurance, internal financial controls, the CFO and finance
+    function, external reports, internal audit, combined assurance, and risk where combined.
+  pb_interpretation: >-
+    Combined Audit/Risk/Technology Committee TOR. Minimum 4 meetings per year at maturity. At least
+    one independent NED chairing. Practice 49a — Chair of board does not chair audit committee.
+  owner: PB
+  role_applicability:
+    audit_risk_tech_committee: 'Y'
+    lead_independent: 'Y'
+  documented_evidence:
+  - Combined Audit/Risk/Technology TOR
+  - Quarterly minutes
+  - Chair-to-board reports
+  - CFO / CISO / DPO / Head of AI dashboards
+  operational_evidence: >-
+    Auditor / external review can trace from external audit findings through committee minutes to
+    closure.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Minimum 4 meetings per year at maturity
+  failure_modes: >-
+    Audit dominance with risk and technology underweighted; no independent NED chair; Chair-of-board
+    chairing audit committee.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox's combined Audit/Risk/Technology Committee oversees assurance, internal financial
+    controls, cyber, privacy and AI in alignment with King V Practice 59.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-9.2.1
+    note: ISMS internal audit governance reaches audit committee oversight.
+
+- id: king-v-rp-74
+  kind: practice
+  native_id: Practice 74
+  group: committees
+  group_name: Committees of the governing body
+  title: Social and Ethics committee scope
+  objective: >-
+    The social and ethics committee oversees ethics, corporate citizenship, impact on the six
+    capitals, stakeholder relationships, and (where the entity is required to have a statutory S&E
+    committee under Companies Act s 72(4) and Regulation 43) the statutory monitoring and reporting
+    matters.
+  pb_interpretation: >-
+    Combined Social/Ethics/Remuneration Committee TOR while proportionate; converts to standalone
+    statutory S&E committee when PI Score triggers Regulation 43. At least one independent NED member.
+    Minimum 2 meetings per year.
+  owner: PB
+  role_applicability:
+    social_ethics_rem_committee: 'Y'
+    lead_independent: 'Y'
+  documented_evidence:
+  - Combined S&E/Remuneration TOR
+  - Minutes
+  - Ethics dashboard
+  - Statutory S&E annual report (when triggered)
+  operational_evidence: >-
+    Committee meets at cadence; ethics, citizenship, stakeholder topics traced through minutes.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Minimum 2 meetings per year + statutory cycle when triggered
+  failure_modes: >-
+    Box-tick S&E with no real ethics work; remuneration set without policy; no independent NED member.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-kingv-pi-score-threshold
+  external_safe_phrasing: >-
+    PrivateBox's Social, Ethics and Remuneration Committee oversees ethics, corporate citizenship
+    and stakeholders in alignment with King V Practice 74, pre-built to convert to statutory S&E
+    committee on PI Score trigger.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: king-v-rp-82
+  kind: practice
+  native_id: Practice 82
+  group: delegation
+  group_name: Appointment and delegation to management
+  title: Delegation of Authority Framework
+  objective: >-
+    The governing body approves a Delegation of Authority Framework setting out the matrix of
+    reserved vs delegated decisions with monetary, contractual, hiring, sub-processor, security
+    exception, and AI-deployment thresholds.
+  pb_interpretation: >-
+    PrivateBox DoA Framework explicitly thresholds: sub-processor onboarding, foundation-model
+    selection, telemetry policy change, security exception approval, AI deployment / model change.
+  owner: PB
+  role_applicability:
+    governing_body: 'Y'
+    ceo_management: 'Y'
+  documented_evidence:
+  - Delegation of Authority Framework
+  - Reserved matters schedule
+  - Recent material decisions traced through DoA
+  operational_evidence: >-
+    Material decisions trace through documented authority; no founder-only approvals on
+    DoA-reserved items.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Annual + on material change
+  failure_modes: >-
+    Founder retains undocumented authority; DoA exists but not enforced.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-kingv-founder-transition
+  external_safe_phrasing: >-
+    PrivateBox operates a board-approved Delegation of Authority Framework covering monetary,
+    contractual, sub-processor and AI deployment thresholds.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-5.3
+    note: Authorities and responsibilities under ISMS overlap with DoA framework.
+
+- id: king-v-rp-84
+  kind: practice
+  native_id: Practice 84
+  group: delegation
+  group_name: Appointment and delegation to management
+  title: Company Secretary / governance support
+  objective: >-
+    The governing body has access to a company secretary or equivalent professional corporate-
+    governance service that is arms-length from management.
+  pb_interpretation: >-
+    Cosec-as-a-service is proportionate for PrivateBox's current stage. Transition to in-house at
+    scale. Statutory filings, minute integrity, governance counsel.
+  owner: PB
+  role_applicability:
+    company_secretary: 'Y'
+    governing_body: 'Y'
+  documented_evidence:
+  - Cosec engagement / mandate
+  - Filings register
+  - Minute book
+  - Meeting agendas
+  operational_evidence: >-
+    Statutory filings up to date; minute integrity demonstrable.
+  audit_methods:
+  - Insp
+  cadence: Continuous
+  failure_modes: >-
+    Cosec function blended with management role of an executive; missing statutory filings.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox's governing body has access to professional corporate-governance services arms-length
+    from management in alignment with King V Practice 84.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: king-v-rp-92
+  kind: practice
+  native_id: Practice 92
+  group: risk
+  group_name: Risk
+  title: Risk Management Policy
+  objective: >-
+    The governing body approves a Risk Management Policy and frameworks covering enterprise risk
+    identification, assessment, treatment, monitoring and reporting.
+  pb_interpretation: >-
+    Risk Management Policy covers cyber, AI, supplier, key-person, BCM, regulatory, commercial
+    sub-registers. Integration with ISMS / PIMS / AIMS risk methodologies.
+  owner: PB
+  role_applicability:
+    governing_body: 'Y'
+    audit_risk_tech_committee: 'Y'
+  documented_evidence:
+  - Risk Management Policy
+  - Risk framework
+  - Annual review record
+  operational_evidence: >-
+    Policy referenced in risk register entries; cadence held.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual review
+  failure_modes: >-
+    Policy stale; not integrated with ISMS/PIMS/AIMS risk methodologies.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox operates a board-approved Risk Management Policy and framework integrated with its
+    ISMS, PIMS and AIMS risk methodologies in alignment with King V Practice 92.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-6.1.2
+    note: ISMS risk methodology feeds enterprise risk policy.
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-6.1.2
+    note: AIMS risk methodology feeds enterprise risk policy.
+
+- id: king-v-rp-93
+  kind: practice
+  native_id: Practice 93
+  group: risk
+  group_name: Risk
+  title: Risk register, appetite and BCM
+  objective: >-
+    The governing body approves a documented risk appetite and tolerance, maintains a risk register
+    covering economic / social / environmental context, and ensures business-continuity and
+    resilience arrangements with periodic testing.
+  pb_interpretation: >-
+    Quarterly register review; annual appetite review; annual BCM test report. Key-person sub-
+    register for founder dependency. Iterative, change-responsive.
+  owner: PB
+  role_applicability:
+    governing_body: 'Y'
+    audit_risk_tech_committee: 'Y'
+  documented_evidence:
+  - Risk Appetite Statement
+  - Enterprise Risk Register
+  - BCM/DR plan
+  - Last BCM test report
+  - Key-person risk register
+  operational_evidence: >-
+    Recent appetite breaches escalated; recent BCM exercise completed within cadence.
+  audit_methods:
+  - Insp
+  - Int
+  - Samp
+  cadence: Quarterly register + annual appetite + annual BCM
+  failure_modes: >-
+    Static register; no link to change events; BCM untested; key-person risk ignored.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox maintains a documented risk appetite, integrated risk register and tested business-
+    continuity arrangements in alignment with King V Practice 93.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-6.1.2
+    note: ISMS risk register pattern.
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-6.1.2
+    note: AIMS risk register pattern.
+
+- id: king-v-rp-98
+  kind: practice
+  native_id: Practice 98
+  group: compliance
+  group_name: Compliance
+  title: Compliance universe / obligations register
+  objective: >-
+    The governing body maintains an obligations register linking each obligation to a control owner,
+    covering binding laws, regulator obligations of clients that pass through, adopted non-binding
+    standards, and regulatory horizon scanning.
+  pb_interpretation: >-
+    Obligations register: POPIA, Cybercrimes Act, ECTA, Companies Act, sector pass-through, EU AI
+    Act extra-territorial reach. Adopted standards: ISO 27001, ISO 27701, ISO 42001, NIST AI RMF,
+    NIST SSDF, EU AI Act voluntary GPAI code, King V. Horizon-scanning log.
+  owner: PB
+  role_applicability:
+    governing_body: 'Y'
+    audit_risk_tech_committee: 'Y'
+  documented_evidence:
+  - Obligations register
+  - Adopted-standards register
+  - Horizon-scanning log
+  operational_evidence: >-
+    Regulatory changes trace from horizon scan to register update to control adjustment.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Annual + per regulatory change
+  failure_modes: >-
+    Register stale; horizon scanning informal; King V (voluntary) confused with binding obligations.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox maintains a documented compliance universe covering binding obligations, sector pass-
+    through, and adopted non-binding standards in alignment with King V Practice 98.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.31
+    note: Legal / regulatory / contractual compliance under ISMS.
+
+- id: king-v-rp-103
+  kind: practice
+  native_id: Practice 103
+  group: technology
+  group_name: Data, information and technology
+  title: Data and information lifecycle
+  objective: >-
+    The governing body approves data and information policies covering acquisition, creation, use,
+    dissemination, disposal, ethical/responsible management, legal compliance, classification of
+    sensitive data, confidentiality, integrity, availability, privacy, data quality, and third-party
+    / cross-border data risk management.
+  pb_interpretation: >-
+    Data classification scheme; data flow map; retention schedule; disposal SOP; cross-border /
+    sub-processor register. Telemetry data dictionary; PII handling default-off. Linked to ISMS
+    A.5.9-5.13/A.5.34, PIMS 6.x/7.x, POPIA s 13-22, EU AI Act Art. 10.
+  owner: PB
+  role_applicability:
+    governing_body: 'Y'
+    audit_risk_tech_committee: 'Y'
+  documented_evidence:
+  - Data classification scheme
+  - Data flow map
+  - Retention schedule
+  - Disposal SOP
+  - Cross-border / sub-processor register
+  operational_evidence: >-
+    Recent data classification decisions traced; retention reviewed; sub-processor list current.
+  audit_methods:
+  - Insp
+  - Int
+  - Samp
+  cadence: Annual + per material change
+  failure_modes: >-
+    Telemetry data treated as "metadata not personal" without analysis; retention undocumented.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox governs data and information through board-approved policies covering lifecycle,
+    classification, privacy and third-party risk in alignment with King V Practice 103.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.12
+    note: Data classification.
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-7.4
+    note: PIMS data accuracy / quality.
+  - framework: iso-42001
+    refs:
+    - iso-42001-a-7.2
+    note: AIMS data for AI systems.
+  - framework: popia
+    refs:
+    - popia-cond-2
+    - popia-cond-3
+    note: POPIA processing limitation + purpose specification + retention.
+
+- id: king-v-rp-108
+  kind: practice
+  native_id: Practice 108
+  group: technology
+  group_name: Data, information and technology
+  title: Technology governance
+  objective: >-
+    The governing body approves technology policies covering legal compliance, resilience / disaster
+    recovery / testing, benefit realisation vs investment, responsible disposal, effective
+    cybersecurity, and outsourced / third-party tech assurance.
+  pb_interpretation: >-
+    Cybersecurity policy + cyber dashboard + IR plan linked to ISO 27001 and NIST CSF. Sub-processor
+    register with SOC 2 / ISO 27001 / DPA evidence. Foundation-model provider terms reviewed.
+  owner: PB
+  role_applicability:
+    governing_body: 'Y'
+    audit_risk_tech_committee: 'Y'
+  documented_evidence:
+  - Cybersecurity Policy
+  - Cyber dashboard
+  - Incident Response Plan
+  - Sub-processor register with assurance evidence
+  - DR / resilience test reports
+  operational_evidence: >-
+    Cyber dashboard reviewed quarterly; sub-processor reviews current; resilience tested annually.
+  audit_methods:
+  - Insp
+  - Int
+  - Samp
+  cadence: Annual + per architecture change
+  failure_modes: >-
+    CISO reporting only annually; cyber treated as IT; foundation-model provider treated as
+    untouchable.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox's technology governance — including cybersecurity, resilience, and third-party
+    assurance — is board-overseen in alignment with King V Practice 108.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-8.25
+    - iso-27001-a-8.26
+    - iso-27001-a-8.27
+    note: Secure SDLC + secure architecture + secure coding.
+  - framework: iso-42001
+    refs:
+    - iso-42001-a-6.1.2
+    note: AIMS responsible design and development processes.
+
+- id: king-v-rp-109
+  kind: practice
+  native_id: Practice 109c
+  group: technology
+  group_name: Data, information and technology
+  title: AI governance (the King V flagship)
+  objective: >-
+    The governing body ensures that AI systems adhere to ethics, human centricity, accountability,
+    transparency, explainability, security, privacy, fairness and trustworthiness; that clear
+    accountability is established for AI decisions, actions, outputs and outcomes; and that human
+    oversight and override mechanisms commensurate with risk are implemented.
+  pb_interpretation: >-
+    Defining battleground for PrivateBox. AI inventory; AI risk classification (low / limited / high
+    / prohibited per EU AI Act); AI System Cards; pre-deployment review; model eval / red-team;
+    human-override SOP; training-data provenance; output traceability; bias monitoring; AI incident
+    process; user disclosure when AI is in use. AI Oversight Working Group reports into Audit/Risk/
+    Tech committee.
+  owner: PB
+  role_applicability:
+    governing_body: 'Y'
+    audit_risk_tech_committee: 'Y'
+    ai_oversight_working_group: 'Y'
+  documented_evidence:
+  - AI Governance Policy
+  - AI Ethics Statement
+  - AI System Cards per production model
+  - Human Oversight SOP
+  - Model evaluation / red-team records
+  - AI risk register
+  - AI incident log
+  - AI Oversight Working Group charter + minutes
+  operational_evidence: >-
+    Board pack includes AI risk dashboard, model changes, incidents; AI System Cards trace to
+    production; human-override tested.
+  audit_methods:
+  - Insp
+  - Int
+  - Samp
+  - Obs
+  cadence: Annual policy review + per AI release / change
+  failure_modes: >-
+    AI deployed before policy in place; "human in the loop" as decoration; AI ethics treated as
+    marketing.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-kingv-material-ai-incident
+  - scn-kingv-first-eu-customer
+  external_safe_phrasing: >-
+    PrivateBox's AI governance is overseen by the board through a board-approved AI policy that
+    operationalises the King V Practice 109c values, requires human oversight commensurate with
+    risk, and is supported by AI System Cards for all production models.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-6.1.4
+    - iso-42001-a-5.2
+    - iso-42001-a-6.1.4
+    - iso-42001-a-6.2.3
+    note: AIMS AISIA + impact assessment + bias methodology + human oversight operationalise Practice 109c.
+  - framework: popia
+    refs:
+    - popia-s-automated-decisions
+    note: POPIA s 71 automated decision-making is the binding underpinning for human-override requirement.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-9
+    - eu-ai-act-art-13
+    - eu-ai-act-art-14
+    - eu-ai-act-art-15
+    note: EU AI Act risk-mgmt + transparency + human oversight + accuracy/robustness align with Practice 109c values.
+
+- id: king-v-rp-110
+  kind: practice
+  native_id: Practice 110
+  group: technology
+  group_name: Data, information and technology
+  title: Periodic assurance on technology effectiveness, compliance and ethics
+  objective: >-
+    The governing body ensures that periodic assurance is obtained over technology effectiveness,
+    compliance with legal and regulatory requirements, and adherence to organisational ethics in
+    technology use.
+  pb_interpretation: >-
+    Assurance providers: ISO 27001 surveillance audits, ISO 27701 audits, NIST AI RMF self-
+    assessment, pen tests, model red-teams, internal audit. Combined assurance map covers technology
+    risk.
+  owner: PB
+  role_applicability:
+    audit_risk_tech_committee: 'Y'
+    combined_assurance_providers: 'Y'
+  documented_evidence:
+  - Combined Assurance Map (technology row)
+  - Periodic assurance reports
+  - Remediation tracking
+  operational_evidence: >-
+    Assurance providers operate at cadence; findings closed.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Per assurance cycle
+  failure_modes: >-
+    Gaps in coverage of AI risk; assurance providers unmapped.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox obtains periodic assurance over technology effectiveness, compliance and ethics from a
+    documented set of assurance providers in alignment with King V Practice 110.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-9.2.1
+    note: ISMS internal audit feeds technology assurance.
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-9.2
+    note: AIMS internal audit feeds technology assurance.
+
+- id: king-v-rp-114
+  kind: practice
+  native_id: Practice 114
+  group: remuneration
+  group_name: Remuneration
+  title: Fair-and-responsible remuneration with malus/clawback
+  objective: >-
+    The remuneration policy operationalises a fair-and-responsible test between executive and overall
+    employee remuneration; variable pay arrangements include malus and clawback provisions; non-
+    binding advisory votes are held where applicable.
+  pb_interpretation: >-
+    Fair-and-responsible analysis recalculated annually. Malus / clawback specifically covers
+    AI-misuse-linked variable pay. NED fees policy submitted to shareholders where applicable.
+  owner: PB
+  role_applicability:
+    social_ethics_rem_committee: 'Y'
+    governing_body: 'Y'
+  documented_evidence:
+  - Remuneration Policy with malus / clawback clauses
+  - Fair-and-responsible analysis
+  - Implementation report
+  - Non-binding advisory vote records (when applicable)
+  operational_evidence: >-
+    Variable pay traces through documented policy; malus / clawback enforceable.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual + on material change
+  failure_modes: >-
+    Founder-set salaries with no committee discipline; absence of malus / clawback; missing fair-and-
+    responsible analysis.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox's remuneration policy includes fair-and-responsible analysis and malus / clawback for
+    variable pay in alignment with King V Practice 114.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: king-v-rp-121
+  kind: practice
+  native_id: Practice 121
+  group: assurance
+  group_name: Assurance
+  title: Combined Assurance Map
+  objective: >-
+    The governing body approves an explicit Combined Assurance Map identifying assurance providers
+    per significant risk, level of assurance, and cadence.
+  pb_interpretation: >-
+    Map covers ISO 27001/27701 surveillance, NIST AI RMF self-assessment, SOC 2 Type II (when
+    pursued), penetration testing, internal financial controls review, statutory audit (when
+    triggered), product-level red-team / model-evaluation reports.
+  owner: PB
+  role_applicability:
+    audit_risk_tech_committee: 'Y'
+    combined_assurance_providers: 'Y'
+  documented_evidence:
+  - Combined Assurance Map
+  - Per-risk assurance provider register
+  - Annual refresh record
+  operational_evidence: >-
+    Map reconciles to live engagements; gaps highlighted and remediated.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual review
+  failure_modes: >-
+    Gaps in coverage; audit fatigue; remediation not tracked.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox operates a documented Combined Assurance Map covering significant risks across line
+    management, specialist functions, internal audit, and external assurance in alignment with King V
+    Practice 121.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-9.2.2
+    note: ISMS audit execution mapped via combined assurance.
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-9.2
+    note: AIMS audit execution mapped via combined assurance.
+
+- id: king-v-rp-129
+  kind: practice
+  native_id: Practice 129
+  group: assurance
+  group_name: Assurance
+  title: Internal Audit Charter
+  objective: >-
+    The governing body approves an Internal Audit Charter setting out the role of internal audit,
+    its place in combined assurance, scope, authority, independence, and reporting line. For a
+    scaling firm, co-sourced or outsourced arrangements with a named accountable executive are
+    acceptable (Practice 131c).
+  pb_interpretation: >-
+    Co-sourced internal audit acceptable. Named accountable executive (e.g., COO or CFO with cosec
+    support). Risk-based plan reviewed annually. External independent quality review at least once
+    every 5 years (Practice 131f).
+  owner: PB
+  role_applicability:
+    audit_risk_tech_committee: 'Y'
+    combined_assurance_providers: 'Y'
+  documented_evidence:
+  - Internal Audit Charter
+  - Risk-based audit plan
+  - IA engagement letters
+  - External quality review record (every 5 years)
+  operational_evidence: >-
+    IA plan executed; findings tracked through closure; quality review completed within cadence.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual plan + 5-yearly quality review
+  failure_modes: >-
+    Same team auditing itself; external quality review skipped at 5-year mark.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox operates an Internal Audit function under a board-approved charter, co-sourced where
+    proportionate, with external quality review at the King V Practice 131f cadence.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-9.2.1
+    note: ISMS internal audit programme feeds King V internal audit.
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-9.2
+    note: AIMS internal audit programme feeds King V internal audit.
+
+- id: king-v-rp-134
+  kind: practice
+  native_id: Practice 134
+  group: stakeholders
+  group_name: Stakeholders
+  title: Stakeholder Engagement Framework
+  objective: >-
+    The governing body approves a Stakeholder Engagement Framework setting out methodology, risk /
+    opportunity analysis from stakeholder interests, dispute-resolution mechanisms, and periodic
+    assurance on stakeholder management.
+  pb_interpretation: >-
+    PrivateBox Stakeholder Engagement Framework covers clients (especially regulated-sector
+    procurement and CISO/DPO functions), client end-users (data subjects), regulators (Information
+    Regulator, sector regulators), sub-processors and model providers, employees,
+    founders/investors, community/society.
+  owner: PB
+  role_applicability:
+    governing_body: 'Y'
+    ceo_management: 'Y'
+  documented_evidence:
+  - Stakeholder Engagement Framework
+  - Stakeholder Map
+  - Engagement log
+  - Dispute-resolution records
+  operational_evidence: >-
+    Framework reviewed annually; engagement log current; stakeholder feedback feeds strategy.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual framework review + continuous engagement log
+  failure_modes: >-
+    Founder-only stakeholder relationships with no institutional memory; no dispute resolution.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox operates a documented Stakeholder Engagement Framework covering clients, regulators,
+    employees, suppliers and community in alignment with King V Practice 134.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-4.2
+    note: ISMS interested-parties identification feeds stakeholder framework.
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-4.2
+    note: AIMS interested-parties identification feeds stakeholder framework.
