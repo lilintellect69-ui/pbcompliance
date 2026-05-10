@@ -1,0 +1,3791 @@
+# ISO/IEC 42001:2023 — PrivateBox alignment record (schema v2)
+# Source-of-truth file for the GRC OS. Edits go in version control.
+#
+# Schema: see /docs/schema-v2.md
+# PB-curated source pack: frameworks/iso-42001/source/privatebox-iso-ai-governance-architecture.md
+# Pending crosswalks (NIST AI RMF, POPIA, King V): frameworks/iso-42001/PENDING-CROSSWALKS.md
+#
+# Companions: ISO/IEC 42005:2025 (impact-assessment guidance) and ISO/IEC 42006:2025 (CB requirements)
+# are companion_standards, not separate frameworks. 42005 may be promoted to a separate YAML in a
+# later milestone (oq-42001-42005-separate).
+
+schema_version: '2.0'
+id: iso-42001
+version: '2023'
+full_name: ISO/IEC 42001:2023 Information technology — Artificial intelligence — Management system
+type: management_system_standard
+issuer: ISO/IEC
+audit_type: certification
+certifiable: true
+pb_interpretation_version: '1.0'
+pb_interpretation_owner: null
+pb_interpretation_last_reviewed: null
+roles:
+- ai_governance_lead
+- model_risk_lead
+- ai_security_lead
+- data_rag_steward
+- support_ai_liaison
+- ai_governance_committee
+- top_management
+tiers: []
+effective_dates: []
+
+companion_standards:
+- id: iso-42005
+  name: AI System Impact Assessment
+  version: '2025'
+  role: >-
+    Guidance standard (not certifiable). Provides 10-element AISIA methodology referenced from Clause
+    6.1.4 and Annex A.5 controls. May be promoted to a separate framework YAML — see oq-42001-42005-separate.
+- id: iso-42006
+  name: Requirements for AI management system certification bodies
+  version: '2025'
+  role: >-
+    Governs accreditation of certification bodies, not orgs. PB benchmarks audit-readiness against
+    42006 expectations (auditor competence, audit-time calculation, sampling). Never claim "ISO 42006
+    compliant" — it is for CBs.
+- id: iso-22989
+  name: Artificial intelligence concepts and terminology
+  version: '2022'
+  role: Normatively referenced from 42001 for definitions. Aligned terminology used throughout.
+- id: iso-23894
+  name: Information technology — Artificial intelligence — Guidance on risk management
+  version: '2023'
+  role: >-
+    Reference methodology for Clause 6.1 AI risk assessment. Used to deepen Annex C-driven risk-source
+    analysis.
+
+pb_application:
+  why_chosen: >-
+    ISO/IEC 42001 is the foundational AI Management System (AIMS) standard for a vendor selling
+    AI-platform technology to confidential firms. PrivateBox's on-premises architecture is a control,
+    not a governance system; AIMS duties (policy, governance, impact assessment, lifecycle, supplier
+    governance, transparency, oversight, incident handling, continual improvement) remain in scope
+    regardless of deployment model. 42001 is the natural extension of PB's ISO 27001 ISMS and ISO 27701
+    PIMS — it shares the Annex SL high-level structure, allowing a single integrated management system
+    rather than three parallel systems. Commercially, 42001 is the AIMS standard buyers in legal,
+    finance and healthcare procurement processes ask about (see Anthropic, AWS, Google, Microsoft,
+    Workday, Cognizant accredited certifications listed in source pack §14). PB's positioning is
+    "designed in alignment with ISO/IEC 42001:2023" pre-certification, with an accredited-certification
+    roadmap benchmarked to ISO/IEC 42006:2025 audit expectations. Never claim "ISO 42001 certified"
+    until and unless an accredited certification body issues a certificate against a defined AIMS scope.
+  scope_decisions:
+    on_prem:
+      coverage: full
+      rationale: >-
+        AIMS scope statement (per source §2 target wording): "The design, development, packaging,
+        distribution, support, and continual improvement of the PrivateBox on-premises single-tenant
+        AI platform, including its model selection/evaluation pipeline, RAG and connector framework,
+        update and telemetry services, and customer support operations. Excluded: customer-operated
+        deployments after handover, customer fine-tuning of models inside their environment, and
+        customer-provided data — these remain under the customer's own AIMS / governance." This scope
+        is product-and-operations bounded, deliberately narrow enough to be defensible in a Stage-1
+        audit, broad enough to cover every layer the customer touches at procurement.
+    ai_factory:
+      coverage: partial
+      rationale: >-
+        AIMS scope extends in principle to ringfenced multi-tenant deployments at a partner data
+        centre. Several controls have divergent ownership pending partner-DC selection (see
+        oq-partner-dc-selection): A.4.5 system/computing resources, A.6.2.5 deployment, A.10
+        supplier programme. Where ownership genuinely differs, requirements carry owner_by_model with
+        the AI Factory side flagged status:pending. Until partner DC is selected, PB cannot finalise
+        Stage-1 audit scope for the AI Factory model. AI Factory remains aspirational; no AI Factory
+        certification claim should be made.
+  top_risks:
+  - >-
+    Misclassifying PB's AI role (provider vs deployer) — leads to wrong AIMS duties, wrong contract
+    language, exposure to obligations the customer should bear (Annex C.2.1, A.10.4).
+  - >-
+    AIMS scope drift in marketing claims that imply PB governs customer AI use, creating joint-controller
+    legal exposure under POPIA/GDPR (§2 A6, §10 red-flag list).
+  - >-
+    Foreseeable-misuse coverage in AISIA records (ISO 42005 6.8.3) — one of the most commonly
+    under-implemented elements per source §6 caveat 8; mandatory in every AISIA, not best-practice
+    add-on.
+  - >-
+    Bias methodology that is awareness-only rather than measurable — major nonconformity per
+    Schellman/orbit.reconn.io findings (Annex C.2.5, A.6.1.4).
+  - >-
+    Third-party / open-weight model supply chain (Llama, Mistral) — A.10.2 supplier governance
+    cannot be excluded; "pulled-from-Hugging-Face" model adoption without due diligence is a known
+    finding pattern.
+  - >-
+    Hidden change management — silent retrains, RAG-corpus updates, prompt-template changes that
+    bypass change control (Clause 6.3, A.6).
+  - >-
+    Telemetry boundary leakage — customer content (vs operational metadata) crossing trust boundary
+    creates POPIA/GDPR exposure (A.7.5, §7 telemetry scenario).
+  - >-
+    Internal audit conducted by the AIMS team itself — auditor independence is required by Clause 9.2
+    and emphasised by ISO/IEC 42006; failing this is a Stage-2 finding pattern.
+
+soa_guidance:
+  principles: >-
+    The Statement of Applicability is the bridge between AIMS scope, AI risk treatment and Annex A
+    control implementation. Auditors read it first. Per source §5 and §15, every Annex A control
+    must appear in PB's SoA with: applicability decision (Y/Shared/Conditional/N/A), implementation
+    status, owner, evidence pointer, and risk-based justification. SoA must reflect the published
+    Annex A numbering — source §5 flags a known industry discrepancy (38 vs 39 vs 42 controls)
+    tracked in oq-42001-annex-numbering. PB should add a deployment-model column showing whether
+    each control is PB-owned, CL-owned or SH for on-prem vs AI Factory. That makes the SoA defensible
+    in enterprise procurement and reduces audit-time per ISO/IEC 42006.
+  na_justification_rules: >-
+    Per Note 3 of Clause 6.1.3, exclusions are permitted with documented justification. Tie every
+    exclusion to scope boundaries, architecture facts, accepted residual risk, or alternative controls.
+    A.10.2 (suppliers) and A.7 (data) cannot be excluded by an org that uses third-party models
+    or processes any data — these are always in scope for PB. Empty justifications are a known
+    Schellman finding pattern.
+  honesty_rules: >-
+    The SoA must not imply controls are implemented when they are planned, customer-owned or out of
+    scope. Show the implemented/planned state honestly. External-facing SoA summaries follow the
+    safe-claim language in source §10 and §17 — never claim "100% covered" without showing exclusion
+    justifications. Preserve a line back to the AI risk register and AISIA records.
+
+shared_responsibility_model:
+- area: AIMS governance (the management system itself)
+  pb_owned: PB AIMS — covering PB's design/build/distribution/support of the platform.
+  cl_owned: Customer AIMS — covering customer's deployment, use, fine-tuning, customer-data governance.
+  shared_note: >-
+    Per source §2 A6, PB does NOT govern the customer's AI use. Two AIMS, one trust interface.
+- area: AI Policy
+  pb_owned: PB AI Policy v1.x (top-management approved).
+  cl_owned: Customer's own AI policy for their internal AI use.
+  shared_note: PB provides a policy-template starter; customer adapts to sector and context.
+- area: AI risk methodology
+  pb_owned: PB AI risk methodology (product-level risks, supply chain, lifecycle).
+  cl_owned: Customer-side AI risk register for their use cases.
+  shared_note: Methodologies aligned to ISO 23894 + Annex C; cross-readable.
+- area: AI System Impact Assessment (AISIA)
+  pb_owned: AISIA at product / feature level; PB provides 42005-aligned methodology.
+  cl_owned: AISIA at customer use-case level (sector, decision context, affected populations).
+  shared_note: Per A.5 and §12. PB provides Annex-E-style template; customer adapts per use case.
+- area: AI lifecycle / SDLC
+  pb_owned: SDLC for the product, integrating NIST SP 800-218A; build, train, V&V, package, deploy.
+  cl_owned: Customer change management for their deployment, fine-tuning, RAG corpus.
+  shared_note: NIST 800-218A used as overlay on the build pipeline.
+- area: Deployment approval
+  pb_owned: PB pre-deployment gate before shipping a build/release.
+  cl_owned: Customer's own go/no-go for installing into their environment.
+  shared_note: Per A.6.2.5. PB ships, customer accepts; both retain approval records.
+- area: Operation / monitoring
+  pb_owned: Product-level KPIs, drift detectors in the product, vendor-side incident triage.
+  cl_owned: Customer operates the deployed system; primary monitoring of their use.
+  shared_note: Telemetry boundary defines what PB sees (operational metadata only by default).
+- area: Incident handling
+  pb_owned: Vulnerability triage, product-side advisories, EU AI Act Art. 73 serious-incident notifications for product flaws.
+  cl_owned: Incident handling for customer's use-case-side incidents.
+  shared_note: 15-day serious-incident window (EU AI Act); 72-hour breach window (POPIA s.22).
+- area: Telemetry
+  pb_owned: Telemetry pipeline; data dictionary; PII-free guarantee.
+  cl_owned: Customer accepts/declines telemetry per opt-in.
+  shared_note: Default-off or strictly-bounded; customer-content never in telemetry.
+- area: Support access
+  pb_owned: Just-in-time access workflow; session recording; access reviews.
+  cl_owned: Customer approves each session; session is fully logged.
+  shared_note: Standing access is forbidden — a known §7 pitfall.
+- area: Update / package distribution
+  pb_owned: Cryptographically signed updates; SBOM; vulnerability disclosures; staged rollout.
+  cl_owned: Customer-controlled update windows; rollback authority.
+  shared_note: Aligned to NIST SSDF / SLSA-equivalent supply-chain controls.
+- area: Third-party model approval
+  pb_owned: Approved-models list; model-card review; bias/safety eval; licence due diligence.
+  cl_owned: Customer-side acceptance of models proposed for their deployment.
+  shared_note: A.10.2. "Pulled-from-Hugging-Face" model adoption without DD is forbidden.
+- area: RAG / data ingestion
+  pb_owned: Ingestion framework, quality gates, sensitive-data handling controls.
+  cl_owned: Customer owns the corpus, content rights, end-of-life data handling.
+  shared_note: PB provides controls; customer attests rights and PII handling.
+
+evidence_families:
+- id: aims_scope_and_policy
+  name: AIMS Scope Statement and AI Policy
+  examples:
+  - 1-page AIMS Scope Statement (top-management signed)
+  - PrivateBox AI Policy v1.x with principles, prohibited uses, exceptions
+  - Cross-policy alignment map (AI/InfoSec/Privacy/HR/Procurement)
+  - Policy review log
+  why_auditor_cares: Foundation of the AIMS; without it, every downstream control lacks anchor.
+  cadence: Annual + on material change
+  typical_owner: PB
+- id: governance_and_roles
+  name: Governance Charter and RACI
+  examples:
+  - AI Governance Charter
+  - RACI matrix (AI Gov Lead, Model Risk Lead, AI Security Lead, Data/RAG Steward, Support AI Liaison)
+  - AI Governance Committee Terms of Reference + minutes
+  - Whistleblower / concern-reporting SOP and concern log
+  why_auditor_cares: Tests whether AI governance is real (cross-functional + executive) or rubber-stamped.
+  cadence: Annual + on org change
+  typical_owner: PB
+- id: ai_risk_artefacts
+  name: AI Risk Methodology and Risk Register
+  examples:
+  - AI risk methodology document (aligned with ISO 23894 + Annex C)
+  - AI risk register (per system in scope; treatments traceable to SoA)
+  - Annex C risk-source coverage check
+  why_auditor_cares: Pre-emptive against the "renamed InfoSec methodology" finding pattern.
+  cadence: Quarterly review; per-system on change
+  typical_owner: PB
+- id: aisia_methodology_and_records
+  name: AISIA Methodology (42005-aligned) and per-system AISIA records
+  examples:
+  - AISIA methodology covering 10 elements per ISO 42005:2025
+  - Harm/benefit taxonomy aligned to 42005 Annex C
+  - Annex-E-style AISIA template
+  - Per-system AISIA records with foreseeable-misuse section completed
+  - AISIA approval records
+  why_auditor_cares: Compulsory under A.5 and Clause 6.1.4; foreseeable-misuse coverage is a common gap.
+  cadence: Pre-deployment + on material change + scheduled review
+  typical_owner: PB
+- id: ai_system_inventory
+  name: AI System Inventory
+  examples:
+  - Inventory of every model / system / version / dataset / owner / status / deployment locations
+  - Approved-Models List with approval workflow
+  - Intended-use and Prohibited-use Register (sector-specific)
+  why_auditor_cares: Without an inventory, the SoA scope is indefensible.
+  cadence: Continuous
+  typical_owner: PB
+- id: data_artefacts
+  name: Data Provenance, Datasheets and RAG controls
+  examples:
+  - Datasheets per training/evaluation dataset (provenance, demographics, rights, labelling)
+  - Data quality criteria and remediation records
+  - RAG / data-ingestion controls SOP (rights, quality, sensitive-data handling)
+  - Customer-data telemetry data dictionary + opt-in statement
+  why_auditor_cares: Data provenance is consistently raised by orbit.reconn.io as a top finding pattern.
+  cadence: Per dataset + per RAG corpus update + annual policy review
+  typical_owner: PB
+- id: bias_and_fairness
+  name: Bias Assessment Methodology and reports
+  examples:
+  - Bias methodology with baselines + retest cadence
+  - Pre-release bias evaluation reports
+  - Drift / fairness monitoring reports
+  - Sector-specific fairness criteria (hiring, credit, health)
+  why_auditor_cares: A.6.1.4 is an EU AI Act gap area; awareness statements are not methodologies.
+  cadence: Per release + drift-trigger
+  typical_owner: PB
+- id: vv_and_robustness
+  name: V&V, Robustness and Adversarial Test artefacts
+  examples:
+  - Test plans (functional + adversarial + edge + drift + fairness + security)
+  - V&V reports per release
+  - Red-team / pen-test reports
+  - Sign-off records
+  why_auditor_cares: A.6.1.5; functional-only testing is a known weakness.
+  cadence: Per release + drift-trigger
+  typical_owner: PB
+- id: lifecycle_and_change
+  name: Lifecycle SOP and change management
+  examples:
+  - AI lifecycle SOP (cradle-to-grave; integrates NIST SP 800-218A)
+  - Change-control templates including model-swap / RAG / prompt-template / environment changes
+  - Decommissioning / sunset records
+  - Pre-deployment approval-gate checklist + records
+  why_auditor_cares: Long on-prem deployments amplify lifecycle and decommissioning gaps.
+  cadence: Annual SOP review + per change
+  typical_owner: PB
+- id: human_oversight
+  name: Human Oversight design and records
+  examples:
+  - Human Oversight SOP (override authority + monitoring + concern channel)
+  - Per-system oversight design (where humans-in-the-loop sit, what they can stop)
+  - Sector-specific oversight rules (healthcare, legal, finance default to human-in-the-loop)
+  why_auditor_cares: A.6.2.3 + EU AI Act Art. 14; rubber-stamp oversight is an audit failure.
+  cadence: Annual + per system release
+  typical_owner: PB-SH
+- id: logging_and_monitoring
+  name: AI event logging, monitoring and KPIs
+  examples:
+  - AI Event-Logging Standard (schema, retention, integrity, customer-control)
+  - Monitoring & KPI Dashboard Specification (drift, fairness, incidents, support tickets)
+  - Drift detectors and threshold definitions
+  why_auditor_cares: A.6.2.4 + 9.1; logs that exist but don't link to AIMS elements fail audit.
+  cadence: Annual SOP review + continuous operation
+  typical_owner: PB-SH
+- id: incident_response
+  name: Incident response and notification
+  examples:
+  - IR plan with severity tiers
+  - 15-day EU AI Act Art. 73 serious-incident workflow
+  - 72-hour POPIA s.22 breach pathway
+  - Past incident records with cause/closure trace
+  why_auditor_cares: Late notification is a regulatory exposure, not just a finding.
+  cadence: Annual exercise + per incident
+  typical_owner: PB
+- id: supplier_and_model_dd
+  name: Supplier and model-vendor due diligence
+  examples:
+  - Supplier / Model-Vendor DD pack including open-weight model evaluation
+  - Approved-Models List
+  - Per-model approval records (eval results, accepted residual risks, approver)
+  - Contractual AI clauses with suppliers
+  why_auditor_cares: A.10.2; cannot be excluded; "pulled-from-Hugging-Face syndrome" is a known finding.
+  cadence: Per onboarding + annual review
+  typical_owner: PB
+- id: transparency_pack
+  name: Customer-facing transparency / user information
+  examples:
+  - Transparency / User Information Pack (capabilities, limitations, conditions of non-use, change log)
+  - Intended-use / Prohibited-use disclosures
+  - Customer Shared-Responsibility Matrix (productised version of source §7)
+  - Update-delivery / change-notification records
+  why_auditor_cares: A.8 + EU AI Act Art. 13/50/52; sales-driven inflation is a typical risk.
+  cadence: Per release + annual policy review
+  typical_owner: PB
+- id: support_and_telemetry
+  name: Support access SOP and Telemetry data dictionary
+  examples:
+  - Support-Access SOP (just-in-time, customer-approved, fully logged)
+  - Bastion / session recording records
+  - Telemetry data dictionary + default-off / opt-in statement
+  - Telemetry sampling proof
+  why_auditor_cares: Hidden personal-data egress via telemetry is a POPIA/GDPR risk; standing support access is forbidden.
+  cadence: Annual SOP review + continuous operation
+  typical_owner: SH
+- id: update_delivery
+  name: Update delivery and supply-chain attestation
+  examples:
+  - Update-Delivery Standard (signing, SBOM, vulnerability disclosure, staged rollout)
+  - Cryptographic signing manifests
+  - SBOM per release
+  - SLSA-equivalent supply-chain attestation
+  why_auditor_cares: A.10.2 + NIST SSDF; software supply chain is a top vector.
+  cadence: Per release
+  typical_owner: PB
+- id: internal_audit_and_review
+  name: Internal Audit programme and Management Review
+  examples:
+  - Internal Audit Programme (independent of AIMS team)
+  - Internal Audit Reports
+  - Management Review pack (inputs/outputs template + minutes)
+  - Annual review cycle records
+  why_auditor_cares: 9.2 + 9.3; same team auditing itself fails impartiality requirement (42006).
+  cadence: At least annual; more often during early maturity
+  typical_owner: PB
+- id: nc_and_capa
+  name: Nonconformity and CAPA log
+  examples:
+  - NC / CAPA log entries (each with cause, action, effectiveness review, closure date)
+  - Trend analysis across NCs
+  - Lessons-learned writeups
+  why_auditor_cares: 10.2; an NC log that records issues but never closes them is a finding pattern.
+  cadence: Continuous
+  typical_owner: PB
+- id: soa_and_crosswalks
+  name: Statement of Applicability and crosswalks
+  examples:
+  - SoA covering every Annex A control (applicability + status + owner + evidence pointer + justification)
+  - Crosswalk Pack (42001 × 27001 × 27701 × NIST AI RMF × EU AI Act × POPIA × King V)
+  - SoA with deployment-model annotations (PB / SH / CL per business model)
+  why_auditor_cares: 6.1.3; auditor reads SoA first.
+  cadence: At least annual + per scope change
+  typical_owner: PB
+- id: trust_pack_and_external_claims
+  name: Trust Pack language guide and external claims log
+  examples:
+  - Trust-Pack Language Guide (pre-approved phrasing, red-flag list)
+  - Public Trust Centre content
+  - Procurement-response boilerplates (per source §17)
+  - External-claims register (where each claim is made + supporting evidence pointer)
+  why_auditor_cares: External overclaim creates regulatory and reputation exposure independent of audit.
+  cadence: Quarterly + per major external event
+  typical_owner: PB
+- id: training_and_competence
+  name: Competence matrix and training records
+  examples:
+  - Competence matrix (AI ethics, ML risk, AI secure SDLC, data governance, model evaluation, jurisdictional law)
+  - Training plans and completion records
+  - Awareness records (all staff, including support engineers)
+  - External certifications held
+  why_auditor_cares: 7.2; auditor samples randomly — staff who can't describe AI policy fail.
+  cadence: Annual + on hire/role-change
+  typical_owner: PB
+- id: certification_readiness
+  name: Certification readiness pack (42006-benchmarked)
+  examples:
+  - Stage-1-ready document set
+  - Stage-2 evidence pack (operating effectiveness)
+  - CB selection record (impartiality check — separation of advisory and audit)
+  - Audit-time scope statement
+  - Surveillance and recertification cycle plan
+  why_auditor_cares: 42006 expectations shape what auditors will demand; pre-mapped evidence reduces audit time.
+  cadence: Per audit cycle
+  typical_owner: PB
+- id: aisia_template_library
+  name: AISIA template library (42005 Annex E-style)
+  examples:
+  - PB AISIA template covering 10 elements
+  - Sector-specific AISIA addenda (healthcare safety case, finance fairness, legal privilege)
+  - Threshold table for AISIA triggering
+  - Foreseeable-misuse worksheet
+  why_auditor_cares: AISIA quality varies wildly; templated approach reduces variance and gap risk.
+  cadence: Annual template review + per-system AISIA
+  typical_owner: PB
+- id: connector_and_integration
+  name: Connector security and integration controls
+  examples:
+  - Connector inventory + permission matrix
+  - Least-privilege configuration baseline
+  - Pen-test evidence per integration
+  - RAG configuration baseline
+  why_auditor_cares: A.10 + complexity-of-environment risk source (Annex C); connector misconfig is a top vector.
+  cadence: Per release + annual
+  typical_owner: SH
+- id: backup_and_dr
+  name: Backup and disaster recovery for AI systems
+  examples:
+  - Backup configuration (encryption, location, retention, customer-keyed)
+  - DR / failover procedures appropriate to on-prem
+  - KMS / HSM evidence
+  why_auditor_cares: Backups carry data; cross-jurisdictional storage exposure is a POPIA/GDPR risk.
+  cadence: Annual + per change
+  typical_owner: SH
+
+scenarios:
+- id: scn-42001-pure-on-prem
+  name: Pure on-prem deployment, no remote support
+  framework_specific_id: PB-Deploy-1
+  description: >-
+    Customer runs PrivateBox entirely within their own infrastructure with no PB telemetry, support
+    access, or remote operations. PB's role is provider/producer; customer is sole operator.
+  applies_to_business_models: [on-prem]
+  pb_role: provider
+  customer_role: deployer
+  triggered_requirements:
+  - requirement_id: iso-42001-a-10.4
+    scenario_specific_note: Customer-facing obligations dominate; runbook + handover record required.
+  - requirement_id: iso-42001-a-10.3
+    scenario_specific_note: Supplier-side obligations limited to model providers and update channel.
+  - requirement_id: iso-42001-a-9.4
+    scenario_specific_note: Intended-use enforcement is largely customer-side; PB documentation is the lever.
+  notes: Lowest PB operational liability; highest documentation rigour required.
+- id: scn-42001-on-prem-update-delivery
+  name: On-prem with vendor-managed update delivery
+  framework_specific_id: PB-Deploy-2
+  description: >-
+    PrivateBox controls the model/code supply chain via signed updates, SBOMs, change notifications,
+    and rollback authority. Customer accepts or defers updates. PB role: provider with software
+    supply chain responsibility.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: provider
+  customer_role: deployer
+  triggered_requirements:
+  - requirement_id: iso-42001-a-6.1.3
+    scenario_specific_note: Documentation of changes; update integrity required.
+  - requirement_id: iso-42001-a-10.2
+    scenario_specific_note: PB is supplier of updates; customer's supplier-DD applies to PB.
+  - requirement_id: iso-42001-cl-6.3
+    scenario_specific_note: Update is a planned change to AIMS-governed system.
+  notes: Cryptographic signing + SBOM are non-negotiable.
+- id: scn-42001-on-prem-telemetry
+  name: On-prem with operational-metadata telemetry
+  framework_specific_id: PB-Deploy-3
+  description: >-
+    Telemetry pipeline returns operational metadata to PB (no customer content). Telemetry is opt-in,
+    bounded by a published data dictionary, and PII-free by design.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: provider
+  customer_role: deployer
+  triggered_requirements:
+  - requirement_id: iso-42001-a-6.2.4
+    scenario_specific_note: Event log scope explicitly bounds what is in telemetry.
+  - requirement_id: iso-42001-a-7.5
+    scenario_specific_note: Telemetry must not carry personal information; technical evidence required.
+  - requirement_id: iso-42001-a-8.2
+    scenario_specific_note: Customer transparency on what telemetry collects and why.
+  notes: Hidden payloads are the risk — data dictionary is the control.
+- id: scn-42001-on-prem-support-access
+  name: On-prem with just-in-time PB support access
+  framework_specific_id: PB-Deploy-4
+  description: >-
+    PB engineers gain time-bounded access to customer environment for troubleshooting. Each session is
+    customer-approved, fully recorded, and bounded by a documented data-handling protocol. Standing
+    access is prohibited.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: shared
+  customer_role: deployer
+  triggered_requirements:
+  - requirement_id: iso-42001-a-6.2.3
+    scenario_specific_note: Support engineer becomes part of the oversight surface.
+  - requirement_id: iso-42001-a-10.4
+    scenario_specific_note: Customer relationship terms govern session approval.
+  - requirement_id: iso-42001-a-7.5
+    scenario_specific_note: Per-session data-handling protocol when customer data is in scope.
+  notes: Insider data exposure risk — session recording is the audit hook.
+- id: scn-42001-managed-deployment
+  name: Managed deployment-time support engagement
+  framework_specific_id: PB-Deploy-5
+  description: >-
+    PB engineers hands-on during the install of the platform into customer environment. Engagement is
+    scope-bounded and time-boxed; a formal handover record terminates PB operational involvement.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: shared
+  customer_role: deployer
+  triggered_requirements:
+  - requirement_id: iso-42001-a-6.2.5
+    scenario_specific_note: Pre-deployment gate is jointly signed by PB and customer.
+  - requirement_id: iso-42001-a-6.2.2
+    scenario_specific_note: Pre-go-live testing performed per documented plan.
+  notes: Risk is PB perceived as joint controller — handover record is the boundary.
+- id: scn-42001-customer-data-troubleshooting
+  name: Troubleshooting requiring access to customer data
+  framework_specific_id: PB-Deploy-6
+  description: >-
+    Exception-only — PB engineers access customer data to diagnose an issue. Default is no access;
+    activated case-by-case with explicit customer authorisation and data-minimisation discipline.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: conditional
+  customer_role: deployer
+  triggered_requirements:
+  - requirement_id: iso-42001-a-7.5
+    scenario_specific_note: PII processing context — POPIA/GDPR exposure if mishandled.
+  - requirement_id: iso-42001-a-10.4
+    scenario_specific_note: Customer authorisation per incident is contractual.
+  - requirement_id: iso-42001-a-6.2.4
+    scenario_specific_note: Access is logged in the event log per A.6.2.4.
+  notes: Privilege/confidentiality risk in legal sector — preferred path is no access.
+- id: scn-42001-rag-setup
+  name: Document ingestion and RAG corpus setup support
+  framework_specific_id: PB-Deploy-7
+  description: >-
+    PB advises customer on RAG corpus structure, ingestion pipeline, quality gates. Customer owns
+    the corpus, content rights, and PII handling decisions. PB provides controls and templates only.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: shared
+  customer_role: deployer
+  triggered_requirements:
+  - requirement_id: iso-42001-a-7.2
+    scenario_specific_note: Data governance frame for the corpus.
+  - requirement_id: iso-42001-a-7.4
+    scenario_specific_note: Quality criteria for ingested content.
+  - requirement_id: iso-42001-a-7.3
+    scenario_specific_note: Provenance, rights, demographics for ingested data.
+  notes: Customer attestation of rights and PII handling is the legal-defensibility hook.
+- id: scn-42001-backup-support
+  name: Backup support
+  framework_specific_id: PB-Deploy-8
+  description: >-
+    Backup infrastructure carries customer data; encryption, location, retention, and customer-managed
+    keys must be defined.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: shared
+  customer_role: deployer
+  triggered_requirements:
+  - requirement_id: iso-42001-a-7.5
+    scenario_specific_note: Backup data may contain PII; encryption + key management apply.
+  - requirement_id: iso-42001-a-6.2.4
+    scenario_specific_note: Backup operations logged per event-log standard.
+  notes: Cross-jurisdictional storage is the POPIA/GDPR exposure.
+- id: scn-42001-connector-integration
+  name: Integration / connector security
+  framework_specific_id: PB-Deploy-9
+  description: >-
+    PB-built or PB-advised connectors that link PrivateBox to customer systems (SharePoint, Slack,
+    document repositories, etc.). Least-privilege, documented permission scope, pen-tested.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: shared
+  customer_role: deployer
+  triggered_requirements:
+  - requirement_id: iso-42001-a-10.2
+    scenario_specific_note: Each connector is a third-party integration with supplier-DD implications.
+  - requirement_id: iso-42001-a-7.5
+    scenario_specific_note: Connector may surface PII into AI context; minimisation rules apply.
+  notes: Over-broad credentials is the typical pitfall.
+- id: scn-42001-package-distribution
+  name: Hosted update repository / model package distribution
+  framework_specific_id: PB-Deploy-10
+  description: >-
+    PB serves software supply chain — signed updates, model packages, SBOMs, vulnerability disclosure.
+    Customer pulls on schedule.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: provider
+  customer_role: deployer
+  triggered_requirements:
+  - requirement_id: iso-42001-a-10.2
+    scenario_specific_note: PB is the supplier; customer's supplier programme tests PB's controls.
+  - requirement_id: iso-42001-a-6.1.3
+    scenario_specific_note: Build / package documentation is PB's artefact.
+  notes: SLSA-equivalent attestation is the bar.
+- id: scn-42001-customer-fine-tuning
+  name: Customer fine-tuning / adaptation of models
+  framework_specific_id: PB-Deploy-11
+  description: >-
+    Customer changes model behaviour via fine-tuning or LoRA-style adaptation in their environment.
+    PB provides safe-tuning guidance, guardrails, and post-tune evaluation templates. Outcome of
+    fine-tuning is customer-owned.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: customer
+  customer_role: producer
+  triggered_requirements:
+  - requirement_id: iso-42001-a-6.1.4
+    scenario_specific_note: Fine-tuning may introduce or amplify bias; post-tune eval required.
+  - requirement_id: iso-42001-a-10.4
+    scenario_specific_note: Customer obligations for fine-tuned outputs.
+  - requirement_id: iso-42001-a-9.4
+    scenario_specific_note: Intended-use scope may shift after fine-tuning.
+  notes: PB blamed for customer-induced bias is the risk — guardrails + guidance are PB's controls.
+- id: scn-42001-third-party-models
+  name: Customer use of third-party models within PrivateBox
+  framework_specific_id: PB-Deploy-12
+  description: >-
+    PB hosts the integration layer; customer chooses among approved third-party models (open-weight
+    or proprietary). Approved-models list and addition workflow govern.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: shared
+  customer_role: deployer
+  triggered_requirements:
+  - requirement_id: iso-42001-a-10.2
+    scenario_specific_note: Each model is a supplier; DD pack required.
+  - requirement_id: iso-42001-a-6.1.5
+    scenario_specific_note: Robustness testing is per-model.
+  notes: Unsanctioned models is the risk — approved-list discipline is the control.
+- id: scn-42001-ai-factory-ringfenced
+  name: AI Factory — ringfenced multi-tenant deployment in partner DC
+  framework_specific_id: PB-Deploy-13
+  description: >-
+    Aspirational deployment shape. Partner DC hosts ringfenced multi-tenant infrastructure for
+    PrivateBox. Multi-tenant isolation, partner-DC supplier governance, and physical-security
+    distinctions all in play. Pending partner-DC selection.
+  applies_to_business_models: [ai-factory]
+  pb_role: provider
+  customer_role: deployer
+  triggered_requirements:
+  - requirement_id: iso-42001-a-4.5
+    scenario_specific_note: Computing resources owned by partner DC; PB integrates.
+  - requirement_id: iso-42001-a-10.2
+    scenario_specific_note: Partner DC is a supplier subject to DD.
+  - requirement_id: iso-42001-cl-4.3
+    scenario_specific_note: Scope statement extends to ringfenced multi-tenant deployment.
+  notes: Blocked on oq-partner-dc-selection. Until partner DC chosen, this scenario is conditional.
+
+open_questions:
+- id: oq-42001-annex-numbering
+  question: How does PrivateBox align Annex A control numbering with the published ISO/IEC 42001:2023 standard?
+  candidate_answers:
+  - Adopt the PECB-aligned 39-control numbering used in source pack §5
+  - Adopt the published ISO numbering once the official PDF is licensed
+  - Adopt a hybrid PB-internal numbering with mapping table to ISO
+  decision_owner: AI Governance Lead
+  decision_status: pending
+  blocks_requirements: []
+  blocks_scenarios: []
+  notes: >-
+    Source §5 explicitly flags 38 vs 39 vs 42 control discrepancies across secondary sources.
+    Authoritative count is in the paywalled ISO PDF. Interim: this YAML uses the PECB-aligned
+    numbering from source §5; SoA must align to published numbering before Stage 1 audit. v1
+    YAML carries 39 Annex A controls.
+  created: '2026-05-10'
+  resolved_value: null
+  resolved_at: null
+- id: oq-42001-cb-selection
+  question: Which accredited certification body will PrivateBox engage for ISO/IEC 42001 certification?
+  candidate_answers:
+  - Schellman (ANAB-accredited; visible in case studies §14)
+  - BSI (UKAS-accredited; first KPMG cert)
+  - DNV (Cognizant cert)
+  - A-LIGN (Synthesia cert; 18-day Stage 2 reference)
+  - TÜV (EU-region presence)
+  - SGS (Changi Airport reference; Asia/SA presence)
+  decision_owner: Top Management
+  decision_status: pending
+  blocks_requirements: []
+  blocks_scenarios: []
+  notes: >-
+    Choice is partly geographic (UK, EU, ZA, US presence) and partly impartiality (any CB used for
+    advisory cannot then audit — see source §13). Decision affects audit-time calculation per
+    ISO/IEC 42006 and the timing of Stage 1 readiness. Track in roadmap §16 LATER bucket.
+  created: '2026-05-10'
+  resolved_value: null
+  resolved_at: null
+- id: oq-42001-cert-scope
+  question: What subset of Annex A controls comprises PrivateBox's Stage-1 certification scope?
+  candidate_answers:
+  - Source §16 NOW phase subset (A.2 + A.3 + AIMS scope + risk methodology + AI Policy)
+  - Full Annex A coverage (most rigorous, longer Stage 1)
+  - Phased scope expanding by surveillance cycle
+  decision_owner: AI Governance Lead + Top Management
+  decision_status: pending
+  blocks_requirements: []
+  blocks_scenarios: []
+  notes: >-
+    PB's commercial position favours product-scoped certification (per case studies — AWS, Google,
+    Workday, Microsoft Service Trust Portal pattern in §14). Setting maturity_target:Cert on the
+    Stage-1 subset commits PB publicly. Until decided, all requirements default maturity_target:AR.
+  created: '2026-05-10'
+  resolved_value: null
+  resolved_at: null
+- id: oq-42001-42005-separate
+  question: Should ISO/IEC 42005 be promoted to a separate framework YAML?
+  candidate_answers:
+  - Keep as companion only (current state); 42005's 10-element AISIA model is absorbed into
+    Clause 6.1.4 and A.5 controls.
+  - Author iso-42005.yaml as a separate framework so the OS can render an AISIA-specific view.
+  decision_owner: AI Governance Lead
+  decision_status: pending
+  blocks_requirements: []
+  blocks_scenarios: []
+  notes: >-
+    Promoting to separate framework gives the OS a dedicated AISIA-methodology view (useful for
+    procurement when buyers ask "show me your impact-assessment process"). Current state suffices
+    for v1; revisit when AISIA Methodology is published.
+  created: '2026-05-10'
+  resolved_value: null
+  resolved_at: null
+- id: oq-42001-king-v-trigger
+  question: When does PrivateBox add King V as a framework and activate AI-related crosswalks?
+  candidate_answers:
+  - Now (King V effective for financial years from 2026-01-01; PB FY2026 starts soon)
+  - At authoring of king-v.yaml; pending crosswalks captured in PENDING-CROSSWALKS.md until then
+  - Defer to next milestone
+  decision_owner: Top Management + Board
+  decision_status: pending
+  blocks_requirements: []
+  blocks_scenarios: []
+  notes: >-
+    King V is binding for SA companies effective FYs starting on/after 2026-01-01. PB's board
+    narrative (source §17) already references King V principles. Pending crosswalks captured in
+    frameworks/iso-42001/PENDING-CROSSWALKS.md.
+  created: '2026-05-10'
+  resolved_value: null
+  resolved_at: null
+- id: oq-42001-iso-pdf-license
+  question: When does PrivateBox license the official ISO/IEC 42001:2023 PDF (and 42005, 42006)?
+  candidate_answers:
+  - Before Stage-1 readiness review (mandatory)
+  - When current PB-curated source pack reaches a known gap
+  - Now (~CHF 145 + ~CHF 200 + ~CHF 200 from iso.org)
+  decision_owner: AI Governance Lead + Procurement
+  decision_status: pending
+  blocks_requirements: []
+  blocks_scenarios: []
+  notes: >-
+    Source §3 caveat — current authoring is from PB-curated authoritative summaries (NIST crosswalk,
+    Schellman/BSI/DNV/A-LIGN guidance). Final claim language and SoA numbering require the official
+    paywalled text. Resolve before any external Stage-1 readiness review or accredited audit.
+  created: '2026-05-10'
+  resolved_value: null
+  resolved_at: null
+- id: oq-partner-dc-selection
+  question: Which DC partner(s) for AI Factory deployments?
+  candidate_answers:
+  - Teraco
+  - Africa Data Centres
+  - Vantage
+  - TBD
+  decision_owner: PrivateBox founders
+  decision_status: pending
+  blocks_requirements:
+  - iso-42001-cl-4.3
+  - iso-42001-a-4.5
+  blocks_scenarios:
+  - scn-42001-ai-factory-ringfenced
+  notes: >-
+    Cross-framework OQ — also blocks ISO 27001 A.7 physical controls. Until partner DC is selected,
+    AI Factory ownership of system / computing resources (A.4.5), AIMS scope statement extension
+    (cl-4.3), and partner-DC supplier obligations (A.10) carry status:pending. Mirrored in
+    iso-27001.yaml.
+  created: '2026-05-10'
+  resolved_value: null
+  resolved_at: null
+
+requirements:
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Clause 4 — Context of the Organisation
+# ─────────────────────────────────────────────────────────────────────────────
+
+- id: iso-42001-cl-4.1
+  kind: clause
+  native_id: '4.1'
+  group: '4'
+  group_name: Context of the organisation
+  title: Understanding the organisation and its context
+  requirement: >-
+    Determine internal and external issues relevant to the AIMS purpose and ability to achieve intended
+    outcomes. Determine PrivateBox's role in the AI ecosystem (provider, producer, customer, partner —
+    for PB: provider + producer).
+  auditor_intent: >-
+    Auditor verifies the AIMS scope traces from documented internal/external context, including the
+    PB-as-provider-and-producer role declaration.
+  pb_interpretation: >-
+    PrivateBox must explicitly position itself as an AI system provider and component producer to
+    confidential firms; not a deployer of AI on behalf of those firms. Customer environment is external
+    context; PB R&D / support environment is internal context. Both must be captured. Refresh annually
+    and on material change (new jurisdiction, new sector, new model class, regulatory change).
+  owner: PB
+  documented_evidence:
+  - Context register
+  - PESTLE / SWOT-style register
+  - AI role declaration (provider + producer)
+  operational_evidence: >-
+    Dated, version-controlled context register signed off by top management; traceable to AIMS scope
+    and risk criteria.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual + on material change
+  failure_modes: >-
+    Generic boilerplate that doesn't reflect PB; not refreshed; ignores POPIA/EU AI Act/King V;
+    doesn't name PB's AI role; AIMS scope can't be derived from context.
+  maturity_target: AR
+  external_safe_claim: >-
+    PrivateBox's AIMS is contextualised for confidential-firm AI in legal, finance and healthcare
+    across ZA, EU, US and UK.
+  scope_note: >-
+    Customer environment is external context input; PB R&D and support environments are internal.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-4.1
+    note: HLS-aligned. AIMS context extends ISMS context with AI-role declaration.
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-4.1
+    note: HLS-aligned. AIMS context complements PIMS context with AI scope.
+
+- id: iso-42001-cl-4.2
+  kind: clause
+  native_id: '4.2'
+  group: '4'
+  group_name: Context of the organisation
+  title: Understanding the needs and expectations of interested parties
+  requirement: >-
+    Identify interested parties relevant to the AIMS, their relevant requirements, and which become
+    AIMS requirements.
+  auditor_intent: >-
+    Auditor verifies stakeholder requirements are captured and traceable to AIMS controls.
+  pb_interpretation: >-
+    Interested parties include: customers (legal/finance/healthcare CISOs, DPOs, GCs), data subjects
+    (clients of customers), regulators (Information Regulator ZA, EU AI Office, UK ICO, US sectoral),
+    employees, third-party model providers, support partners, investors. Maintain a stakeholder register
+    with documented expectations and requirement-traceability matrix.
+  owner: PB
+  documented_evidence:
+  - Interested-Parties Register
+  - Requirements traceability matrix
+  - Interview / feedback logs
+  operational_evidence: >-
+    Evidence that interested-party requirements map to specific Annex A controls and AIMS objectives.
+  audit_methods:
+  - Insp
+  - Int
+  - Samp
+  cadence: Annual + on contract / regulatory change
+  failure_modes: >-
+    Customer-only view; missing data subjects and regulators; no traceability to controls; static
+    register that doesn't update on regulatory change.
+  maturity_target: AR
+  external_safe_claim: >-
+    PrivateBox's AIMS systematically captures and addresses the requirements of customers, data
+    subjects, regulators and supply-chain partners.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-4.2
+    note: HLS-aligned. AIMS adds AI-specific stakeholders (regulators, data subjects in AI context).
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-4.2
+    note: HLS-aligned; PIMS interested-party identification extends to AI-context data subjects.
+
+- id: iso-42001-cl-4.3
+  kind: clause
+  native_id: '4.3'
+  group: '4'
+  group_name: Context of the organisation
+  title: Determining the scope of the AI management system
+  requirement: >-
+    Maintain a documented AIMS scope statement covering boundaries, products, services, locations
+    and AI roles.
+  auditor_intent: >-
+    Auditor checks scope is precise, coherent and defensible — narrow enough to be defensible, broad
+    enough to be credible.
+  pb_interpretation: >-
+    See target wording in pb_application.scope_decisions.on_prem.rationale. Scope is product-and-operations
+    bounded; explicitly excludes customer-operated deployments after handover, customer fine-tuning
+    inside their environment, and customer-provided data — these remain under the customer's own AIMS.
+    Scope statement is 1 page, top-management-signed, referenced from policy. Scope expansion to AI
+    Factory pending oq-partner-dc-selection.
+  owner: PB
+  documented_evidence:
+  - 1-page AIMS Scope Statement (top-management signed)
+  - Scope decision record
+  operational_evidence: >-
+    Signed scope statement traceable to context register and to AIMS objectives.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual + on scope change
+  failure_modes: >-
+    Scope drift in marketing; scope that seems to extend over customer environments (creates legal
+    exposure); scope mismatched with what auditor sees in operations.
+  maturity_target: Cert
+  external_safe_claim: >-
+    Our AIMS scope covers the design, build and support of PrivateBox; customer-operated deployments
+    are governed by the customer's own AIMS, which we enable with documentation.
+  scope_note: >-
+    Stage-1 scope statement is the single most-read document in the audit.
+  business_models:
+  - on-prem
+  - ai-factory
+  owner_by_model:
+    on_prem: PB
+    ai_factory:
+      status: pending
+      open_question: oq-partner-dc-selection
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-4.3
+    note: HLS-aligned; AIMS scope is parallel to ISMS scope but distinct in coverage.
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-4.3
+    note: HLS-aligned; AIMS scope distinct from PIMS scope.
+
+- id: iso-42001-cl-4.4
+  kind: clause
+  native_id: '4.4'
+  group: '4'
+  group_name: Context of the organisation
+  title: AI management system
+  requirement: >-
+    Establish, implement, maintain and continually improve the AIMS.
+  auditor_intent: >-
+    Auditor expects to see a coherent AIMS architecture document showing how clauses 4–10 and Annex A
+    connect, and how AIMS integrates with ISMS / PIMS.
+  pb_interpretation: >-
+    PDCA cycle integrated with PB's ISO 27001 ISMS and ISO 27701 PIMS. Single management system, three
+    labels. AIMS Manual / Overview describes process architecture and integration points.
+  owner: PB
+  documented_evidence:
+  - AIMS Manual / Overview
+  - Integration map (ISMS / PIMS / AIMS)
+  operational_evidence: >-
+    Auditor walks the AIMS architecture; cross-references should resolve.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual review of AIMS architecture document
+  failure_modes: >-
+    Three parallel siloed management systems instead of one integrated; AIMS exists on paper only.
+  maturity_target: AR
+  external_safe_claim: >-
+    AIMS architecture aligned to ISO/IEC 42001, integrated with our existing ISMS and PIMS.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-4.4
+    note: HLS-aligned; PB runs one integrated management system surface.
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-4.4
+    note: HLS-aligned.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Clause 5 — Leadership
+# ─────────────────────────────────────────────────────────────────────────────
+
+- id: iso-42001-cl-5.1
+  kind: clause
+  native_id: '5.1'
+  group: '5'
+  group_name: Leadership
+  title: Leadership and commitment
+  requirement: >-
+    Top management demonstrates leadership and commitment to the AIMS — measurable, not delegable.
+  auditor_intent: >-
+    Auditor checks AIMS sponsorship is at executive level, with measurable commitment and resource
+    allocation; AIMS sponsored only at IT manager level is a frequent Schellman finding.
+  pb_interpretation: >-
+    CEO and Board own AI accountability. Documented in board / Exco minutes; CEO sign-off on AI
+    Policy and AIMS scope; visible budget allocation. AI Governance Committee has executive
+    representation. King V Principle 1 (Ethical leadership) and POPIA accountability principle apply.
+  owner: PB
+  documented_evidence:
+  - Board / Exco minutes referencing AIMS
+  - CEO sign-off on AI Policy and AIMS Scope Statement
+  - Budget allocation evidence (AI Gov function, audit)
+  - AI Governance Committee Terms of Reference
+  operational_evidence: >-
+    Top management can describe AI Policy and AIMS in interview; resource decisions trace to AIMS
+    objectives.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual review at management review
+  failure_modes: >-
+    AIMS sponsored only at IT-manager level; no executive interview readiness; no budget trace.
+  maturity_target: Cert
+  external_safe_claim: >-
+    AIMS commitment is documented at top-management level with measurable resourcing.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-5.1
+    note: HLS-aligned; same leadership pattern across ISMS / PIMS / AIMS.
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-5.1
+    note: HLS-aligned.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-26
+    note: Deployer obligations under Art. 26 require designated humans and oversight at organisational level.
+
+- id: iso-42001-cl-5.2
+  kind: clause
+  native_id: '5.2'
+  group: '5'
+  group_name: Leadership
+  title: AI Policy
+  requirement: >-
+    Top management establishes, communicates and maintains an AI Policy framed by business strategy,
+    ethics, risk environment and legal requirements, including a process for handling exceptions.
+  auditor_intent: >-
+    Auditor tests whether the AI Policy is documented, approved, communicated, available to interested
+    parties, and understood by random employees on interview.
+  pb_interpretation: >-
+    Linked to A.2.2. PrivateBox AI Policy v1.x with principles, scope, prohibited uses, exceptions
+    process, owner and version. Disseminated; staff can describe core principles. Reviewed annually
+    and on trigger (new framework, regulatory change, material incident).
+  owner: PB
+  documented_evidence:
+  - PrivateBox AI Policy v1.x (approved PDF)
+  - Dissemination log
+  - Policy review log
+  operational_evidence: >-
+    Random employee interviewed by auditor can describe AI Policy core principles.
+  audit_methods:
+  - Insp
+  - Int
+  - Samp
+  cadence: Annual + on regulatory / material change
+  failure_modes: >-
+    Boilerplate policy not tailored to PB; sales team can't describe it; exceptions handled informally.
+  maturity_target: Cert
+  external_safe_claim: >-
+    Our AI Policy, approved by top management, governs every PrivateBox AI activity.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-5.2
+    - iso-27001-a-5.1
+    note: AI Policy parallels InfoSec Policy; cross-policy alignment required.
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-5.2
+    note: AI Policy aligns with PIMS Privacy Policy.
+
+- id: iso-42001-cl-5.3
+  kind: clause
+  native_id: '5.3'
+  group: '5'
+  group_name: Leadership
+  title: Roles, responsibilities and authorities
+  requirement: >-
+    Documented assignment of roles, responsibilities and authorities for AIMS conformance and reporting.
+  auditor_intent: >-
+    Auditor checks named owners exist for each AIMS function and that authority lines support
+    reporting on AIMS performance.
+  pb_interpretation: >-
+    Linked to A.3.2. RACI plus AI Governance Charter naming AI Governance Lead, Model Risk Lead, AI
+    Security Lead, Data/RAG Steward, Customer Support AI Liaison. Cross-functional AI Governance
+    Committee meets on fixed cadence. Same person may not own development AND oversight (Annex A.3.2
+    failure pattern).
+  owner: PB
+  documented_evidence:
+  - AI RACI matrix
+  - AI Governance Charter
+  - Org chart with AI roles
+  operational_evidence: >-
+    Each AI role has a named individual who can speak to their responsibility in interview.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual + on org change
+  failure_modes: >-
+    Same person owns development and oversight; AI Governance Lead role exists but has no real authority.
+  maturity_target: Cert
+  role_applicability:
+    ai_governance_lead: 'Y'
+    model_risk_lead: 'Y'
+    ai_security_lead: 'Y'
+    data_rag_steward: 'Y'
+    support_ai_liaison: 'Y'
+    ai_governance_committee: 'Y'
+    top_management: 'Y'
+  external_safe_claim: >-
+    PrivateBox operates a documented cross-functional AI governance structure with named owners
+    and committee oversight.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-5.3
+    note: HLS-aligned; AI roles overlay InfoSec roles.
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-5.3
+    note: HLS-aligned; Information Officer role required by POPIA also overlaps.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-26
+    note: Deployer Art. 26.2 designated-humans obligation parallels AIMS role assignment.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Clause 6 — Planning
+# ─────────────────────────────────────────────────────────────────────────────
+
+- id: iso-42001-cl-6.1.1
+  kind: clause
+  native_id: 6.1.1
+  group: '6'
+  group_name: Planning
+  title: Actions to address risks and opportunities
+  requirement: >-
+    Determine risks and opportunities for the AIMS to achieve intended outcomes, prevent or reduce
+    undesired effects, and continually improve.
+  auditor_intent: >-
+    Auditor checks risk-and-opportunity determination is documented and feeds into the AI risk
+    methodology and AIMS objectives.
+  pb_interpretation: >-
+    Risks-and-opportunities discussion is the bridge between context (4.1), interested parties (4.2)
+    and AI objectives (6.2). Documented as input to AIMS planning.
+  owner: PB
+  documented_evidence:
+  - Risk-and-opportunities planning record
+  - AIMS planning input register
+  operational_evidence: >-
+    Planning record is referenced in management review and informs the AI risk register.
+  audit_methods:
+  - Insp
+  cadence: Annual + on context change
+  failure_modes: >-
+    Generic risk-only treatment; no opportunity identification; not traceable to objectives.
+  maturity_target: AR
+  external_safe_claim: >-
+    AIMS planning addresses both AI risks and opportunities under documented criteria.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-6.1.1
+    note: HLS-aligned; AIMS planning parallels ISMS planning.
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-6.1
+    note: HLS-aligned (27701 collapses 6.1.1-6.1.3 into 6.1).
+
+- id: iso-42001-cl-6.1.2
+  kind: clause
+  native_id: 6.1.2
+  group: '6'
+  group_name: Planning
+  title: AI risk assessment
+  requirement: >-
+    Maintain a documented AI risk assessment methodology with criteria, acceptance, repeatability,
+    informed by Annex C objectives / risk sources and ISO/IEC 23894.
+  auditor_intent: >-
+    Auditor verifies the methodology is AI-specific (not a renamed InfoSec methodology) and is
+    actually used to populate an AI risk register per system in scope.
+  pb_interpretation: >-
+    Methodology must address AI-specific risk sources (bias, fairness, robustness, foreseeable misuse,
+    automation level, ML-specific risks) per Annex C. Per-system AI risk register references the
+    methodology. Reuse of 27001 methodology under a new label is a known failure pattern.
+  owner: PB
+  documented_evidence:
+  - AI Risk Methodology document
+  - AI Risk Register (per system in scope)
+  - Annex C risk-source coverage check
+  operational_evidence: >-
+    Risk register entries trace to methodology criteria; treatments link to SoA controls.
+  audit_methods:
+  - Insp
+  - Int
+  - Samp
+  cadence: Quarterly register review; annual methodology review
+  failure_modes: >-
+    Generic InfoSec methodology renamed; no Annex C coverage; static register.
+  maturity_target: Cert
+  external_safe_claim: >-
+    AI-specific risk methodology consistent with ISO/IEC 42001 and ISO/IEC 23894, covering Annex C
+    objectives and risk sources.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-6.1.2
+    note: HLS-aligned; AI risk methodology distinct from but integrated with InfoSec risk methodology.
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-6.1
+    note: AIMS risk integrates with PIMS risk for AI-with-PII contexts.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-9
+    note: EU AI Act Art. 9 risk-management system for high-risk AI is satisfied via AIMS risk methodology.
+
+- id: iso-42001-cl-6.1.3
+  kind: clause
+  native_id: 6.1.3
+  group: '6'
+  group_name: Planning
+  title: AI risk treatment
+  requirement: >-
+    Document an AI risk treatment plan with control selection, and produce a Statement of Applicability
+    comparing selected controls to Annex A. Note 3 permits exclusions with documented justification.
+  auditor_intent: >-
+    Auditor reads the SoA first; expects every Annex A control with applicability decision, owner,
+    evidence pointer, justification.
+  pb_interpretation: >-
+    SoA is THE bridge document. One row per Annex A control: applicability (Y / Shared / Conditional /
+    N/A), implementation status, control owner, evidence pointer, justification. Add deployment-model
+    column (PB / SH / CL per business model). Empty justifications are a known Schellman finding pattern.
+  owner: PB
+  documented_evidence:
+  - AI Risk Treatment Plan
+  - Statement of Applicability (every Annex A control)
+  - Exclusion justifications register
+  operational_evidence: >-
+    SoA is current with the deployed system inventory; treatments reference live controls.
+  audit_methods:
+  - Insp
+  - Int
+  - Samp
+  cadence: At least annual + on scope change
+  failure_modes: >-
+    Excluding controls without written justification → major nonconformity; SoA stale; no
+    deployment-model annotations.
+  maturity_target: Cert
+  external_safe_claim: >-
+    Documented Statement of Applicability covering every Annex A control of ISO/IEC 42001.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-6.1.3
+    note: HLS-aligned; AIMS SoA mirrors ISMS SoA pattern.
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-6.1
+    note: PIMS extends 27001 SoA; AIMS adds the AI-specific Annex A.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-9
+    note: AI Act Art. 9 risk-management system implementation is the SoA equivalent for high-risk AI.
+
+- id: iso-42001-cl-6.1.4
+  kind: clause
+  native_id: 6.1.4
+  group: '6'
+  group_name: Planning
+  title: AI system impact assessment
+  requirement: >-
+    Maintain a documented process for assessing AI system impacts on individuals, groups and society —
+    deepened by ISO/IEC 42005:2025.
+  auditor_intent: >-
+    Auditor expects 42005-aligned methodology covering 10 elements (process documentation, integration
+    with mgmt system, timing/scope, roles, thresholds, conduct, harms/benefits incl. foreseeable misuse,
+    measures, recording, approval, monitoring/review).
+  pb_interpretation: >-
+    PB AISIA Methodology aligned to ISO/IEC 42005:2025. Annex-E-style template applied per AI system.
+    Foreseeable-misuse coverage (42005 6.8.3) is mandatory in every AISIA, not a best-practice add-on.
+    Sector-specific AISIA addenda for healthcare safety, finance fairness, legal privilege.
+  companion_refs:
+  - iso-42005
+  companion_note: >-
+    Use ISO/IEC 42005 methodology, harm/benefit taxonomy (Annex C) and template (Annex E).
+  owner: PB
+  documented_evidence:
+  - AISIA Methodology document (10 elements)
+  - Per-system AISIA records
+  - Sector-specific AISIA addenda (healthcare, finance, legal)
+  - Foreseeable-misuse worksheet
+  operational_evidence: >-
+    Each in-scope AI system has a current AISIA with foreseeable-misuse section completed and approved.
+  audit_methods:
+  - Insp
+  - Int
+  - Samp
+  cadence: Pre-deployment + on material change + scheduled review
+  failure_modes: >-
+    Hand-wave methodology; one-size-fits-all template; foreseeable-misuse section omitted; no approval workflow.
+  maturity_target: Cert
+  external_safe_claim: >-
+    AI System Impact Assessment methodology aligned with ISO/IEC 42005:2025, including foreseeable-misuse
+    coverage.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-8.2
+    note: AISIA conceptually parallel to risk assessment; ISMS does not have a direct equivalent.
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-7.2
+    note: PIMS DPIA is structurally adjacent; AISIA template should integrate DPIA where AI processes PII.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-9
+    - eu-ai-act-art-27
+    note: AI Act Art. 9 risk mgmt + Art. 27 FRIA align with AISIA — single integrated template recommended.
+
+- id: iso-42001-cl-6.2
+  kind: clause
+  native_id: '6.2'
+  group: '6'
+  group_name: Planning
+  title: AI objectives and planning to achieve them
+  requirement: >-
+    Establish AI objectives at relevant functions, levels and processes — measurable, time-bound,
+    communicated, monitored and updated.
+  auditor_intent: >-
+    Auditor checks objectives are SMART (Specific, Measurable, Achievable, Relevant, Time-bound) and
+    not aspirational platitudes.
+  pb_interpretation: >-
+    Aspirational statements ("we will be ethical") fail. Objectives are measurable: e.g., "100% of
+    AI systems have current AISIA before deployment", "<2% drift threshold triggers re-eval",
+    "Bias audit per release within sector criteria". Communicated to relevant functions; monitored
+    in KPI dashboard.
+  owner: PB
+  documented_evidence:
+  - AI Objectives register (SMART form)
+  - KPI dashboard reflecting objectives
+  operational_evidence: >-
+    Objectives traced through risk register, AISIA, monitoring; reviewed at management review.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual; reviewed at management review
+  failure_modes: >-
+    Aspirational statements that cannot be measured; no KPI link; no time-boxing.
+  maturity_target: AR
+  external_safe_claim: >-
+    PrivateBox sets and tracks measurable AI objectives at relevant functions.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-6.2
+    note: HLS-aligned.
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-6.2
+    note: HLS-aligned.
+
+- id: iso-42001-cl-6.3
+  kind: clause
+  native_id: '6.3'
+  group: '6'
+  group_name: Planning
+  title: Planning of changes
+  requirement: >-
+    AIMS changes are performed in a planned manner.
+  auditor_intent: >-
+    Auditor checks change-control procedure explicitly covers AI-specific changes (model swaps,
+    RAG corpus changes, prompt-template changes, deployment-environment changes).
+  pb_interpretation: >-
+    Change-control procedure must explicitly enumerate AI-specific change types — model retrains,
+    RAG corpus updates, prompt-template changes, hyperparameter changes. Silent retrains are a
+    known failure pattern. Each change triggers re-AISIA where material.
+  owner: PB
+  documented_evidence:
+  - Change-control procedure (with AI-specific change types)
+  - Change records register
+  - Re-AISIA trigger criteria
+  operational_evidence: >-
+    Recent changes traceable through CR records; re-AISIA executed where triggered.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Annual SOP review + per change
+  failure_modes: >-
+    Silent retrains; RAG corpus changes outside CR; prompt-template changes treated as config.
+  maturity_target: AR
+  external_safe_claim: >-
+    AI changes — including model swaps, RAG and prompt-template updates — go through documented
+    change control with re-AISIA where material.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-6.3
+    note: HLS-aligned; AI-specific change types are the AIMS extension.
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-6.3
+    note: HLS-aligned.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Clause 7 — Support
+# ─────────────────────────────────────────────────────────────────────────────
+
+- id: iso-42001-cl-7.1
+  kind: clause
+  native_id: '7.1'
+  group: '7'
+  group_name: Support
+  title: Resources
+  requirement: >-
+    Determine and provide the resources needed for the AIMS — establishment, implementation,
+    maintenance and continual improvement.
+  auditor_intent: >-
+    Auditor checks resources (people, tooling, infrastructure, budget) are documented and traceable
+    to AIMS activities.
+  pb_interpretation: >-
+    Resource catalogue covers AI Gov function staffing, AISIA tooling, evaluation infrastructure,
+    audit-readiness budget. Computing resources for AI workloads are the most distinctive resource
+    requirement (cross-link to A.4.5).
+  owner: PB
+  documented_evidence:
+  - Resource catalogue
+  - Annual AIMS budget
+  - Tooling register
+  operational_evidence: >-
+    Resources allocated traceable through procurement and timesheet records.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual at management review
+  failure_modes: >-
+    AIMS gets goodwill but no budget; AI Gov is a part-time role for an already-loaded engineer.
+  maturity_target: AR
+  external_safe_claim: >-
+    Resources for the AIMS are determined annually and traceable through PB's planning cycle.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-7.1
+    note: HLS-aligned.
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-7.1
+    note: HLS-aligned.
+
+- id: iso-42001-cl-7.2
+  kind: clause
+  native_id: '7.2'
+  group: '7'
+  group_name: Support
+  title: Competence
+  requirement: >-
+    Determine necessary competence for persons whose work affects AIMS performance; ensure they are
+    competent on the basis of education, training or experience; retain documented information as
+    evidence.
+  auditor_intent: >-
+    Auditor samples randomly; documents that exist but no one can find or has read fail this clause.
+  pb_interpretation: >-
+    Competence framework covers: AI ethics, ML risk, AI-specific secure SDLC, data governance, model
+    evaluation, jurisdictional law (POPIA, EU AI Act, GDPR, HIPAA-equivalent, FCA/SEC/JSE-relevant).
+    Competence matrix per role; training plans tied to it; certifications recorded. EU AI Act Art. 4
+    (AI literacy) compliance hook.
+  owner: PB
+  documented_evidence:
+  - Competence matrix per role
+  - Training plans + completion records
+  - Certifications register
+  operational_evidence: >-
+    Random staff sampling shows current training status against role competence requirements.
+  audit_methods:
+  - Insp
+  - Int
+  - Samp
+  cadence: Annual + on hire / role change
+  failure_modes: >-
+    Training plans exist but completion not tracked; competence matrix doesn't reflect actual job
+    requirements; sales staff not in scope of AI training.
+  maturity_target: AR
+  external_safe_claim: >-
+    PrivateBox maintains a documented AI competence framework and training programme covering all
+    AIMS-relevant roles.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-7.2
+    note: HLS-aligned.
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-7.2
+    note: HLS-aligned; PIMS adds privacy-specific competence overlay.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-4
+    note: EU AI Act Art. 4 AI-literacy obligations are operationalised through the AIMS competence framework.
+
+- id: iso-42001-cl-7.3
+  kind: clause
+  native_id: '7.3'
+  group: '7'
+  group_name: Support
+  title: Awareness
+  requirement: >-
+    Persons doing work under PB's control are aware of the AI Policy, their contribution to AIMS
+    effectiveness, and the implications of non-conformance.
+  auditor_intent: >-
+    Auditor interviews random staff (including support engineers); they should describe the AI Policy,
+    their role, and consequences of non-conformance.
+  pb_interpretation: >-
+    All staff including support engineers covered. Awareness comms reach customer-facing roles too
+    so they don't accidentally overclaim AIMS coverage.
+  owner: PB
+  documented_evidence:
+  - Awareness communications archive
+  - Awareness completion records
+  - Sales/Marketing-specific awareness module (red-flag claim list)
+  operational_evidence: >-
+    Random employee interview confirms awareness; sales/marketing can describe red-flag list.
+  audit_methods:
+  - Int
+  - Samp
+  cadence: Annual + on policy update
+  failure_modes: >-
+    Sales/Marketing not in awareness scope; awareness exists for engineers only.
+  maturity_target: AR
+  external_safe_claim: >-
+    All PrivateBox staff complete AI Policy awareness training; sales and customer-facing roles cover
+    red-flag claim language.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-7.3
+    note: HLS-aligned.
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-7.3
+    note: HLS-aligned.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-4
+    note: AI literacy under Art. 4 reaches the awareness clause.
+
+- id: iso-42001-cl-7.4
+  kind: clause
+  native_id: '7.4'
+  group: '7'
+  group_name: Support
+  title: Communication
+  requirement: >-
+    Determine internal and external communications relevant to the AIMS — what, when, with whom, how
+    and who communicates.
+  auditor_intent: >-
+    Auditor checks communication procedures cover incident notification timelines (EU AI Act 15-day,
+    POPIA 72-hour) and customer-facing change communications.
+  pb_interpretation: >-
+    Comms procedure covers internal (AIMS performance reporting, incident escalation) and external
+    (regulators, customers — EU AI Act Art. 73 serious-incident, POPIA s.22 breach, Art. 50 transparency).
+  owner: PB
+  documented_evidence:
+  - Comms matrix (audience × channel × cadence)
+  - Incident notification SOPs (EU AI Act Art. 73, POPIA s.22)
+  - Customer change-communication template
+  operational_evidence: >-
+    Past incidents trace through comms records; cadence held.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Annual SOP review + per incident
+  failure_modes: >-
+    No comms matrix; incident timelines not pre-baked into SOPs.
+  maturity_target: AR
+  external_safe_claim: >-
+    AIMS communications procedures cover internal performance reporting and external regulatory /
+    customer obligations including 15-day serious-incident notifications.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-7.4
+    note: HLS-aligned.
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-7.4
+    note: HLS-aligned; PIMS communication includes data-subject notification.
+
+- id: iso-42001-cl-7.5
+  kind: clause
+  native_id: '7.5'
+  group: '7'
+  group_name: Support
+  title: Documented information
+  requirement: >-
+    Maintain documented information required by the standard and the AIMS — version-controlled, dated,
+    owner-attributed, retention-defined.
+  auditor_intent: >-
+    Auditor samples; documents that exist but cannot be located or are out of date fail this clause.
+  pb_interpretation: >-
+    Single document-management discipline across ISMS / PIMS / AIMS. Version control, date, owner,
+    retention, location index, accessibility for auditors. ISO/IEC 42006 specifically calls this out
+    as a sampling target.
+  owner: PB
+  documented_evidence:
+  - Document register / index
+  - Retention schedule
+  - Document control SOP
+  operational_evidence: >-
+    Random doc lookup completes within sampling expectation; versions trace through change history.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Annual + per major doc release
+  failure_modes: >-
+    Untracked SharePoint sprawl; missing retention; outdated documents in active use.
+  maturity_target: AR
+  external_safe_claim: >-
+    Documented-information control is integrated across the management system family.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-7.5.1
+    - iso-27001-cl-7.5.2
+    - iso-27001-cl-7.5.3
+    note: 27001 splits 7.5 into general / creation-update / control; 42001 collapses to a single clause.
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-7.5
+    note: HLS-aligned.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Clause 8 — Operation
+# ─────────────────────────────────────────────────────────────────────────────
+
+- id: iso-42001-cl-8.1
+  kind: clause
+  native_id: '8.1'
+  group: '8'
+  group_name: Operation
+  title: Operational planning and control
+  requirement: >-
+    Plan, implement and control the processes needed to meet AIMS requirements; establish criteria;
+    keep documented information to confirm processes carried out as planned; control planned changes
+    and review unintended changes.
+  auditor_intent: >-
+    Auditor expects to see operational SOPs aligned with AIMS planning, with documented adherence
+    evidence sampled.
+  pb_interpretation: >-
+    Operational planning covers the full lifecycle (ideation → retirement) per source §8. SOPs for
+    each lifecycle stage; criteria documented; adherence sampled.
+  owner: PB
+  documented_evidence:
+  - Operational planning record
+  - Lifecycle SOPs
+  - Adherence sampling records
+  operational_evidence: >-
+    Recent system releases trace through SOPs with documented adherence.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Annual review + per release
+  failure_modes: >-
+    SOPs exist on paper; actual operations diverge; adherence not sampled.
+  maturity_target: AR
+  external_safe_claim: >-
+    AI operations are planned and controlled under documented processes covering the full system
+    lifecycle.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-8.1
+    note: HLS-aligned.
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-8.1
+    note: HLS-aligned.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-9
+    note: Operational planning satisfies the operational portion of Art. 9 risk-management for high-risk AI.
+
+- id: iso-42001-cl-8.2
+  kind: clause
+  native_id: '8.2'
+  group: '8'
+  group_name: Operation
+  title: AI risk assessment (operational)
+  requirement: >-
+    Perform AI risk assessments at planned intervals and on significant change.
+  auditor_intent: >-
+    Auditor checks risk assessments are alive — quarterly cadence at minimum, refreshed on change.
+  pb_interpretation: >-
+    Quarterly cadence; per-system register kept current; major changes (model swap, regulatory
+    update, sector expansion) trigger immediate re-assessment.
+  owner: PB
+  documented_evidence:
+  - AI Risk Register (current)
+  - Re-assessment trigger log
+  operational_evidence: >-
+    Risk register dates show currency; recent change events trace to re-assessment records.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Quarterly + on significant change
+  failure_modes: >-
+    Annual-only risk assessment; no link to change events; static register.
+  maturity_target: AR
+  external_safe_claim: >-
+    AI risks are assessed quarterly and on every significant change, in line with Clause 8.2.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-8.2
+    note: HLS-aligned; AI risk extension to ISMS operational risk assessment.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-9
+    note: Continuous risk-management process under Art. 9 maps to AIMS Clause 8.2 cadence.
+
+- id: iso-42001-cl-8.3
+  kind: clause
+  native_id: '8.3'
+  group: '8'
+  group_name: Operation
+  title: AI risk treatment (operational)
+  requirement: >-
+    Implement the AI risk treatment plan.
+  auditor_intent: >-
+    Auditor checks treatments are not just plans on paper — operational evidence shows controls in place.
+  pb_interpretation: >-
+    Treatments traced from risk register → SoA → operational SOP → live evidence. Closure of risk
+    treatment items is recorded.
+  owner: PB
+  documented_evidence:
+  - Treatment-implementation evidence per risk
+  - Risk closure register
+  operational_evidence: >-
+    Recent risks trace from register through SoA to live control evidence.
+  audit_methods:
+  - Insp
+  - Samp
+  - Obs
+  cadence: Continuous
+  failure_modes: >-
+    Treatment plan exists but no implementation evidence; risks open forever.
+  maturity_target: AR
+  external_safe_claim: >-
+    AI risk treatments are implemented and traceable from register to live evidence.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-8.3
+    note: HLS-aligned.
+
+- id: iso-42001-cl-8.4
+  kind: clause
+  native_id: '8.4'
+  group: '8'
+  group_name: Operation
+  title: AI system impact assessment (operational)
+  requirement: >-
+    Perform AI system impact assessments at planned intervals and on significant change. Pre-deployment
+    AISIA is mandatory before any new system or material upgrade.
+  auditor_intent: >-
+    Auditor verifies pre-deployment AISIA was completed for every recent release; cadence on existing
+    systems is held.
+  pb_interpretation: >-
+    Pre-deployment gate (A.6.2.5) blocks any release without current AISIA. Cadence: scheduled review
+    plus on-significant-change. AISIA deferred is a fail; AISIA late is a finding.
+  companion_refs:
+  - iso-42005
+  companion_note: >-
+    AISIA conducted using the 42005 methodology and template per Clause 6.1.4.
+  owner: PB
+  documented_evidence:
+  - Per-system AISIA records
+  - Pre-deployment gate records (linked to AISIA)
+  - AISIA review cadence log
+  operational_evidence: >-
+    Every recent release links to a current AISIA approved before go-live.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Pre-deployment + scheduled review + on significant change
+  failure_modes: >-
+    AISIA done as a tickbox; foreseeable-misuse omitted; AISIA after deployment.
+  maturity_target: Cert
+  external_safe_claim: >-
+    AISIA is conducted before every deployment and at scheduled intervals during operation, in line
+    with ISO/IEC 42005:2025.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-7.2
+    note: PIMS DPIA cadence is structurally adjacent; integrated AISIA + DPIA template recommended.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-9
+    - eu-ai-act-art-27
+    note: Continuous AI Act Art. 9 risk + Art. 27 FRIA align with operational AISIA cadence.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Clause 9 — Performance Evaluation
+# ─────────────────────────────────────────────────────────────────────────────
+
+- id: iso-42001-cl-9.1
+  kind: clause
+  native_id: '9.1'
+  group: '9'
+  group_name: Performance evaluation
+  title: Monitoring, measurement, analysis and evaluation
+  requirement: >-
+    Determine what to monitor, how to measure, when, by whom, and how to analyse and evaluate AIMS
+    performance and effectiveness.
+  auditor_intent: >-
+    Auditor expects a KPI dashboard with thresholds, monitoring records, evaluation cadence, and
+    analysis findings reported to management review.
+  pb_interpretation: >-
+    KPI dashboard covers model performance drift, fairness/bias indicators, incident counts, support-
+    ticket categorisation, concern-reporting volumes, SoA implementation health. Thresholds defined;
+    runbooks for breach. EU AI Act Art. 72 post-market monitoring satisfied via this clause.
+  owner: PB/SH
+  documented_evidence:
+  - KPI dashboard specification
+  - Monitoring data archive
+  - Threshold register
+  - Drift detector reports
+  operational_evidence: >-
+    Live dashboard accessible; trends sampled at management review; threshold breaches trigger
+    documented response.
+  audit_methods:
+  - Insp
+  - Obs
+  - Samp
+  cadence: Continuous monitoring; quarterly trend analysis
+  failure_modes: >-
+    Dashboard exists but unmonitored; no thresholds; drift detection lagging.
+  maturity_target: AR
+  external_safe_claim: >-
+    Continuous AIMS monitoring with documented KPIs, thresholds and trend analysis.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-9.1
+    note: HLS-aligned; AIMS adds AI-specific KPIs (drift, bias, fairness).
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-9.1
+    note: HLS-aligned.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-72
+    note: EU AI Act Art. 72 post-market monitoring satisfied through AIMS Clause 9.1 + 8.4.
+
+- id: iso-42001-cl-9.2
+  kind: clause
+  native_id: '9.2'
+  group: '9'
+  group_name: Performance evaluation
+  title: Internal audit
+  requirement: >-
+    Conduct internal audits at planned intervals; impartial auditors; report to relevant management;
+    track corrective actions.
+  auditor_intent: >-
+    Auditor checks audit team is independent of the AIMS team (ISO/IEC 42006 emphasis); findings
+    are tracked through closure.
+  pb_interpretation: >-
+    Internal audit programme conducted by auditors not reporting into AI Gov. External audit advisor
+    may augment. Findings tracked in NC/CAPA log; closure verified.
+  owner: PB
+  documented_evidence:
+  - Internal audit programme
+  - Audit reports
+  - Auditor independence records
+  - Findings tracker
+  operational_evidence: >-
+    Most recent audit report available; findings closure trace.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: At least annual; more often during early maturity
+  failure_modes: >-
+    Same team auditing itself; findings open forever; programme exists but no audits conducted.
+  maturity_target: Cert
+  external_safe_claim: >-
+    Independent internal audit programme covers the AIMS at least annually.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-9.2.1
+    - iso-27001-cl-9.2.2
+    note: 27001 splits into programme + execution; 42001 collapses to single clause.
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-9.2
+    note: HLS-aligned.
+
+- id: iso-42001-cl-9.3
+  kind: clause
+  native_id: '9.3'
+  group: '9'
+  group_name: Performance evaluation
+  title: Management review
+  requirement: >-
+    Top management reviews the AIMS at planned intervals; inputs include audit results, KPI data,
+    nonconformities, status of actions, changes in external/internal issues, feedback from interested
+    parties, and opportunities for continual improvement; outputs include decisions, resource changes
+    and improvement opportunities.
+  auditor_intent: >-
+    Auditor expects management review minutes covering all required inputs and outputs, signed by
+    top management, with traceable follow-through on decisions.
+  pb_interpretation: >-
+    Annual at minimum; more often during early maturity. Standardised inputs/outputs template; minutes
+    distributed; decisions tracked.
+  owner: PB
+  documented_evidence:
+  - Management review pack (inputs/outputs template)
+  - Management review minutes
+  - Decision tracker
+  operational_evidence: >-
+    Most recent management review covered all inputs; decisions trace forward.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: At least annual; more often during early maturity
+  failure_modes: >-
+    Lunch meeting with no minutes; inputs partial; decisions not tracked.
+  maturity_target: Cert
+  external_safe_claim: >-
+    Documented management review of the AIMS conducted at least annually with full inputs and outputs.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-9.3.1
+    - iso-27001-cl-9.3.2
+    - iso-27001-cl-9.3.3
+    note: 27001 splits into general / inputs / outputs; 42001 collapses to single clause.
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-9.3
+    note: HLS-aligned.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Clause 10 — Improvement
+# ─────────────────────────────────────────────────────────────────────────────
+
+- id: iso-42001-cl-10.1
+  kind: clause
+  native_id: '10.1'
+  group: '10'
+  group_name: Improvement
+  title: Continual improvement
+  requirement: >-
+    Continually improve the suitability, adequacy and effectiveness of the AIMS.
+  auditor_intent: >-
+    Auditor expects improvement records, not just policy statements — visible improvement actions
+    over the audit period.
+  pb_interpretation: >-
+    Improvement actions logged with rationale, owner, target date, and outcome. Source includes
+    audit findings, KPI trends, incident lessons-learned, customer feedback.
+  owner: PB
+  documented_evidence:
+  - Improvement actions register
+  - Trend analysis records
+  operational_evidence: >-
+    Recent improvement actions trace to source (finding / KPI / incident / feedback) and to outcome.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Continuous; reviewed at management review
+  failure_modes: >-
+    Continual improvement reduced to "we'll do better"; no visible actions logged.
+  maturity_target: AR
+  external_safe_claim: >-
+    Continual improvement of the AIMS is documented through a register of actions traceable to
+    source evidence.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-10.1
+    note: HLS-aligned.
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-10.1
+    note: HLS-aligned.
+
+- id: iso-42001-cl-10.2
+  kind: clause
+  native_id: '10.2'
+  group: '10'
+  group_name: Improvement
+  title: Nonconformity and corrective action
+  requirement: >-
+    React to nonconformities; evaluate cause; implement actions; review effectiveness; update AIMS
+    if needed; retain documented information of nature, actions and results.
+  auditor_intent: >-
+    Auditor expects each NC to have cause analysis, action, effectiveness review, and closure date —
+    not just an open ticket.
+  pb_interpretation: >-
+    NC / CAPA log; each entry: cause, action, effectiveness review, closure date. Trend analysis at
+    management review. EU AI Act Art. 73 serious-incident workflow integrated.
+  owner: PB
+  documented_evidence:
+  - NC / CAPA log
+  - Cause analysis records
+  - Effectiveness review records
+  operational_evidence: >-
+    Random NC sampling shows cause analysis, effective action, closure date.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Continuous; trend analysis quarterly
+  failure_modes: >-
+    NC log records issues but never closes them; cause analysis is "we forgot"; effectiveness review
+    skipped.
+  maturity_target: AR
+  external_safe_claim: >-
+    Nonconformities are tracked through structured cause analysis, corrective action and effectiveness
+    review under documented procedure.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-10.2
+    note: HLS-aligned.
+  - framework: iso-27701
+    refs:
+    - iso-27701-cl-10.2
+    note: HLS-aligned.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Annex A — AIMS controls (A.2 through A.10) — 39 controls per source pack §5.
+# Numbering: PECB-aligned per source §5; oq-42001-annex-numbering tracks ISO PDF reconciliation.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── A.2 — Policies related to AI ──
+
+- id: iso-42001-a-2.2
+  kind: control_aims
+  native_id: A.2.2
+  group: A.2
+  group_name: Policies related to AI
+  title: AI Policy
+  objective: >-
+    Documented AI policy informed by business strategy, values, risk environment and legal
+    requirements, with principles, scope, prohibited uses and an exceptions process.
+  pb_interpretation: >-
+    Mandatory. PrivateBox AI Policy v1.x sets principles, scope, prohibited uses, exceptions handling.
+    Linked tightly to clause 5.2. Policy is signed PDF; dissemination logged; staff sample test in
+    auditor interview must succeed.
+  owner: PB
+  documented_evidence:
+  - PrivateBox AI Policy v1.x (signed PDF)
+  - Dissemination log
+  - Exceptions handling procedure
+  operational_evidence: >-
+    Random employee interview confirms understanding of core principles.
+  audit_methods:
+  - Insp
+  - Int
+  - Samp
+  cadence: Annual + on trigger
+  failure_modes: >-
+    Boilerplate not tailored to PB; principles unmemorable; exceptions handled informally without
+    procedure.
+  maturity_target: Cert
+  external_safe_phrasing: >-
+    PrivateBox operates under a documented AI Policy aligned to ISO/IEC 42001 A.2.2.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.1
+    note: AI Policy parallels InfoSec Policy under 27001 A.5.1 — single integrated policy stack.
+  - framework: iso-27701
+    refs:
+    - iso-27701-a1-2
+    note: PIMS controllers privacy notice / policy; cross-policy alignment required.
+
+- id: iso-42001-a-2.3
+  kind: control_aims
+  native_id: A.2.3
+  group: A.2
+  group_name: Policies related to AI
+  title: Alignment with other organisational policies
+  objective: >-
+    Document alignment of the AI Policy with other relevant organisational policies (information
+    security, privacy, HR, procurement, ethics).
+  pb_interpretation: >-
+    Cross-policy alignment map showing intersections with InfoSec (27001), Privacy (27701/POPIA/GDPR),
+    HR, Procurement, Ethics. AI Policy must not contradict the privacy policy on retention or any
+    other shared topic.
+  owner: PB
+  documented_evidence:
+  - Cross-policy alignment map
+  - Conflict-resolution log
+  operational_evidence: >-
+    Sample alignment review records reflect intersection assessments.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual + on policy update
+  failure_modes: >-
+    AI Policy contradicts privacy policy on retention; intersection not mapped; conflicts surface
+    in operations rather than in alignment review.
+  maturity_target: Cert
+  external_safe_phrasing: >-
+    AI Policy alignment with privacy, information security, HR and procurement policies is
+    explicitly maintained.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.1
+    note: Alignment integrates with 27001 InfoSec policy.
+  - framework: iso-27701
+    refs:
+    - iso-27701-a1-2
+    note: Alignment integrates with PIMS privacy notice / policy.
+
+- id: iso-42001-a-2.4
+  kind: control_aims
+  native_id: A.2.4
+  group: A.2
+  group_name: Policies related to AI
+  title: Review of the AI policy
+  objective: >-
+    Maintain a review process for the AI Policy with named owner, scheduled reviews and trigger-based
+    reviews.
+  pb_interpretation: >-
+    Named owner is AI Governance Lead. Scheduled annual review; trigger-based reviews on regulatory
+    change, material incident, or new framework adoption. Review log maintained.
+  owner: PB
+  documented_evidence:
+  - Policy review log
+  - Trigger criteria definition
+  operational_evidence: >-
+    Auditor reads review log and review minutes; cadence held over the audit period.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual + on trigger
+  failure_modes: >-
+    Review owner unnamed; reviews skipped; trigger criteria unclear.
+  maturity_target: Cert
+  external_safe_phrasing: >-
+    The AI Policy is reviewed at least annually and on defined triggers under named ownership.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.1
+    note: 27001 policy review pattern.
+
+# ── A.3 — Internal organisation ──
+
+- id: iso-42001-a-3.2
+  kind: control_aims
+  native_id: A.3.2
+  group: A.3
+  group_name: Internal organisation
+  title: AI roles and responsibilities
+  objective: >-
+    Define and communicate AI roles and responsibilities across the organisation.
+  pb_interpretation: >-
+    Linked to clause 5.3. AI RACI; org chart with AI roles. Same person may NOT own development AND
+    oversight (Annex A.3.2 failure pattern). AI Governance Committee with executive representation.
+  owner: PB
+  documented_evidence:
+  - AI RACI matrix
+  - AI Governance Charter
+  - Org chart with named AI roles
+  operational_evidence: >-
+    Each AI role has a named individual who can speak to their responsibility in interview.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual + on org change
+  failure_modes: >-
+    Same person owns development and oversight; titles exist but authority does not; committee meets
+    irregularly.
+  maturity_target: Cert
+  role_applicability:
+    ai_governance_lead: 'Y'
+    model_risk_lead: 'Y'
+    ai_security_lead: 'Y'
+    data_rag_steward: 'Y'
+    support_ai_liaison: 'Y'
+    ai_governance_committee: 'Y'
+    top_management: 'Y'
+  external_safe_phrasing: >-
+    Cross-functional AI governance with named owners and committee oversight per ISO/IEC 42001 A.3.2.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.2
+    - iso-27001-a-5.3
+    - iso-27001-a-5.4
+    note: 27001 segregation of duties / roles overlay AI roles.
+  - framework: iso-27701
+    refs:
+    - iso-27701-a1-3
+    note: PIMS information officer role overlaps.
+
+- id: iso-42001-a-3.3
+  kind: control_aims
+  native_id: A.3.3
+  group: A.3
+  group_name: Internal organisation
+  title: Reporting of concerns
+  objective: >-
+    Provide a non-retaliatory mechanism for staff to raise AI-related concerns.
+  pb_interpretation: >-
+    Whistleblower-equivalent for AI concerns. Documented SOP; concern log; staff training. Test:
+    random employee asked "How would you raise an AI concern?" — must answer with the documented
+    channel.
+  owner: PB
+  documented_evidence:
+  - AI Concerns SOP
+  - Concern log
+  - Staff training records on the channel
+  operational_evidence: >-
+    Random employee interview confirms knowledge of channel and non-retaliation.
+  audit_methods:
+  - Int
+  - Samp
+  cadence: Annual review of SOP + continuous concern intake
+  failure_modes: >-
+    Channel exists on paper only; staff don't know how to raise concerns; concerns dismissed without
+    record.
+  maturity_target: Cert
+  external_safe_phrasing: >-
+    Documented non-retaliatory AI concerns channel available to all PrivateBox staff.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.4
+    note: Management responsibilities; concern channel parallels infosec concern reporting.
+
+# ── A.4 — Resources ──
+
+- id: iso-42001-a-4.2
+  kind: control_aims
+  native_id: A.4.2
+  group: A.4
+  group_name: Resources
+  title: Resource documentation
+  objective: >-
+    Document resources required for AI systems across their lifecycle.
+  pb_interpretation: >-
+    General resource catalogue per AI system in scope. Cross-references the more specific A.4.3-4.6
+    controls for data, tooling, system/computing, human resources.
+  owner: PB
+  documented_evidence:
+  - Resource catalogue per AI system
+  operational_evidence: >-
+    Resource catalogue current with deployed inventory.
+  audit_methods:
+  - Insp
+  cadence: Annual + per system release
+  failure_modes: >-
+    Catalogue exists but stale; resource categories incomplete.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox documents the resources required by each AI system in scope.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.9
+    note: Asset inventory; AI resource catalogue extends to data and tooling.
+
+- id: iso-42001-a-4.3
+  kind: control_aims
+  native_id: A.4.3
+  group: A.4
+  group_name: Resources
+  title: Data resources
+  objective: >-
+    Document data resources used by AI systems — provenance, categories (train/val/test/production),
+    labelling, quality, retention, known biases and rights.
+  pb_interpretation: >-
+    PrivateBox documents ITS training/eval data and the structure expected of customer data; customer
+    data itself remains customer-owned. Datasheets per dataset. Critical control — provenance is a
+    top auditor finding pattern.
+  owner: PB
+  documented_evidence:
+  - Datasheets per training / evaluation dataset
+  - Data provenance register
+  - Rights register (PII, copyright)
+  operational_evidence: >-
+    Each in-scope AI system traces its data resources to documented datasheets.
+  audit_methods:
+  - Insp
+  - Int
+  - Samp
+  cadence: Per dataset + annual review
+  failure_modes: >-
+    Training-data provenance undocumented; datasheets exist for new datasets but not legacy; rights
+    not surfaced; bias signals not captured.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    Datasheets for development and evaluation data, including provenance, rights and known biases.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.12
+    note: Data classification; AI datasets need provenance + rights overlay.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-10
+    note: Data governance for high-risk AI under Art. 10.
+
+- id: iso-42001-a-4.4
+  kind: control_aims
+  native_id: A.4.4
+  group: A.4
+  group_name: Resources
+  title: Tooling resources
+  objective: >-
+    Document tooling resources used in AI development and operation — frameworks, evaluation libraries,
+    guardrail tools, prompt templates, RAG stack.
+  pb_interpretation: >-
+    Tooling register with versions, licences, vulnerability disclosure references. Vendored model
+    libraries, eval harnesses, guardrail middleware all in scope.
+  owner: PB
+  documented_evidence:
+  - Tooling register (versions + licences)
+  - Vulnerability tracking against tooling
+  operational_evidence: >-
+    Tooling register reconciles to the build environment.
+  audit_methods:
+  - Insp
+  cadence: Per release + annual review
+  failure_modes: >-
+    Tooling register stale; licence violations slip in; experimental libraries in production code.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox maintains a documented register of AI tooling resources with versions and licences.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.9
+    note: Tooling is part of the asset inventory.
+
+- id: iso-42001-a-4.5
+  kind: control_aims
+  native_id: A.4.5
+  group: A.4
+  group_name: Resources
+  title: System and computing resources
+  objective: >-
+    Document and govern system and computing resources used by AI systems — hardware, hosting type,
+    processing/storage capacity, environmental impact.
+  pb_interpretation: >-
+    Critical because deployment target is customer hardware (on-prem) or partner-DC ringfenced
+    infrastructure (AI Factory). Document minimum-spec sheet, GPU sizing guidance, energy / environmental
+    disclosure. Annex C.2.4 environmental impact applies.
+  owner: PB/SH
+  owner_by_model:
+    on_prem: PB/SH
+    ai_factory:
+      status: pending
+      open_question: oq-partner-dc-selection
+  documented_evidence:
+  - Minimum-spec sheet
+  - GPU sizing guidance
+  - Energy / environmental disclosure
+  - Hardware lifecycle policy
+  operational_evidence: >-
+    Customer deployments meet documented minimum spec; environmental estimates published.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual + on hardware platform change
+  failure_modes: >-
+    No spec sheet; hardware lifecycle ignored; environmental impact not estimated.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-42001-ai-factory-ringfenced
+  external_safe_phrasing: >-
+    PrivateBox documents the system and computing resources required for AI deployment, including
+    environmental footprint guidance.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.9
+    note: Asset inventory includes computing resources.
+
+- id: iso-42001-a-4.6
+  kind: control_aims
+  native_id: A.4.6
+  group: A.4
+  group_name: Resources
+  title: Human resources
+  objective: >-
+    Document and govern human resources for AI systems — skill matrix, diversity considerations for
+    teams handling sensitive data domains.
+  pb_interpretation: >-
+    Skill matrix with diversity considerations for sector teams (e.g., clinical advisors for
+    healthcare data; legal SMEs for legal). Annex C.2.2 (AI expertise) applies. Cross-link to clause
+    7.2 competence.
+  owner: PB
+  documented_evidence:
+  - Skill matrix per role and sector
+  - Diversity / SME engagement records for sensitive sectors
+  operational_evidence: >-
+    Sector teams include named SMEs; skill gaps tracked and resourced.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual + on team change
+  failure_modes: >-
+    "Pure tech team" with no clinical / legal / financial SME involvement; diversity considerations
+    absent.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox maintains a sector-aware AI skills matrix that includes domain SME engagement.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.9
+    note: Asset inventory; HR skill matrix is the people dimension.
+
+# ── A.5 — Assessing impacts of AI systems (companion: ISO/IEC 42005) ──
+
+- id: iso-42001-a-5.2
+  kind: control_aims
+  native_id: A.5.2
+  group: A.5
+  group_name: Assessing impacts of AI systems
+  title: AI system impact assessment process
+  objective: >-
+    Maintain a documented, repeatable AISIA methodology applicable across AI systems in scope.
+  pb_interpretation: >-
+    Mandatory. Cannot be excluded from SoA even by orgs using only third-party models. AISIA
+    methodology aligned with ISO/IEC 42005:2025 covering 10 elements; 42005 Annex E template
+    operationalised.
+  companion_refs:
+  - iso-42005
+  companion_note: >-
+    Methodology must align to ISO/IEC 42005:2025 process structure.
+  owner: PB
+  documented_evidence:
+  - AISIA Methodology document
+  - 42005 Annex E-style template
+  - Threshold table
+  operational_evidence: >-
+    Methodology applied per AI system; deviations documented.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual review + per system AISIA
+  failure_modes: >-
+    Methodology hand-wave; no thresholds; same template for every system regardless of risk.
+  maturity_target: Cert
+  external_safe_phrasing: >-
+    AISIA methodology aligned with ISO/IEC 42005:2025, applied to every AI system in scope.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27701
+    refs:
+    - iso-27701-a1-12
+    note: PIMS PIA / DPIA structurally adjacent — integrated AISIA + DPIA recommended.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-9
+    - eu-ai-act-art-27
+    note: EU AI Act Art. 9 risk + Art. 27 FRIA align with AISIA methodology.
+
+- id: iso-42001-a-5.3
+  kind: control_aims
+  native_id: A.5.3
+  group: A.5
+  group_name: Assessing impacts of AI systems
+  title: Documentation of AI system impact assessments
+  objective: >-
+    Maintain per-system AISIA records.
+  pb_interpretation: >-
+    Per-system AISIA records library. Each record traceable to methodology, dated, approved.
+    Foreseeable-misuse section completed.
+  companion_refs:
+  - iso-42005
+  owner: PB
+  documented_evidence:
+  - Per-system AISIA records
+  - Approval records
+  - Foreseeable-misuse worksheets
+  operational_evidence: >-
+    Each in-scope AI system has a current AISIA approved before go-live.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Pre-deployment + scheduled review + on material change
+  failure_modes: >-
+    AISIA records inaccessible; foreseeable-misuse omitted; AISIA done after deployment.
+  maturity_target: Cert
+  external_safe_phrasing: >-
+    AISIA records are maintained per AI system, including foreseeable-misuse coverage.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27701
+    refs:
+    - iso-27701-a1-12
+    note: PIA records; integrated AISIA + DPIA template.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-9
+    - eu-ai-act-art-27
+    note: AI Act FRIA records align.
+
+- id: iso-42001-a-5.4
+  kind: control_aims
+  native_id: A.5.4
+  group: A.5
+  group_name: Assessing impacts of AI systems
+  title: Assessing AI system impact on individuals or groups
+  objective: >-
+    Within the AISIA, assess impacts on individuals or groups (fairness, privacy, safety, autonomy,
+    employment).
+  pb_interpretation: >-
+    Sector-criticality drives depth: healthcare → patient safety; legal → access to justice and
+    privilege; finance → fair lending and POPIA s.71 automated decision-making. Harm/benefit taxonomy
+    (42005 Annex C) applied.
+  companion_refs:
+  - iso-42005
+  owner: PB
+  documented_evidence:
+  - Per-system harm/benefit taxonomy completed
+  - Sector-specific impact addenda
+  operational_evidence: >-
+    Sample AISIA for a sector use-case shows individual / group impact section completed.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per AISIA
+  failure_modes: >-
+    Selective use of taxonomy; sector-specific impacts ignored; vulnerable-population impacts omitted.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    AISIA covers impacts on individuals and groups using the ISO/IEC 42005 harm/benefit taxonomy.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27701
+    refs:
+    - iso-27701-a1-12
+    note: Individual privacy impact assessed in DPIA.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-27
+    note: FRIA covers fundamental-rights impacts on individuals.
+
+- id: iso-42001-a-5.5
+  kind: control_aims
+  native_id: A.5.5
+  group: A.5
+  group_name: Assessing impacts of AI systems
+  title: Assessing societal impacts
+  objective: >-
+    Within the AISIA, assess societal impacts (public trust, environment, democratic processes,
+    employment).
+  pb_interpretation: >-
+    Broader-than-individual impacts. Annex C.2.4 environmental impact, C.2.11 transparency, public
+    trust considerations.
+  companion_refs:
+  - iso-42005
+  owner: PB
+  documented_evidence:
+  - Societal-impact section in AISIA
+  - Environmental impact estimate
+  operational_evidence: >-
+    Sample AISIA shows societal-impact section.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per AISIA
+  failure_modes: >-
+    Societal-impact section is a placeholder; environmental impact ignored; trust/transparency unaddressed.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    AISIA includes societal-impact analysis covering public trust, environmental and broader
+    socioeconomic considerations.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-27
+    note: Fundamental Rights Impact Assessment includes societal impacts.
+
+# ── A.6 — AI system life cycle ──
+
+- id: iso-42001-a-6.1.1
+  kind: control_aims
+  native_id: A.6.1.1
+  group: A.6
+  group_name: AI system life cycle
+  title: Objectives for responsible development of AI systems
+  objective: >-
+    Translate AI Policy and risk management decisions into engineering objectives for development.
+  pb_interpretation: >-
+    Engineering-level objectives derived from policy: fairness, transparency, robustness, security,
+    privacy, accountability targets per release. Translated from policy to specs.
+  owner: PB
+  documented_evidence:
+  - Engineering objectives register per release
+  - Translation mapping policy → objectives
+  operational_evidence: >-
+    Per-release docs reference the engineering objectives.
+  audit_methods:
+  - Insp
+  cadence: Per release + annual review
+  failure_modes: >-
+    Policy translated as platitudes; engineering objectives not measurable; release docs ignore objectives.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    Engineering objectives for responsible AI development are derived from PrivateBox AI Policy.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-8.25
+    note: Secure development lifecycle policy.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-9
+    note: Risk-management requirements feed development objectives.
+
+- id: iso-42001-a-6.1.2
+  kind: control_aims
+  native_id: A.6.1.2
+  group: A.6
+  group_name: AI system life cycle
+  title: Processes for responsible design and development of AI systems
+  objective: >-
+    Establish SDLC processes that integrate fairness, transparency, robustness, security and privacy
+    by design.
+  pb_interpretation: >-
+    SDLC integrating NIST SP 800-218A (AI overlay on SSDF). Threat modelling extends to AI-specific
+    threats (prompt injection, training-data poisoning, model extraction). Privacy/safety/fairness by
+    design rather than retro-fit.
+  owner: PB
+  documented_evidence:
+  - SDLC SOP including AI-specific overlays
+  - Threat models per AI system
+  - Design sign-off records
+  operational_evidence: >-
+    Sample release shows AI-specific design steps in commit history and review records.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Annual SOP review + per release
+  failure_modes: >-
+    "Just like normal code"; retro-fitted privacy/safety/fairness; AI-specific threats absent from
+    threat model.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    AI design and development integrates AI-specific overlays on PrivateBox's secure SDLC.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-8.25
+    - iso-27001-a-8.26
+    - iso-27001-a-8.27
+    note: Secure SDLC + secure architecture + secure coding practices.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-9
+    - eu-ai-act-art-15
+    note: Risk-management and accuracy/robustness obligations under EU AI Act.
+
+- id: iso-42001-a-6.1.3
+  kind: control_aims
+  native_id: A.6.1.3
+  group: A.6
+  group_name: AI system life cycle
+  title: Documentation of AI system development
+  objective: >-
+    Maintain documented records of AI system development — design specifications, decisions, test
+    results, sign-offs.
+  pb_interpretation: >-
+    AI equivalent of model card + system card + datasheet. Per-system / per-release documentation
+    bundle. Auditable build pipeline.
+  owner: PB
+  documented_evidence:
+  - Model cards per release
+  - System cards / architecture docs
+  - Test results
+  - Sign-off records
+  operational_evidence: >-
+    Recent releases have full development bundles; auditor can sample any release.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per release
+  failure_modes: >-
+    Model cards exist for marquee models but not minor ones; sign-offs verbal; test results unsigned.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-42001-on-prem-update-delivery
+  - scn-42001-package-distribution
+  external_safe_phrasing: >-
+    Per-release model and system cards, test records and sign-offs are maintained for every AI
+    system in scope.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-8.28
+    - iso-27001-a-8.29
+    note: Secure coding + security testing in development.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-11
+    note: Technical documentation for high-risk AI under Annex IV.
+
+- id: iso-42001-a-6.1.4
+  kind: control_aims
+  native_id: A.6.1.4
+  group: A.6
+  group_name: AI system life cycle
+  title: AI system technical documentation regarding bias
+  objective: >-
+    Address bias in AI systems through documented methodology, baselines, and retest cadence.
+  pb_interpretation: >-
+    Awareness statement is NOT a methodology. Defined criteria, baselines, retest cadence per release
+    and on drift trigger. Sector-specific fairness criteria (hiring, credit, healthcare).
+  owner: PB
+  documented_evidence:
+  - Bias methodology
+  - Baseline reports
+  - Retest cadence records
+  - Sector-specific fairness criteria addenda
+  operational_evidence: >-
+    Recent release has bias evaluation against baselines; drift detection reports current.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per release + drift trigger
+  failure_modes: >-
+    Awareness statement instead of method; baselines not maintained; sector criteria absent.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-42001-customer-fine-tuning
+  external_safe_phrasing: >-
+    Bias is assessed pre-release and during operation against documented criteria with sector-specific
+    fairness considerations.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-10
+    note: Data governance and bias mitigation obligations under Art. 10 for high-risk AI.
+
+- id: iso-42001-a-6.1.5
+  kind: control_aims
+  native_id: A.6.1.5
+  group: A.6
+  group_name: AI system life cycle
+  title: AI system robustness and verification & validation
+  objective: >-
+    Establish robustness, verification and validation including adversarial testing, edge cases and
+    red-teaming.
+  pb_interpretation: >-
+    Functional-only testing fails. Adversarial testing (prompt injection, jailbreak, extraction
+    attempts), edge cases, red-teaming, drift testing. Test depth proportional to risk tier.
+  owner: PB
+  documented_evidence:
+  - Test plans (functional + adversarial + edge + drift + fairness + security)
+  - V&V reports per release
+  - Red-team / pen-test reports
+  - Sign-off records
+  operational_evidence: >-
+    Recent releases show full V&V evidence; risk-proportionate depth held.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per release + drift trigger
+  failure_modes: >-
+    Functional-only tests; adversarial tests skipped for "low-risk" use cases; red-team findings
+    not closed.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-42001-third-party-models
+  external_safe_phrasing: >-
+    Pre-release V&V against documented criteria including adversarial and red-team testing.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-8.29
+    note: Security testing in development.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-15
+    note: Accuracy, robustness and cybersecurity obligations for high-risk AI.
+
+- id: iso-42001-a-6.2.1
+  kind: control_aims
+  native_id: A.6.2.1
+  group: A.6
+  group_name: AI system life cycle
+  title: AI system operational concept
+  objective: >-
+    Document the operational concept — how the AI system is meant to run in the customer environment.
+  pb_interpretation: >-
+    Operational concept covers intended uses, environmental assumptions, prerequisites, configurations,
+    integration points. Becomes the baseline for the customer's own ops.
+  owner: PB
+  documented_evidence:
+  - Operational concept document per AI system
+  - Environmental prerequisites
+  operational_evidence: >-
+    Customer-facing ops docs trace to operational concept.
+  audit_methods:
+  - Insp
+  cadence: Per release + on environment change
+  failure_modes: >-
+    Operational concept is engineering-side only; customer ops docs disconnected.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    Documented operational concept covers intended uses, prerequisites and integration assumptions.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-8.25
+    note: SDLC operational handover.
+
+- id: iso-42001-a-6.2.2
+  kind: control_aims
+  native_id: A.6.2.2
+  group: A.6
+  group_name: AI system life cycle
+  title: AI system testing
+  objective: >-
+    Pre-deployment testing depth proportional to risk.
+  pb_interpretation: >-
+    Test plans per system, signed; test results signed; pre-go-live test verification by Change Board.
+  owner: PB
+  documented_evidence:
+  - Test plans per system
+  - Test results / sign-off
+  - Change Board pre-go-live verification
+  operational_evidence: >-
+    Recent releases sampled show signed test plans and results.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per release
+  failure_modes: >-
+    Test depth not proportional to risk; sign-off verbal; test plans missing for low-priority systems.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-42001-managed-deployment
+  external_safe_phrasing: >-
+    Pre-deployment testing against documented plans with depth proportional to risk.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-8.29
+    note: Security testing in development.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-15
+    note: Accuracy and robustness testing obligations.
+
+- id: iso-42001-a-6.2.3
+  kind: control_aims
+  native_id: A.6.2.3
+  group: A.6
+  group_name: AI system life cycle
+  title: Human oversight of AI systems
+  objective: >-
+    Provide genuine human oversight including override authority, accuracy/consistency monitoring,
+    concern channel, and automated-decision-appropriateness assessment per use case.
+  pb_interpretation: >-
+    Genuine override authority — not rubber-stamp. Sector-critical defaults to "human-in-the-loop"
+    for legal / finance / healthcare consequential outputs. Per-system oversight design covering
+    where humans-in-the-loop sit, what they can stop, escalation paths.
+  owner: PB/SH
+  documented_evidence:
+  - Human Oversight SOP
+  - Per-system oversight design
+  - Sector-specific oversight rules
+  operational_evidence: >-
+    Sample customer deployment shows oversight design exists and is operational.
+  audit_methods:
+  - Insp
+  - Int
+  - Obs
+  cadence: Annual SOP review + per system release
+  failure_modes: >-
+    Rubber-stamp oversight; oversight design but no override authority; legal/finance/healthcare
+    deployments lack human-in-the-loop.
+  maturity_target: Cert
+  triggered_by_scenarios:
+  - scn-42001-on-prem-support-access
+  external_safe_phrasing: >-
+    Genuine human oversight per ISO/IEC 42001 A.6.2.3, with sector-specific defaults for high-stakes
+    use cases.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-14
+    note: Human oversight obligations for high-risk AI under Art. 14.
+
+- id: iso-42001-a-6.2.4
+  kind: control_aims
+  native_id: A.6.2.4
+  group: A.6
+  group_name: AI system life cycle
+  title: AI system event logs
+  objective: >-
+    Log AI system events — time, date, inputs (or hashes), outputs, anomalies — with defined retention.
+  pb_interpretation: >-
+    Logs are CUSTOMER-OWNED by default. PrivateBox defines schema and retention guidance; only sees
+    what telemetry contracts permit. Schema supports auditor reconstruction of events.
+  owner: PB/SH
+  documented_evidence:
+  - AI Event-Logging Standard (schema + retention + integrity + customer-control)
+  - Sample logs (anonymised)
+  - Telemetry data dictionary
+  operational_evidence: >-
+    Logs in customer deployments meet the standard; retention held; integrity guarantees maintained.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Annual SOP review + continuous operation
+  failure_modes: >-
+    Logs in customer environment without published spec; retention undefined; integrity unprotected;
+    PB-side retention unbounded.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-42001-on-prem-telemetry
+  - scn-42001-customer-data-troubleshooting
+  - scn-42001-backup-support
+  external_safe_phrasing: >-
+    Auditable AI event-logging standard defining schema, retention and integrity expectations,
+    customer-controlled by default.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-8.15
+    - iso-27001-a-8.16
+    - iso-27001-a-8.17
+    note: 27001 logging / monitoring / clock sync controls.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-12
+    note: Record-keeping for high-risk AI under Art. 12.
+
+- id: iso-42001-a-6.2.5
+  kind: control_aims
+  native_id: A.6.2.5
+  group: A.6
+  group_name: AI system life cycle
+  title: AI system deployment
+  objective: >-
+    Document deployment plans and require pre-go-live verification — impact assessment, testing,
+    oversight, ops docs all complete and signed.
+  pb_interpretation: >-
+    Pre-deployment gate enforced by Change Board. Checklist: AISIA signed, testing signed, oversight
+    in place, ops documentation complete. Verbal sign-off fails the gate.
+  owner: PB/SH
+  owner_by_model:
+    on_prem: PB/SH
+    ai_factory:
+      status: pending
+      open_question: oq-partner-dc-selection
+  documented_evidence:
+  - Deployment Approval Record (gate)
+  - Pre-go-live checklist + signatures
+  - Deployment plan per release
+  operational_evidence: >-
+    Recent deployments traced through Change Board records.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per deployment
+  failure_modes: >-
+    Verbal sign-off; checklist items skipped; deployment without current AISIA.
+  maturity_target: Cert
+  triggered_by_scenarios:
+  - scn-42001-managed-deployment
+  external_safe_phrasing: >-
+    Documented pre-deployment approval gate with signed verification of impact assessment, testing,
+    oversight and operational documentation.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-8.31
+    note: Separation of dev/test/production environments.
+
+# ── A.7 — Data for AI systems ──
+
+- id: iso-42001-a-7.2
+  kind: control_aims
+  native_id: A.7.2
+  group: A.7
+  group_name: Data for AI systems
+  title: Data for development and enhancement of AI systems
+  objective: >-
+    Govern operational data — quality, provenance, security, transparency — used in AI development
+    and enhancement.
+  pb_interpretation: >-
+    Operational data governance frame. Cross-references A.4.3 (data resources). For PB: training/eval
+    data is PB-owned; customer corpora are customer-owned but governed under PB's framework when
+    PB advises on RAG setup.
+  owner: PB/SH
+  documented_evidence:
+  - Data governance framework
+  - Quality / provenance / security / transparency criteria
+  - Customer-corpus advisory templates
+  operational_evidence: >-
+    Sample dataset traces through governance framework end-to-end.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Annual + per dataset
+  failure_modes: >-
+    Provenance partial; quality criteria implicit; transparency on data sources missing.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-42001-rag-setup
+  external_safe_phrasing: >-
+    PrivateBox operates a documented data governance framework covering quality, provenance, security
+    and transparency.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.12
+    note: Data classification.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-10
+    note: Data governance for high-risk AI.
+
+- id: iso-42001-a-7.3
+  kind: control_aims
+  native_id: A.7.3
+  group: A.7
+  group_name: Data for AI systems
+  title: Acquisition of data
+  objective: >-
+    Document data acquisition — categories, quantities, sources, demographics, prior handling, rights
+    (PII, copyright), labelling metadata, provenance.
+  pb_interpretation: >-
+    Per-acquisition record. Particularly important for open-weight model training data (Common Crawl,
+    LAION, etc. — copyright/PII hot-spots). Customer-corpus acquisitions documented when PB advises.
+  owner: PB/SH
+  documented_evidence:
+  - Data acquisition records
+  - Rights register per acquisition
+  - Labelling metadata
+  operational_evidence: >-
+    Sample acquisition has full record; rights cleared before use.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per acquisition
+  failure_modes: >-
+    Acquisition records skipped for "public" data; rights not cleared; demographics undocumented.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-42001-rag-setup
+  external_safe_phrasing: >-
+    Data acquisitions are documented with provenance, rights and demographic metadata.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-10
+    note: Data governance / acquisition obligations.
+
+- id: iso-42001-a-7.4
+  kind: control_aims
+  native_id: A.7.4
+  group: A.7
+  group_name: Data for AI systems
+  title: Quality of data for AI systems
+  objective: >-
+    Define data quality criteria, measurement methods and remediation paths.
+  pb_interpretation: >-
+    Quality criteria documented and measurable. Per-dataset quality reports; remediation procedures
+    for sub-threshold data. Customer corpus advisories include quality gates.
+  owner: PB/SH
+  documented_evidence:
+  - Data quality criteria per dataset class
+  - Quality reports
+  - Remediation procedures
+  operational_evidence: >-
+    Sample dataset has current quality report; remediation actions trace.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per dataset + annual review
+  failure_modes: >-
+    Quality criteria implicit; thresholds undefined; remediation ad-hoc.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-42001-rag-setup
+  external_safe_phrasing: >-
+    Data quality criteria and remediation procedures are documented per dataset class.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27701
+    refs:
+    - iso-27701-a1-12
+    note: PIMS data minimisation / quality overlap.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-10
+    note: Data quality obligations for high-risk AI.
+
+- id: iso-42001-a-7.5
+  kind: control_aims
+  native_id: A.7.5
+  group: A.7
+  group_name: Data for AI systems
+  title: Processing of personal information in AI systems
+  objective: >-
+    Govern processing of personal information by AI systems — integration with POPIA / GDPR / UK GDPR
+    / HIPAA-equivalent.
+  pb_interpretation: >-
+    PB defaults to "no customer PII processing in PB environment" with technical evidence; processing
+    remains in customer's environment. When PB telemetry or support access touches PII, it is
+    exception-only with case-by-case authorisation.
+  owner: SH
+  documented_evidence:
+  - PII / Privacy data flow diagram
+  - Telemetry data dictionary (PII-free statement)
+  - Support-access PII-handling protocol
+  - DPIA / PIA cross-reference
+  operational_evidence: >-
+    Sample telemetry confirms PII-free; sample support session confirms case-by-case authorisation
+    for PII access.
+  audit_methods:
+  - Insp
+  - Samp
+  - Obs
+  cadence: Annual + per change to data flows
+  failure_modes: >-
+    Telemetry leaks PII; standing support access; PII processing not flowed; DPIA missing for AI-with-PII.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-42001-on-prem-telemetry
+  - scn-42001-on-prem-support-access
+  - scn-42001-customer-data-troubleshooting
+  - scn-42001-backup-support
+  - scn-42001-connector-integration
+  external_safe_phrasing: >-
+    By default, PrivateBox does not process customer personal information in its environment;
+    exceptions are case-by-case, customer-authorised and logged.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27701
+    refs:
+    - iso-27701-a1-12
+    - iso-27701-a2-2
+    - iso-27701-a2-3
+    note: PIMS controllers + processors PII processing controls; full PIMS overlay applies.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-10
+    note: Special categories of personal data under Art. 10(5).
+
+# ── A.8 — Information for interested parties ──
+
+- id: iso-42001-a-8.2
+  kind: control_aims
+  native_id: A.8.2
+  group: A.8
+  group_name: Information for interested parties
+  title: System characteristics and documentation
+  objective: >-
+    Document AI system characteristics — intended use, capabilities, limitations, conditions of non-use.
+  pb_interpretation: >-
+    Customer-facing transparency pack including system cards, capabilities, limitations, conditions
+    of non-use, change log. Sales-driven inflation is a typical risk; legal review before publication.
+  owner: PB
+  documented_evidence:
+  - Transparency / User Information Pack per release
+  - Conditions-of-non-use statement
+  - Change log
+  operational_evidence: >-
+    Recent releases have current transparency pack accessible to customers.
+  audit_methods:
+  - Insp
+  cadence: Per release + annual policy review
+  failure_modes: >-
+    Sales-driven inflation; conditions of non-use absent; capability claims unbacked by V&V.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-42001-on-prem-telemetry
+  external_safe_phrasing: >-
+    Customer-facing transparency pack documenting capabilities, limitations and conditions of
+    non-use per release.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.34
+    note: Privacy and protection of personal information; transparency overlap.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-13
+    note: Transparency and provision of information for high-risk AI under Art. 13.
+
+- id: iso-42001-a-8.3
+  kind: control_aims
+  native_id: A.8.3
+  group: A.8
+  group_name: Information for interested parties
+  title: External reporting / disclosure when users interact with AI
+  objective: >-
+    Disclose when users interact with AI; align with EU AI Act Art. 50 transparency obligations.
+  pb_interpretation: >-
+    Customer-facing UI/UX components disclose AI interaction. Transparency aligned with EU AI Act
+    Art. 50 (deepfake / synthetic content / AI-system interaction).
+  owner: PB
+  documented_evidence:
+  - UI/UX disclosure pattern library
+  - Transparency design records
+  operational_evidence: >-
+    Customer-facing surfaces show AI-interaction disclosure.
+  audit_methods:
+  - Insp
+  - Obs
+  cadence: Per release
+  failure_modes: >-
+    Disclosure absent in some UI surfaces; deepfake/synthetic-content marking missing; legal review
+    skipped.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox surfaces disclose AI-interaction in line with EU AI Act Art. 50 transparency
+    obligations.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-50
+    note: Transparency obligations for AI providers and deployers.
+
+- id: iso-42001-a-8.4
+  kind: control_aims
+  native_id: A.8.4
+  group: A.8
+  group_name: Information for interested parties
+  title: Communication of incidents
+  objective: >-
+    Maintain incident-notification procedures with timelines aligned to applicable regulation.
+  pb_interpretation: >-
+    Notification SOPs: EU AI Act Art. 73 (15-day serious-incident); POPIA s.22 breach notification
+    where personal info is involved (72-hour standard pattern). Customer-facing incident notification
+    template.
+  owner: PB
+  documented_evidence:
+  - Incident response plan
+  - 15-day Art. 73 workflow
+  - 72-hour POPIA s.22 pathway
+  - Customer-notification template
+  operational_evidence: >-
+    Past incidents trace through notification timelines.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Annual exercise + per incident
+  failure_modes: >-
+    Late notification; SOP exists but not exercised; customer notification template absent.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    Documented incident-notification procedures aligned to EU AI Act Art. 73 and POPIA s.22 timelines.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.34
+    note: Privacy notification overlap.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-73
+    note: Serious-incident reporting obligations for high-risk AI (15 days).
+
+- id: iso-42001-a-8.5
+  kind: control_aims
+  native_id: A.8.5
+  group: A.8
+  group_name: Information for interested parties
+  title: Information for interested parties
+  objective: >-
+    Provide interested parties with information about limitations, known biases and edge cases.
+  pb_interpretation: >-
+    Goes beyond capability claims — actively communicates limitations, known biases, edge cases.
+    Procurement responses provide depth that sales pages don't.
+  owner: PB
+  documented_evidence:
+  - Limitations and known-issues register
+  - Procurement-facing detailed disclosures
+  operational_evidence: >-
+    Procurement responses sampled show comprehensive limitation coverage.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per release + per procurement engagement
+  failure_modes: >-
+    Limitations omitted from public surfaces; known biases redacted; edge cases not surfaced.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    Documented limitations, known biases and edge cases are communicated to procurement and
+    interested parties.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-13
+    note: Transparency obligations include limitations disclosure.
+
+- id: iso-42001-a-8.6
+  kind: control_aims
+  native_id: A.8.6
+  group: A.8
+  group_name: Information for interested parties
+  title: Communication of changes
+  objective: >-
+    Communicate material changes in AI systems to affected parties.
+  pb_interpretation: >-
+    Customer change-notification pipeline. Material changes trigger notification with sufficient
+    lead time for customer change-management.
+  owner: PB
+  documented_evidence:
+  - Customer change-notification SOP
+  - Notification archive
+  operational_evidence: >-
+    Recent material changes notified per SOP; customer ack records held.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per material change
+  failure_modes: >-
+    Notification skipped for "minor" model swaps that materially change behaviour; lead time too
+    short for customer change-management.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    Material changes to PrivateBox AI systems are communicated to customers under documented SOP
+    with sufficient lead time.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-13
+    note: Transparency includes change notification to deployers.
+
+# ── A.9 — Use of AI systems ──
+
+- id: iso-42001-a-9.2
+  kind: control_aims
+  native_id: A.9.2
+  group: A.9
+  group_name: Use of AI systems
+  title: Processes for responsible use of AI systems
+  objective: >-
+    Establish internal processes that guide responsible use of AI systems.
+  pb_interpretation: >-
+    Internal Acceptable Use Policy for PrivateBox staff and contractors. Covers PB-internal use of
+    AI tooling for development, support, customer engagement.
+  owner: PB
+  documented_evidence:
+  - Internal AI Acceptable Use Policy
+  - Staff acknowledgement records
+  operational_evidence: >-
+    Random staff sampling confirms knowledge of acceptable-use scope.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual + on tool change
+  failure_modes: >-
+    Acceptable use undefined for new tools; staff use AI for sensitive purposes outside policy.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox operates a documented internal acceptable-use policy for AI systems.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.10
+    note: Acceptable use of information and assets.
+
+- id: iso-42001-a-9.3
+  kind: control_aims
+  native_id: A.9.3
+  group: A.9
+  group_name: Use of AI systems
+  title: Objectives for responsible use of AI systems
+  objective: >-
+    Translate responsible-use principles into measurable objectives.
+  pb_interpretation: >-
+    Measurable objectives for responsible internal AI use — e.g., 100% of customer-data interactions
+    via approved tooling; bias reports reviewed before sales deployment.
+  owner: PB
+  documented_evidence:
+  - Responsible-use objectives register
+  - Measurement / KPI links
+  operational_evidence: >-
+    Objectives traced to KPIs and reviewed at management review.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual review
+  failure_modes: >-
+    Objectives platitudinous; no KPI link.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    Responsible-use objectives are measurable and tracked through management review.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.10
+    note: Acceptable use objectives.
+
+- id: iso-42001-a-9.4
+  kind: control_aims
+  native_id: A.9.4
+  group: A.9
+  group_name: Use of AI systems
+  title: Intended use of the AI system
+  objective: >-
+    Operational safeguards prevent out-of-scope use; user training and guidance support intended use.
+  pb_interpretation: >-
+    Critical for legal/finance/healthcare to scope what PrivateBox is NOT used for (e.g., not the
+    sole basis for clinical, credit, or legal-advice decisions). Customer-facing intended-use
+    register with prohibitions.
+  owner: PB/SH
+  documented_evidence:
+  - Intended-use / Prohibited-use Register (sector-specific)
+  - User training materials
+  - Customer-facing scope disclosure
+  operational_evidence: >-
+    Customer deployment artefacts show intended-use scope; staff training current.
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Per release + annual review
+  failure_modes: >-
+    Intended-use undefined; customer deployments drift outside scope without flag; sector-specific
+    prohibitions absent.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-42001-pure-on-prem
+  - scn-42001-customer-fine-tuning
+  external_safe_phrasing: >-
+    Documented intended and prohibited uses per AI system, with sector-specific guidance for
+    high-stakes domains.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.10
+    - iso-27001-a-5.11
+    note: Acceptable use + asset return cover use scope.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-26
+    - eu-ai-act-art-50
+    note: Deployer obligations under Art. 26 + transparency under Art. 50.
+
+# ── A.10 — Third-party and customer relationships ──
+
+- id: iso-42001-a-10.2
+  kind: control_aims
+  native_id: A.10.2
+  group: A.10
+  group_name: Third-party and customer relationships
+  title: Allocating responsibilities (suppliers and partners)
+  objective: >-
+    Allocate AI-related responsibilities across the supply chain — model providers, partners,
+    upstream data sources.
+  pb_interpretation: >-
+    Cannot be excluded from SoA. Due diligence on model providers (open-weight: Meta, Mistral, etc.;
+    proprietary: Anthropic, OpenAI, etc.). Contractual AI requirements; ongoing oversight; model-card
+    review. "Pulled-from-Hugging-Face" model adoption without DD is a known finding pattern.
+  owner: PB
+  owner_by_model:
+    on_prem: PB
+    ai_factory:
+      status: pending
+      open_question: oq-partner-dc-selection
+  documented_evidence:
+  - Supplier / Model-Vendor DD pack
+  - Approved-Models List + approval workflow
+  - Per-model approval records
+  - Contractual AI clauses
+  operational_evidence: >-
+    Sample model approval traces from DD through approval to deployment.
+  audit_methods:
+  - Insp
+  - Int
+  - Samp
+  cadence: Per onboarding + annual review
+  failure_modes: >-
+    Open-weight models adopted without DD; supplier review absent; contractual AI clauses missing
+    from MSAs; partner DC supplier obligations undefined.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-42001-on-prem-update-delivery
+  - scn-42001-connector-integration
+  - scn-42001-package-distribution
+  - scn-42001-third-party-models
+  - scn-42001-ai-factory-ringfenced
+  external_safe_phrasing: >-
+    Documented supplier and model-vendor due-diligence programme covering open-weight and
+    proprietary models.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.19
+    - iso-27001-a-5.20
+    - iso-27001-a-5.21
+    - iso-27001-a-5.22
+    - iso-27001-a-5.23
+    note: Supplier relationships, ICT supply chain, monitoring of supplier services.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-25
+    note: Responsibilities along the AI value chain under Art. 25.
+
+- id: iso-42001-a-10.3
+  kind: control_aims
+  native_id: A.10.3
+  group: A.10
+  group_name: Third-party and customer relationships
+  title: Suppliers
+  objective: >-
+    Govern the supplier-side of AI relationships — DD, contractual obligations, ongoing oversight.
+  pb_interpretation: >-
+    Supplier programme covering model providers, hosting partners, RAG / data acquisition vendors,
+    open-source library providers (with appropriate scope per supplier risk).
+  owner: PB
+  documented_evidence:
+  - Supplier register
+  - Annual supplier review records
+  - Supplier-specific contractual AI clauses
+  operational_evidence: >-
+    Supplier register sampled traces to current contracts and review records.
+  audit_methods:
+  - Insp
+  - Int
+  - Samp
+  cadence: Per onboarding + annual review
+  failure_modes: >-
+    Open-source library providers omitted from supplier programme; reviews skipped.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-42001-pure-on-prem
+  external_safe_phrasing: >-
+    Supplier programme covers AI-relevant vendors with appropriate due-diligence depth.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.19
+    - iso-27001-a-5.20
+    note: Supplier relationships and contractual InfoSec.
+
+- id: iso-42001-a-10.4
+  kind: control_aims
+  native_id: A.10.4
+  group: A.10
+  group_name: Third-party and customer relationships
+  title: Customers
+  objective: >-
+    Govern customer-side AI relationships — intended use, prohibited use, oversight expectations,
+    change notifications, EULA / MSA AI clauses.
+  pb_interpretation: >-
+    Customer-facing AI clauses in MSA / EULA. Customer Shared-Responsibility Matrix (productised
+    version of source §7). Customer enablement pack. Sales staff trained on red-flag claim list.
+  owner: PB
+  documented_evidence:
+  - MSA / EULA AI clauses
+  - Customer Shared-Responsibility Matrix
+  - Customer enablement pack
+  - Trust Centre content
+  operational_evidence: >-
+    Recent customer onboarding sampled shows AI clauses signed, matrix delivered, enablement complete.
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per customer onboarding + per material change
+  failure_modes: >-
+    AI clauses absent from MSA; shared-responsibility matrix verbal; customer enablement skipped.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-42001-pure-on-prem
+  - scn-42001-on-prem-support-access
+  - scn-42001-customer-data-troubleshooting
+  - scn-42001-customer-fine-tuning
+  external_safe_phrasing: >-
+    Documented customer-facing AI obligations covering intended use, prohibited use, oversight
+    expectations and change notifications.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.19
+    note: Supplier relationships pattern applied to customer side.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-25
+    - eu-ai-act-art-26
+    note: Value-chain responsibilities + deployer obligations.
+

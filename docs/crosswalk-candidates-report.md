@@ -30,12 +30,8 @@ Score components:
   - shared: support
 
 ### iso-27701-a3-5.16-8.5 — Identity management & privileged access
-- **iso-27001-a-8.5** — Secure authentication
-  - score: 0.497, kw: 0.097, id_match: True, struct: False
-  - shared: authentication, mfa, strong
-- **iso-27001-a-5.16** — Identity management
-  - score: 0.456, kw: 0.056, id_match: True, struct: False
-  - shared: identity, management
+- **iso-42001-a-8.5** — Information for interested parties
+  - score: 0.400, kw: 0.0, id_match: True, struct: False
 
 ### iso-27701-a3-5.19-5.23 — Supplier / cloud security
 - **iso-27001-a-5.19** — Information security in supplier relationships
@@ -90,60 +86,49 @@ Score components:
   - shared: development
 
 ### iso-27701-cl-10.1 — Continual improvement
-- **iso-27001-cl-10.1** — Continual improvement
-  - score: 0.796, kw: 0.296, id_match: True, struct: True
-  - shared: adequacy, continual, continually, effectiveness, improve, improvement, not, suitability
+- **iso-42001-cl-10.1** — Continual improvement
+  - score: 0.712, kw: 0.212, id_match: True, struct: True
+  - shared: adequacy, continual, continually, effectiveness, improve, improvement, suitability
 
 ### iso-27701-cl-10.2 — Nonconformity and corrective action
-- **iso-27001-cl-10.2** — Nonconformity and corrective action
-  - score: 0.661, kw: 0.161, id_match: True, struct: True
-  - shared: action, capa, corrective, nonconformities, nonconformity
+- **iso-42001-cl-10.2** — Nonconformity and corrective action
+  - score: 0.694, kw: 0.194, id_match: True, struct: True
+  - shared: action, analysis, capa, corrective, nonconformities, nonconformity
 
 ### iso-27701-cl-4.1 — Understanding the organization and its context
-- **iso-27001-cl-4.1** — Understanding the organisation and its context
-  - score: 0.690, kw: 0.19, id_match: True, struct: True
-  - shared: climate, context, determine, external, internal, issues, its, understanding
+- **iso-42001-cl-4.1** — Understanding the organisation and its context
+  - score: 0.739, kw: 0.239, id_match: True, struct: True
+  - shared: confidential, context, customer, determine, external, firms, internal, issues, its, relevant
 
 ### iso-27701-cl-4.2 — Understanding the needs and expectations of interested parties
-- **iso-27001-cl-4.2** — Understanding the needs and expectations of interested parties
-  - score: 0.663, kw: 0.163, id_match: True, struct: True
-  - shared: customer, expectations, identify, interested, needs, parties, their, understanding
+- **iso-42001-cl-4.2** — Understanding the needs and expectations of interested parties
+  - score: 0.744, kw: 0.244, id_match: True, struct: True
+  - shared: expectations, ico, identify, interested, legal, needs, parties, regulators, subjects, their
 
 ### iso-27701-cl-4.3 — Determining the scope of the PIMS
-- **iso-27001-cl-4.3** — Determining the scope of the ISMS
-  - score: 0.659, kw: 0.159, id_match: True, struct: True
-  - shared: boundaries, determining, optional, product, scope, support, update
+- **iso-42001-cl-4.3** — Determining the scope of the AI management system
+  - score: 0.578, kw: 0.078, id_match: True, struct: True
+  - shared: boundaries, decisions, determining, scope
 
 ### iso-27701-cl-4.4 — Privacy information management system
-- **iso-27001-cl-4.4** — Information security management system
-  - score: 0.633, kw: 0.133, id_match: True, struct: True
-  - shared: continually, improve, isms, management
-- **iso-27001-cl-10.1** — Continual improvement
-  - score: 0.161, kw: 0.161, id_match: False, struct: False
-  - shared: continually, improve, isms, management, not
+- **iso-42001-cl-4.4** — AI management system
+  - score: 0.714, kw: 0.214, id_match: True, struct: True
+  - shared: aims, continually, improve, isms, management, pims
 
 ### iso-27701-cl-5.1 — Leadership and commitment
-- **iso-27001-cl-5.1** — Leadership and commitment
-  - score: 0.622, kw: 0.122, id_match: True, struct: True
-  - shared: approve, commitment, leadership, management, top
-- **iso-27001-a-5.1** — Policies for information security
-  - score: 0.473, kw: 0.073, id_match: True, struct: False
-  - shared: management, privacy, security
+- **iso-42001-cl-5.1** — Leadership and commitment
+  - score: 0.587, kw: 0.087, id_match: True, struct: True
+  - shared: commitment, leadership, management, top
 
 ### iso-27701-cl-5.2 — Privacy policy
-- **iso-27001-cl-5.2** — Policy
-  - score: 0.671, kw: 0.171, id_match: True, struct: True
-  - shared: continual, improvement, objectives, policy, privacy, requirements
-- **iso-27001-a-5.2** — Information security roles and responsibilities
-  - score: 0.427, kw: 0.027, id_match: True, struct: False
-  - shared: privacy
+- **iso-42001-cl-5.2** — AI Policy
+  - score: 0.587, kw: 0.087, id_match: True, struct: True
+  - shared: describe, legal, policy, requirements
 
 ### iso-27701-cl-5.3 — Roles, responsibilities and authorities
-- **iso-27001-cl-5.3** — Organisational roles, responsibilities and authorities
-  - score: 0.684, kw: 0.184, id_match: True, struct: True
-  - shared: assign, authorities, lead, privacy, reporting, responsibilities, roles
-- **iso-27001-a-5.3** — Segregation of duties
-  - score: 0.400, kw: 0.0, id_match: True, struct: False
+- **iso-42001-cl-5.3** — Roles, responsibilities and authorities
+  - score: 0.616, kw: 0.116, id_match: True, struct: True
+  - shared: authorities, lead, reporting, responsibilities, roles
 
 ### iso-27701-cl-6.1 — Actions to address risks and opportunities (incl. privacy risk)
 - **iso-27001-a-6.1** — Screening
@@ -151,85 +136,69 @@ Score components:
   - shared: access, risk
 
 ### iso-27701-cl-6.2 — Privacy objectives and planning to achieve them
-- **iso-27001-cl-6.2** — Information security objectives and planning to achieve them
-  - score: 0.658, kw: 0.158, id_match: True, struct: True
-  - shared: achieve, measurable, objectives, planning, sla, them
-- **iso-27001-a-6.2** — Terms and conditions of employment
-  - score: 0.400, kw: 0.0, id_match: True, struct: False
+- **iso-42001-cl-6.2** — AI objectives and planning to achieve them
+  - score: 0.686, kw: 0.186, id_match: True, struct: True
+  - shared: achieve, functions, levels, measurable, objectives, planning, relevant, them
 
 ### iso-27701-cl-6.3 — Planning of changes
-- **iso-27001-cl-6.3** — Planning of changes
-  - score: 0.594, kw: 0.094, id_match: True, struct: True
-  - shared: changes, new, planning
-- **iso-27001-a-6.3** — Information security awareness, education and training
-  - score: 0.400, kw: 0.0, id_match: True, struct: False
+- **iso-42001-cl-6.3** — Planning of changes
+  - score: 0.586, kw: 0.086, id_match: True, struct: True
+  - shared: changes, model, planning
 
 ### iso-27701-cl-7.1 — Resources
-- **iso-27001-cl-7.1** — Resources
-  - score: 0.638, kw: 0.138, id_match: True, struct: True
-  - shared: budget, provide, resources, security
-- **iso-27001-a-7.1** — Physical security perimeters
-  - score: 0.431, kw: 0.031, id_match: True, struct: False
-  - shared: security
+- **iso-42001-cl-7.1** — Resources
+  - score: 0.729, kw: 0.229, id_match: True, struct: True
+  - shared: budget, continual, establishment, implementation, improvement, maintenance, provide, resources
 
 ### iso-27701-cl-7.2 — Competence
-- **iso-27001-cl-7.2** — Competence
-  - score: 0.581, kw: 0.081, id_match: True, struct: True
-  - shared: competence, competent, support
-- **iso-27001-a-7.2** — Physical entry
-  - score: 0.436, kw: 0.036, id_match: True, struct: False
-  - shared: need
+- **iso-42001-cl-7.2** — Competence
+  - score: 0.625, kw: 0.125, id_match: True, struct: True
+  - shared: basis, competence, competent, education, experience, training
 
 ### iso-27701-cl-7.3 — Awareness
-- **iso-27001-cl-7.3** — Awareness
-  - score: 0.633, kw: 0.133, id_match: True, struct: True
-  - shared: awareness, contribution, policy, their
-- **iso-27001-a-7.3** — Securing offices, rooms and facilities
-  - score: 0.436, kw: 0.036, id_match: True, struct: False
-  - shared: relevant
+- **iso-42001-cl-7.3** — Awareness
+  - score: 0.643, kw: 0.143, id_match: True, struct: True
+  - shared: aware, awareness, contribution, policy, their
 
 ### iso-27701-cl-7.4 — Communication
-- **iso-27001-cl-7.4** — Communication
-  - score: 0.700, kw: 0.2, id_match: True, struct: True
-  - shared: communication, communications, determine, external, internal, relevant
-- **iso-27001-a-7.4** — Physical security monitoring
-  - score: 0.400, kw: 0.0, id_match: True, struct: False
+- **iso-42001-cl-7.4** — Communication
+  - score: 0.810, kw: 0.31, id_match: True, struct: True
+  - shared: comms, communication, communications, customers, determine, external, incident, internal, relevant
 
 ### iso-27701-cl-7.5 — Documented information
-- **iso-27001-a-7.5** — Protecting against physical and environmental threats
-  - score: 0.400, kw: 0.0, id_match: True, struct: False
+- **iso-42001-cl-7.5** — Documented information
+  - score: 0.559, kw: 0.059, id_match: True, struct: True
+  - shared: retention, version
 
 ### iso-27701-cl-8.1 — Operational planning and control
-- **iso-27001-cl-8.1** — Operational planning and control
-  - score: 0.598, kw: 0.098, id_match: True, struct: True
-  - shared: operational, plan, planning, processes
-- **iso-27001-a-8.1** — User endpoint devices
-  - score: 0.400, kw: 0.0, id_match: True, struct: False
+- **iso-42001-cl-8.1** — Operational planning and control
+  - score: 0.643, kw: 0.143, id_match: True, struct: True
+  - shared: meet, operational, plan, planning, processes, requirements
 
 ### iso-27701-cl-8.2 — Privacy risk assessment (operational)
-- **iso-27001-cl-8.2** — Information security risk assessment
-  - score: 0.652, kw: 0.152, id_match: True, struct: True
-  - shared: assessment, assessments, risk, support, telemetry
-- **iso-27001-a-8.2** — Privileged access rights
-  - score: 0.436, kw: 0.036, id_match: True, struct: False
-  - shared: support
+- **iso-42001-cl-8.2** — AI risk assessment (operational)
+  - score: 0.611, kw: 0.111, id_match: True, struct: True
+  - shared: assessment, assessments, operational, risk
 
 ### iso-27701-cl-8.3 — Privacy risk treatment
-- **iso-27001-cl-8.3** — Information security risk treatment
-  - score: 0.625, kw: 0.125, id_match: True, struct: True
-  - shared: plan, risk, treatment
-- **iso-27001-a-8.3** — Information access restriction
-  - score: 0.400, kw: 0.0, id_match: True, struct: False
+- **iso-42001-cl-8.3** — AI risk treatment (operational)
+  - score: 0.786, kw: 0.286, id_match: True, struct: True
+  - shared: closure, plan, risk, soa, treatment, treatments
 
 ### iso-27701-cl-9.1 — Monitoring, measurement, analysis and evaluation
-- **iso-27001-cl-9.1** — Monitoring, measurement, analysis and evaluation
-  - score: 0.636, kw: 0.136, id_match: True, struct: True
+- **iso-42001-cl-9.1** — Monitoring, measurement, analysis and evaluation
+  - score: 0.622, kw: 0.122, id_match: True, struct: True
   - shared: analysis, effectiveness, evaluation, measure, measurement, monitoring
 
+### iso-27701-cl-9.2 — Internal audit
+- **iso-42001-cl-9.2** — Internal audit
+  - score: 0.605, kw: 0.105, id_match: True, struct: True
+  - shared: audit, internal, intervals, planned
+
 ### iso-27701-cl-9.3 — Management review
-- **iso-27001-cl-9.3.1** — Management review — general
-  - score: 0.208, kw: 0.208, id_match: False, struct: False
-  - shared: decisions, intervals, management, planned, top
+- **iso-42001-cl-9.3** — Management review
+  - score: 0.650, kw: 0.15, id_match: True, struct: True
+  - shared: decisions, intervals, management, minutes, planned, top
 
 
 ## Source framework: eu-ai-act

@@ -57,6 +57,7 @@ function getFrameworkLabel(fwId) {
   const labels = {
     'iso-27001': 'ISO 27001',
     'iso-27701': 'ISO 27701',
+    'iso-42001': 'ISO 42001',
     'eu-ai-act': 'EU AI Act',
   };
   return labels[fwId] || fwId;
@@ -67,6 +68,7 @@ function frameworkAccent(fwId) {
   return {
     'iso-27001': 'bg-stone-700',
     'iso-27701': 'bg-emerald-700',
+    'iso-42001': 'bg-indigo-700',
     'eu-ai-act': 'bg-amber-700',
   }[fwId] || 'bg-stone-400';
 }
@@ -75,6 +77,7 @@ function frameworkLabelClass(fwId) {
   return {
     'iso-27001': 'text-stone-700',
     'iso-27701': 'text-emerald-800',
+    'iso-42001': 'text-indigo-800',
     'eu-ai-act': 'text-amber-800',
   }[fwId] || 'text-stone-600';
 }
@@ -150,6 +153,15 @@ const FRAMEWORK_OVERVIEW = {
       { label: 'Roles', description: 'Provider builds it. Deployer uses it. Importer brings it in. Article 25 can flip a deployer into a provider — material role-flip exposure.' },
       { label: 'Annex III', description: 'The list of high-risk use cases (employment screening, creditworthiness, education access, etc). Triggers full Chapter III obligations.' },
       { label: 'Phased dates', description: 'Feb 2025: prohibited practices + AI literacy. Aug 2025: GPAI. Aug 2026: most provisions. Aug 2027: legacy GPAI grace ends.' },
+    ],
+  },
+  'iso-42001': {
+    plain_english: "ISO/IEC 42001 is the international standard for an AI Management System (AIMS). It uses the same Annex SL high-level structure as ISO 27001 and 27701 — clauses 4–10 describe the management system itself — and adds AI-specific controls in Annex A across nine objectives (A.2–A.10) covering policy, governance, impact assessment, lifecycle, data, transparency, use, and supplier relationships. Two companion guidance standards deepen it: ISO/IEC 42005:2025 defines the AI System Impact Assessment methodology referenced from Clause 6.1.4 and A.5; ISO/IEC 42006:2025 sets the auditor competence and audit-time rules certification bodies must meet. Organisations are independently certified via Stage 1 documentation review + Stage 2 implementation audit, with annual surveillance.",
+    key_concepts: [
+      { label: 'AIMS', description: 'AI Management System — the whole governance frame. Sits alongside an ISMS (27001) and PIMS (27701) under a single integrated management system, which is how PrivateBox runs it.' },
+      { label: 'AISIA', description: 'AI System Impact Assessment — required by Clause 6.1.4 and Annex A.5; depth defined by ISO/IEC 42005:2025. Foreseeable-misuse coverage is the most-commonly-missed element.' },
+      { label: 'Annex A controls', description: '38–39 controls across A.2–A.10 (numbering varies in secondary sources; published ISO PDF is canonical). SoA must address every one — applicability, owner, evidence, justification for exclusions.' },
+      { label: 'Designed-in-alignment', description: 'PrivateBox\'s pre-certification posture: "designed in alignment with ISO/IEC 42001:2023" — never claim certified until an accredited body issues a certificate against a defined scope.' },
     ],
   },
 };
