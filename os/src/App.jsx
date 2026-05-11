@@ -1,7 +1,9 @@
-import React, { useState, useMemo, useCallback, createContext, useContext } from 'react';
+import React, { useState, useMemo, useCallback, useEffect, createContext, useContext } from 'react';
 import {
   ChevronRight,
   ChevronLeft,
+  ChevronsLeft,
+  ChevronsRight,
   Home,
   Layers,
   HelpCircle,
@@ -14,10 +16,13 @@ import {
   Clock,
   ArrowRight,
   Bookmark,
+  MessageCircle,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from 'lucide-react';
 
 import DATA from './data.json';
-import Assistant from './components/Assistant.jsx';
+import { AssistantTrigger, AssistantPane } from './components/Assistant.jsx';
 
 // =============================================================================
 // Data
@@ -375,9 +380,9 @@ function Field({ label, children, className = '' }) {
 // Header
 // =============================================================================
 
-function Header({ view, navigate, back, canBack }) {
+function Header({ view, navigate, back, canBack, chatOpen, onToggleChat }) {
   return (
-    <header className="border-b border-stone-300 bg-stone-50 sticky top-0 z-10">
+    <header className="border-b border-stone-300 bg-stone-50 sticky top-0 z-10 flex-shrink-0">
       <div className="px-6 py-3 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button
@@ -390,6 +395,19 @@ function Header({ view, navigate, back, canBack }) {
         </div>
         <div className="flex items-center gap-3">
           <LensToggle />
+          <button
+            onClick={onToggleChat}
+            title={chatOpen ? 'Close assistant (Esc)' : 'Ask assistant (⌘K / Ctrl+K)'}
+            className={`font-mono text-xs flex items-center gap-1.5 px-2 py-1 rounded border transition-colors ${
+              chatOpen
+                ? 'border-stone-900 bg-stone-900 text-stone-50 hover:bg-stone-800'
+                : 'border-stone-300 bg-white text-stone-700 hover:border-stone-400 hover:text-stone-900'
+            }`}
+          >
+            <MessageCircle size={12} />
+            <span>assistant</span>
+            <span className="text-[10px] opacity-60">⌘K</span>
+          </button>
           {canBack && (
             <button
               onClick={back}
@@ -466,11 +484,65 @@ function Breadcrumb({ view, navigate }) {
 // Sidebar
 // =============================================================================
 
-function Sidebar({ navigate, currentView }) {
+function Sidebar({ navigate, currentView, collapsed, onToggle }) {
   const isActive = (type, id) => {
     if (currentView.type !== type) return false;
     return id === undefined || currentView.id === id;
   };
+
+  // ── Collapsed (icon-only) mode ─────────────────────────────────────────────
+  if (collapsed) {
+    const iconBtn = (onClick, active, icon, tooltip) => (
+      <button
+        onClick={onClick}
+        title={tooltip}
+        className={`w-full h-10 flex items-center justify-center transition-colors border-l-2 ${
+          active
+            ? 'bg-amber-50 border-amber-700 text-amber-900'
+            : 'border-transparent text-stone-600 hover:bg-stone-100 hover:text-stone-900'
+        }`}
+      >
+        {icon}
+      </button>
+    );
+
+    return (
+      <aside
+        className="w-12 border-r border-stone-200 bg-stone-50 sticky overflow-y-auto py-2 flex-shrink-0"
+        style={{ top: '73px', height: 'calc(100vh - 73px)' }}
+      >
+        <button
+          onClick={onToggle}
+          title="Expand sidebar (⌘B / Ctrl+B)"
+          className="w-full h-10 flex items-center justify-center text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-colors"
+        >
+          <PanelLeftOpen size={16} />
+        </button>
+        <div className="my-1 mx-2 border-t border-stone-200" />
+        {iconBtn(() => navigate({ type: 'home' }), isActive('home'), <Home size={15} />, 'Home')}
+        <div className="my-1 mx-2 border-t border-stone-200" />
+        {Object.values(DATA.frameworks).map(fw => (
+          <button
+            key={fw._id}
+            onClick={() => navigate({ type: 'framework', id: fw._id })}
+            title={getFrameworkLabel(fw._id)}
+            className={`w-full h-10 flex items-center justify-center transition-colors border-l-2 ${
+              isActive('framework', fw._id)
+                ? 'bg-amber-50 border-amber-700'
+                : 'border-transparent hover:bg-stone-100'
+            }`}
+          >
+            <FrameworkDot fwId={fw._id} />
+          </button>
+        ))}
+        <div className="my-1 mx-2 border-t border-stone-200" />
+        {iconBtn(() => navigate({ type: 'openq' }), isActive('openq'), <HelpCircle size={15} />, 'Open Questions')}
+        {iconBtn(() => navigate({ type: 'graph' }), isActive('graph'), <Network size={15} />, 'Cross-Framework Graph')}
+      </aside>
+    );
+  }
+
+  // ── Expanded mode ──────────────────────────────────────────────────────────
   const item = (label, onClick, active, icon, count) => (
     <button
       onClick={onClick}
@@ -490,9 +562,19 @@ function Sidebar({ navigate, currentView }) {
 
   return (
     <aside
-      className="w-64 border-r border-stone-200 bg-stone-50 sticky overflow-y-auto py-4"
+      className="w-64 border-r border-stone-200 bg-stone-50 sticky overflow-y-auto py-4 flex-shrink-0"
       style={{ top: '73px', height: 'calc(100vh - 73px)' }}
     >
+      <div className="px-3 mb-2 flex items-center justify-between">
+        <span className="font-mono text-[10px] uppercase tracking-wider text-stone-500">Navigate</span>
+        <button
+          onClick={onToggle}
+          title="Collapse sidebar (⌘B / Ctrl+B)"
+          className="p-1 -mr-1 text-stone-400 hover:text-stone-700 hover:bg-stone-100 rounded transition-colors"
+        >
+          <PanelLeftClose size={14} />
+        </button>
+      </div>
       <div className="mb-6">
         {item('Home', () => navigate({ type: 'home' }), isActive('home'), <Home size={14} />)}
       </div>
@@ -2104,10 +2186,45 @@ function GraphView({ navigate }) {
 // App shell
 // =============================================================================
 
+// ── LocalStorage helpers for persisted UI prefs ────────────────────────────────
+const LS_KEYS = {
+  chatOpen: 'pb-ui-chat-open',
+  sidebarMode: 'pb-ui-sidebar-mode',     // 'expanded' | 'collapsed'
+  chatWidth: 'pb-ui-chat-width',
+};
+function readLS(key, fallback) {
+  if (typeof window === 'undefined') return fallback;
+  try {
+    const v = localStorage.getItem(key);
+    return v === null ? fallback : JSON.parse(v);
+  } catch {
+    return fallback;
+  }
+}
+function writeLS(key, value) {
+  if (typeof window === 'undefined') return;
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch { /* ignore */ }
+}
+
 export default function App() {
   const [view, setView] = useState({ type: 'home' });
   const [history, setHistory] = useState([]);
   const [lens, setLens] = useState('both');
+
+  // UI state — chat + sidebar
+  const [chatOpen, setChatOpen] = useState(() => readLS(LS_KEYS.chatOpen, false));
+  const [sidebarMode, setSidebarMode] = useState(() => readLS(LS_KEYS.sidebarMode, 'expanded'));
+  // Tracks the sidebar mode at the moment chat opened, so we can restore on close
+  // (unless the user manually toggled sidebar during the open session).
+  const [prevSidebarMode, setPrevSidebarMode] = useState(null);
+  // Resizable chat pane width
+  const [chatWidth, setChatWidth] = useState(() => readLS(LS_KEYS.chatWidth, 480));
+  // Pending message from the trigger bar — sent on pane mount
+  const [pendingMessage, setPendingMessage] = useState(null);
+
+  useEffect(() => { writeLS(LS_KEYS.chatOpen, chatOpen); }, [chatOpen]);
+  useEffect(() => { writeLS(LS_KEYS.sidebarMode, sidebarMode); }, [sidebarMode]);
+  useEffect(() => { writeLS(LS_KEYS.chatWidth, chatWidth); }, [chatWidth]);
 
   const navigate = useCallback((newView) => {
     setHistory(h => [...h, view]);
@@ -2124,14 +2241,78 @@ export default function App() {
     window.scrollTo(0, 0);
   }, []);
 
+  const openChat = useCallback((initialMessage) => {
+    if (sidebarMode === 'expanded') {
+      setPrevSidebarMode('expanded');
+      setSidebarMode('collapsed');
+    }
+    setChatOpen(true);
+    if (initialMessage) setPendingMessage(initialMessage);
+  }, [sidebarMode]);
+
+  const closeChat = useCallback(() => {
+    setChatOpen(false);
+    // Restore sidebar only if it was auto-collapsed at open time AND user didn't
+    // override the mode while chat was open.
+    if (prevSidebarMode === 'expanded' && sidebarMode === 'collapsed') {
+      setSidebarMode('expanded');
+    }
+    setPrevSidebarMode(null);
+  }, [prevSidebarMode, sidebarMode]);
+
+  const toggleChat = useCallback(() => {
+    if (chatOpen) closeChat();
+    else openChat();
+  }, [chatOpen, openChat, closeChat]);
+
+  const toggleSidebar = useCallback(() => {
+    setSidebarMode(m => m === 'expanded' ? 'collapsed' : 'expanded');
+    // User explicit toggle — clear the auto-restore memory
+    setPrevSidebarMode(null);
+  }, []);
+
+  // Global keyboard shortcuts: ⌘K / Ctrl+K, ⌘B / Ctrl+B, Esc
+  useEffect(() => {
+    const handler = (e) => {
+      const meta = e.metaKey || e.ctrlKey;
+      if (meta && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        toggleChat();
+      } else if (meta && e.key.toLowerCase() === 'b') {
+        e.preventDefault();
+        toggleSidebar();
+      } else if (e.key === 'Escape' && chatOpen) {
+        // Only close if no input is focused — don't fight other esc handlers
+        const tag = document.activeElement?.tagName;
+        if (tag !== 'INPUT' && tag !== 'TEXTAREA') {
+          closeChat();
+        }
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [toggleChat, toggleSidebar, closeChat, chatOpen]);
+
   return (
     <LensContext.Provider value={lens}>
       <LensSetterContext.Provider value={setLens}>
-        <div className="min-h-screen bg-stone-50 text-stone-900" style={{ fontFamily: 'ui-sans-serif, system-ui, sans-serif' }}>
-          <Header view={view} navigate={navigate} back={back} canBack={history.length > 0} />
-          <div className="flex">
-            <Sidebar navigate={navigate} currentView={view} />
-            <main className="flex-1 px-8 py-10 max-w-none overflow-x-hidden">
+        <div className="min-h-screen bg-stone-50 text-stone-900 flex flex-col" style={{ fontFamily: 'ui-sans-serif, system-ui, sans-serif' }}>
+          <Header
+            view={view}
+            navigate={navigate}
+            back={back}
+            canBack={history.length > 0}
+            chatOpen={chatOpen}
+            onToggleChat={toggleChat}
+          />
+          <div className="flex flex-1 min-h-0">
+            <Sidebar
+              navigate={navigate}
+              currentView={view}
+              collapsed={sidebarMode === 'collapsed'}
+              onToggle={toggleSidebar}
+            />
+            <main className={`flex-1 min-w-0 px-8 py-10 ${chatOpen ? 'pb-10' : 'pb-20'} overflow-x-hidden`}>
               {view.type === 'home' && <HomePage navigate={navigate} />}
               {view.type === 'framework' && <FrameworkDetail fwId={view.id} navigate={navigate} />}
               {view.type === 'requirement' && <RequirementDetail reqId={view.id} navigate={navigate} />}
@@ -2139,10 +2320,28 @@ export default function App() {
               {view.type === 'openq' && <OpenQuestionsView navigate={navigate} focusId={view.id} />}
               {view.type === 'graph' && <GraphView navigate={navigate} />}
             </main>
+            {chatOpen && (
+              <AssistantPane
+                view={view}
+                lens={lens}
+                data={DATA}
+                navigate={navigate}
+                onClose={closeChat}
+                width={chatWidth}
+                onResize={setChatWidth}
+                pendingMessage={pendingMessage}
+                onConsumePendingMessage={() => setPendingMessage(null)}
+              />
+            )}
           </div>
-          {/* Bottom drawer compliance assistant — anti-context-rot chat UI */}
-          <div style={{ paddingBottom: '60px' }} />
-          <Assistant view={view} lens={lens} data={DATA} navigate={navigate} />
+          {/* Bottom trigger bar — only when chat is closed */}
+          {!chatOpen && (
+            <AssistantTrigger
+              view={view}
+              data={DATA}
+              onOpen={openChat}
+            />
+          )}
         </div>
       </LensSetterContext.Provider>
     </LensContext.Provider>

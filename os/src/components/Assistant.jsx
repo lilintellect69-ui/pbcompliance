@@ -1,16 +1,12 @@
-// Compliance Assistant — bottom drawer chat UI.
+// Compliance Assistant — split into two exports:
+//   - AssistantTrigger: the always-visible bottom input bar that opens the
+//     pane on focus or first Enter
+//   - AssistantPane: the right-side chat panel that lives as a flex child of
+//     the main layout (sidebar | page | chat). Has its own header, history,
+//     input, and resize handle.
 //
-// Per design brief §5 Phase 3:
-//   - Collapsed (default): 48px input bar at viewport bottom with placeholder
-//     reflecting current page
-//   - Expanded: 60vh panel with chat history, streaming responses, context
-//     badge showing scope, suggested-question chips
-//   - Streaming markdown render (react-markdown + remark-gfm)
-//   - Citation [id](#id) markdown links → intercepted, route to the right page
-//   - Conversation history in localStorage, capped at last 10 turns
-//   - Reset button + toggle for "reset on page change"
-//
-// Backend: POST /api/chat — streaming SSE events.
+// State machine + auto-collapse-sidebar logic lives in App.jsx; this file is
+// pure UI + the streaming SSE consumer.
 
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
@@ -23,10 +19,14 @@ import {
   X,
   Loader2,
   Sparkles,
+  GripVertical,
 } from 'lucide-react';
 
 const STORAGE_PREFIX = 'pb-assistant-';
-const MAX_TURNS = 10; // user + assistant pairs
+const MAX_TURNS = 10; // user + assistant pairs kept in localStorage and re-sent
+
+const PANE_MIN_WIDTH = 360;
+const PANE_MAX_WIDTH = 720;
 
 // ─── Route mapping (App.jsx view → backend route shape) ──────────────────────
 
@@ -52,13 +52,9 @@ function viewToRoute(view) {
 
 function resolveIdToView(id, data) {
   if (!id) return null;
-  // Framework top-level ID
   if (data.frameworks[id]) return { type: 'framework', id };
-  // Scenario
   if (id.startsWith('scn-')) return { type: 'scenario', id };
-  // Open question
   if (id.startsWith('oq-')) return { type: 'openq', id };
-  // Requirement — must exist in some framework's requirements
   for (const fw of Object.values(data.frameworks)) {
     if ((fw.requirements || []).some((r) => r.id === id)) {
       return { type: 'requirement', id };
@@ -168,9 +164,6 @@ async function* parseSSE(response) {
 }
 
 // ─── OS-native markdown components ───────────────────────────────────────────
-// No `prose` plugin — every element styled to match the OS aesthetic:
-// serif for headings (mirrors "Compliance alignment record" title style),
-// stone palette, mono IDs as pill chips, light borders, tight rhythm.
 
 function buildMarkdownComponents(onCitationClick) {
   return {
@@ -234,7 +227,7 @@ function buildMarkdownComponents(onCitationClick) {
           {children}
         </code>
       ),
-    pre: ({ children }) => <>{children}</>, // unwrap; we style <code> directly
+    pre: ({ children }) => <>{children}</>,
     table: ({ children }) => (
       <div className="my-3 -mx-1 overflow-x-auto">
         <table className="min-w-full text-[12.5px] border border-stone-200 rounded-md overflow-hidden">{children}</table>
@@ -269,7 +262,7 @@ function ChatBubble({ role, content, mode, onCitationClick }) {
   if (isUser) {
     return (
       <div className="flex justify-end mb-4">
-        <div className="max-w-[80%] rounded-md px-3 py-2 text-[14px] leading-relaxed bg-stone-900 text-stone-50 whitespace-pre-wrap">
+        <div className="max-w-[85%] rounded-md px-3 py-2 text-[14px] leading-relaxed bg-stone-900 text-stone-50 whitespace-pre-wrap">
           {content}
         </div>
       </div>
@@ -293,10 +286,97 @@ function ChatBubble({ role, content, mode, onCitationClick }) {
   );
 }
 
-// ─── Main Assistant component ────────────────────────────────────────────────
+// ─── Context badge helper ────────────────────────────────────────────────────
 
-export default function Assistant({ view, lens, data, navigate }) {
-  const [isOpen, setIsOpen] = useState(false);
+function buildContextBadge(view, data) {
+  switch (view?.type) {
+    case 'requirement': {
+      for (const fw of Object.values(data.frameworks)) {
+        const r = (fw.requirements || []).find((x) => x.id === view.id);
+        if (r) return `${fw._id || fw.id} · ${r.native_id || r.id}`;
+      }
+      return view.id;
+    }
+    case 'framework':
+      return data.frameworks[view.id]?._id || view.id;
+    case 'scenario':
+      return `scenario · ${view.id}`;
+    case 'openq':
+      return view.id ? `OQ · ${view.id}` : 'all open questions';
+    case 'graph':
+      return 'cross-framework graph';
+    case 'home':
+    default:
+      return 'home';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// AssistantTrigger — bottom input bar (entry point when chat is closed)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+export function AssistantTrigger({ view, data, onOpen }) {
+  const [input, setInput] = useState('');
+  const placeholder = placeholderForView(view, data);
+
+  const submit = useCallback(() => {
+    const t = input.trim();
+    if (!t) {
+      onOpen();
+    } else {
+      onOpen(t);
+      setInput('');
+    }
+  }, [input, onOpen]);
+
+  return (
+    <div className="fixed bottom-0 left-0 right-0 z-30 pointer-events-none">
+      <div className="pointer-events-auto bg-white border-t border-stone-200">
+        <div className="max-w-5xl mx-auto px-5 py-2 flex items-center gap-2.5">
+          <MessageCircle size={14} className="text-stone-500 flex-shrink-0" />
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onFocus={() => onOpen()}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                submit();
+              }
+            }}
+            placeholder={placeholder}
+            className="flex-1 text-[14px] bg-transparent outline-none placeholder-stone-400 text-stone-900"
+          />
+          <span className="text-[10px] font-mono text-stone-400 hidden sm:inline">⌘K</span>
+          <button
+            onClick={submit}
+            className="p-1 hover:bg-stone-100 rounded transition-colors text-stone-600 hover:text-stone-900"
+            title="Open assistant (⌘K)"
+          >
+            <Send size={14} />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// AssistantPane — right-side chat panel (flex child of main layout)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+export function AssistantPane({
+  view,
+  lens,
+  data,
+  navigate,
+  onClose,
+  width = 480,
+  onResize,
+  pendingMessage,
+  onConsumePendingMessage,
+}) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [streaming, setStreaming] = useState(false);
@@ -337,7 +417,10 @@ export default function Assistant({ view, lens, data, navigate }) {
   useEffect(() => {
     if (!sessionId) return;
     try {
-      localStorage.setItem(`${STORAGE_PREFIX}history-${sessionId}`, JSON.stringify(messages.slice(-MAX_TURNS * 2)));
+      localStorage.setItem(
+        `${STORAGE_PREFIX}history-${sessionId}`,
+        JSON.stringify(messages.slice(-MAX_TURNS * 2)),
+      );
     } catch {
       // ignore
     }
@@ -346,108 +429,119 @@ export default function Assistant({ view, lens, data, navigate }) {
   // Reset on nav if toggle is on
   const viewKey = `${view?.type}:${view?.id || ''}`;
   useEffect(() => {
-    if (resetOnNav) {
-      setMessages([]);
-    }
+    if (resetOnNav) setMessages([]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewKey]);
 
-  // Auto-scroll to bottom on new messages or streaming
+  // Auto-scroll to bottom on new content
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages, streamingContent]);
 
-  // Focus input when expanded
+  // Focus input on mount
   useEffect(() => {
-    if (isOpen && inputRef.current) inputRef.current.focus();
-  }, [isOpen]);
+    if (inputRef.current) inputRef.current.focus();
+  }, []);
 
   // Cancel in-flight stream on unmount
   useEffect(() => () => abortRef.current?.abort(), []);
 
-  const handleSend = useCallback(async (overrideInput) => {
-    const text = (overrideInput ?? input).trim();
-    if (!text || streaming) return;
+  const handleSend = useCallback(
+    async (overrideInput) => {
+      const text = (overrideInput ?? input).trim();
+      if (!text || streaming) return;
 
-    setError(null);
-    const userMsg = { role: 'user', content: text };
-    const nextMessages = [...messages, userMsg];
-    setMessages(nextMessages);
-    setInput('');
-    setStreaming(true);
-    setStreamingContent('');
-    setStreamingMode(null);
-
-    const route = viewToRoute(view);
-    const abortController = new AbortController();
-    abortRef.current = abortController;
-
-    try {
-      const resp = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: nextMessages.slice(-MAX_TURNS * 2),
-          route,
-          lens,
-        }),
-        signal: abortController.signal,
-      });
-
-      if (!resp.ok) {
-        let errMsg = `Server returned ${resp.status}`;
-        try {
-          const body = await resp.json();
-          errMsg = body.error || errMsg;
-        } catch {
-          // ignore
-        }
-        setError(errMsg);
-        setStreaming(false);
-        return;
-      }
-
-      let accumulated = '';
-      let detectedMode = null;
-      for await (const event of parseSSE(resp)) {
-        if (event.mode) {
-          detectedMode = event.mode;
-          setStreamingMode(event.mode);
-        }
-        if (event.delta) {
-          accumulated += event.delta;
-          setStreamingContent(accumulated);
-        }
-        if (event.error) {
-          setError(event.error);
-        }
-        if (event.done) break;
-      }
-
-      // Commit the streamed message
-      if (accumulated) {
-        setMessages((prev) => [...prev, { role: 'assistant', content: accumulated, mode: detectedMode }]);
-      }
+      setError(null);
+      const userMsg = { role: 'user', content: text };
+      const nextMessages = [...messages, userMsg];
+      setMessages(nextMessages);
+      setInput('');
+      setStreaming(true);
       setStreamingContent('');
       setStreamingMode(null);
-    } catch (e) {
-      if (e.name !== 'AbortError') {
-        setError(e?.message || String(e));
-      }
-    } finally {
-      setStreaming(false);
-      abortRef.current = null;
-    }
-  }, [input, messages, view, lens, streaming]);
 
-  const handleCitationClick = useCallback((id) => {
-    const targetView = resolveIdToView(id, data);
-    if (targetView) {
-      navigate(targetView);
+      const route = viewToRoute(view);
+      const abortController = new AbortController();
+      abortRef.current = abortController;
+
+      try {
+        const resp = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messages: nextMessages.slice(-MAX_TURNS * 2),
+            route,
+            lens,
+          }),
+          signal: abortController.signal,
+        });
+
+        if (!resp.ok) {
+          let errMsg = `Server returned ${resp.status}`;
+          try {
+            const body = await resp.json();
+            errMsg = body.error || errMsg;
+          } catch {
+            // ignore
+          }
+          setError(errMsg);
+          setStreaming(false);
+          return;
+        }
+
+        let accumulated = '';
+        let detectedMode = null;
+        for await (const event of parseSSE(resp)) {
+          if (event.mode) {
+            detectedMode = event.mode;
+            setStreamingMode(event.mode);
+          }
+          if (event.delta) {
+            accumulated += event.delta;
+            setStreamingContent(accumulated);
+          }
+          if (event.error) setError(event.error);
+          if (event.done) break;
+        }
+
+        if (accumulated) {
+          setMessages((prev) => [
+            ...prev,
+            { role: 'assistant', content: accumulated, mode: detectedMode },
+          ]);
+        }
+        setStreamingContent('');
+        setStreamingMode(null);
+      } catch (e) {
+        if (e.name !== 'AbortError') {
+          setError(e?.message || String(e));
+        }
+      } finally {
+        setStreaming(false);
+        abortRef.current = null;
+      }
+    },
+    [input, messages, view, lens, streaming],
+  );
+
+  // Send pending message (from AssistantTrigger) on mount or when it changes
+  useEffect(() => {
+    if (pendingMessage && !streaming) {
+      handleSend(pendingMessage);
+      onConsumePendingMessage?.();
     }
-  }, [data, navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingMessage]);
+
+  const handleCitationClick = useCallback(
+    (id) => {
+      const targetView = resolveIdToView(id, data);
+      if (targetView) navigate(targetView);
+    },
+    [data, navigate],
+  );
 
   const handleReset = useCallback(() => {
     setMessages([]);
@@ -462,194 +556,197 @@ export default function Assistant({ view, lens, data, navigate }) {
     }
   }, [sessionId]);
 
-  const handleKeyDown = useCallback((e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    } else if (e.key === 'Escape') {
-      setIsOpen(false);
-    }
-  }, [handleSend]);
-
-  // Global keyboard shortcut: Cmd/Ctrl+K
-  useEffect(() => {
-    const handler = (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+  const handleKeyDown = useCallback(
+    (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
-        setIsOpen(true);
+        handleSend();
       }
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, []);
+    },
+    [handleSend],
+  );
+
+  // ── Resize handle ─────────────────────────────────────────────────────────
+  const startResize = useCallback(
+    (e) => {
+      if (!onResize) return;
+      e.preventDefault();
+      const startX = e.clientX;
+      const startWidth = width;
+      const onMove = (ev) => {
+        const dx = startX - ev.clientX; // drag left → wider
+        const newWidth = Math.max(PANE_MIN_WIDTH, Math.min(PANE_MAX_WIDTH, startWidth + dx));
+        onResize(newWidth);
+      };
+      const onUp = () => {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+      };
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+    },
+    [width, onResize],
+  );
 
   const placeholder = placeholderForView(view, data);
   const suggestions = suggestedForView(view, data);
   const lensLabel = { 'on-prem': 'On-Prem', 'ai-factory': 'AI Factory', both: 'Both' }[lens] || lens;
-
-  // Context-badge: shows scope of what bot has seen
-  const contextBadge = (() => {
-    switch (view?.type) {
-      case 'requirement': {
-        for (const fw of Object.values(data.frameworks)) {
-          const r = (fw.requirements || []).find((x) => x.id === view.id);
-          if (r) return `${fw._id || fw.id} · ${r.native_id || r.id}`;
-        }
-        return view.id;
-      }
-      case 'framework':
-        return data.frameworks[view.id]?._id || view.id;
-      case 'scenario':
-        return `scenario · ${view.id}`;
-      case 'openq':
-        return view.id ? `OQ · ${view.id}` : 'all open questions';
-      case 'graph':
-        return 'cross-framework graph';
-      case 'home':
-      default:
-        return 'home';
-    }
-  })();
-
+  const contextBadge = buildContextBadge(view, data);
   const frameworkCount = Object.keys(data.frameworks).length;
-  const requirementCount = Object.values(data.frameworks).reduce((acc, fw) => acc + (fw.requirements?.length || 0), 0);
+  const requirementCount = Object.values(data.frameworks).reduce(
+    (acc, fw) => acc + (fw.requirements?.length || 0),
+    0,
+  );
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none">
-      {/* Expanded panel */}
-      {isOpen && (
-        <div className="pointer-events-auto mx-auto max-w-3xl mb-1 bg-white border border-stone-200 rounded-t-lg shadow-[0_-8px_30px_rgba(0,0,0,0.08)] flex flex-col" style={{ height: '64vh' }}>
-          {/* Header */}
-          <div className="flex items-center justify-between px-4 py-2.5 border-b border-stone-200 rounded-t-lg">
-            <div className="flex items-baseline gap-2 min-w-0">
-              <span className="text-[10px] uppercase tracking-[0.14em] text-stone-500 font-medium">Assistant</span>
-              <span className="text-stone-300 text-xs">·</span>
-              <span className="font-mono text-[12px] text-stone-700 truncate">{contextBadge}</span>
-              <span className="text-stone-300 text-xs">·</span>
-              <span className="text-[11px] text-stone-500">lens: {lensLabel.toLowerCase()}</span>
-            </div>
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <label className="text-[10px] text-stone-500 flex items-center gap-1.5 cursor-pointer select-none">
-                <input
-                  type="checkbox"
-                  checked={resetOnNav}
-                  onChange={(e) => setResetOnNav(e.target.checked)}
-                  className="cursor-pointer accent-stone-700 w-3 h-3"
-                />
-                reset on nav
-              </label>
-              <button
-                onClick={handleReset}
-                title="Reset conversation"
-                className="p-1 hover:bg-stone-100 rounded transition-colors"
-              >
-                <RotateCcw size={13} className="text-stone-500" />
-              </button>
-              <button
-                onClick={() => setIsOpen(false)}
-                title="Close (Esc)"
-                className="p-1 hover:bg-stone-100 rounded transition-colors"
-              >
-                <ChevronDown size={15} className="text-stone-500" />
-              </button>
-            </div>
-          </div>
+    <aside
+      className="flex flex-col bg-white border-l border-stone-200 sticky flex-shrink-0 relative"
+      style={{ top: '73px', height: 'calc(100vh - 73px)', width: `${width}px` }}
+    >
+      {/* Resize handle on left edge */}
+      <div
+        onMouseDown={startResize}
+        className="absolute left-0 top-0 bottom-0 w-1.5 cursor-col-resize group z-10"
+        title="Drag to resize"
+      >
+        <div className="absolute inset-y-0 left-0 w-px bg-stone-200 group-hover:bg-stone-400 group-hover:w-0.5 transition-all" />
+      </div>
 
-          {/* Chat history */}
-          <div ref={scrollRef} className="flex-1 overflow-y-auto px-5 py-5">
-            {messages.length === 0 && !streaming && (
-              <div className="py-6">
-                <div className="text-[10px] uppercase tracking-[0.14em] text-stone-500 font-medium mb-2">Compliance assistant</div>
-                <h2 className="text-[22px] font-serif text-stone-900 leading-tight mb-2">
-                  Grounded in {frameworkCount} frameworks, {requirementCount} controls.
-                </h2>
-                <p className="text-[13.5px] text-stone-600 leading-relaxed mb-5 max-w-md">
-                  Your current page is the primary context. Citations link back to the page they came from — ask anything from these frameworks and the assistant won't drift outside them.
-                </p>
-                {suggestions.length > 0 && (
-                  <div>
-                    <div className="text-[10px] uppercase tracking-[0.14em] text-stone-500 font-medium mb-2">Try</div>
-                    <div className="flex flex-wrap gap-1.5">
-                      {suggestions.map((q, i) => (
-                        <button
-                          key={i}
-                          onClick={() => handleSend(q)}
-                          className="text-[12.5px] px-2.5 py-1 bg-white border border-stone-200 rounded-full text-stone-700 hover:bg-stone-50 hover:border-stone-300 hover:text-stone-900 transition-colors"
-                        >
-                          {q}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-            {messages.map((m, i) => (
-              <ChatBubble
-                key={i}
-                role={m.role}
-                content={m.content}
-                mode={m.mode}
-                onCitationClick={handleCitationClick}
-              />
-            ))}
-            {streaming && (
-              <ChatBubble
-                role="assistant"
-                content={streamingContent || '…'}
-                mode={streamingMode}
-                onCitationClick={handleCitationClick}
-              />
-            )}
-            {error && (
-              <div className="text-xs text-red-700 bg-red-50 border border-red-200 rounded px-2 py-1 mt-2">
-                {error}
-              </div>
-            )}
-          </div>
-
-          {/* Footer disclaimer */}
-          <div className="px-3 py-1 text-[10px] text-stone-500 border-t border-stone-200 bg-stone-50">
-            Grounded in PrivateBox GRC OS. Verify against published source standards before reliance.
-          </div>
+      {/* Header */}
+      <div className="flex-shrink-0 px-4 py-2.5 border-b border-stone-200 flex items-center justify-between">
+        <div className="flex items-baseline gap-2 min-w-0">
+          <span className="text-[10px] uppercase tracking-[0.14em] text-stone-500 font-medium">
+            Assistant
+          </span>
+          <span className="text-stone-300 text-xs">·</span>
+          <span className="font-mono text-[12px] text-stone-700 truncate">{contextBadge}</span>
+          <span className="text-stone-300 text-xs">·</span>
+          <span className="text-[11px] text-stone-500">lens: {lensLabel.toLowerCase()}</span>
         </div>
-      )}
-
-      {/* Collapsed input bar — always present */}
-      <div className="pointer-events-auto mx-auto max-w-3xl bg-white border-t border-l border-r border-stone-300 rounded-t-lg shadow-lg">
-        <div className="flex items-center gap-2 px-3 py-2">
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="p-1 hover:bg-stone-100 rounded"
-            title={isOpen ? 'Collapse' : 'Expand'}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <label
+            className="text-[10px] text-stone-500 flex items-center gap-1.5 cursor-pointer select-none"
+            title="Clear conversation when navigating to a new page"
           >
-            {isOpen ? <ChevronDown size={16} className="text-stone-600" /> : <MessageCircle size={16} className="text-stone-600" />}
+            <input
+              type="checkbox"
+              checked={resetOnNav}
+              onChange={(e) => setResetOnNav(e.target.checked)}
+              className="cursor-pointer accent-stone-700 w-3 h-3"
+            />
+            reset on nav
+          </label>
+          <button
+            onClick={handleReset}
+            title="Reset conversation"
+            className="p-1 hover:bg-stone-100 rounded transition-colors"
+          >
+            <RotateCcw size={13} className="text-stone-500" />
           </button>
+          <button
+            onClick={onClose}
+            title="Close (Esc)"
+            className="p-1 hover:bg-stone-100 rounded transition-colors"
+          >
+            <X size={14} className="text-stone-500" />
+          </button>
+        </div>
+      </div>
+
+      {/* Chat history */}
+      <div ref={scrollRef} className="flex-1 overflow-y-auto px-5 py-5 min-h-0">
+        {messages.length === 0 && !streaming && (
+          <div className="py-3">
+            <div className="text-[10px] uppercase tracking-[0.14em] text-stone-500 font-medium mb-2">
+              Compliance assistant
+            </div>
+            <h2 className="text-[22px] font-serif text-stone-900 leading-tight mb-2">
+              Grounded in {frameworkCount} frameworks, {requirementCount} controls.
+            </h2>
+            <p className="text-[13.5px] text-stone-600 leading-relaxed mb-5 max-w-md">
+              Your current page is the primary context. Citations link back to the page they came from — ask anything from these frameworks and the assistant won't drift outside them.
+            </p>
+            {suggestions.length > 0 && (
+              <div>
+                <div className="text-[10px] uppercase tracking-[0.14em] text-stone-500 font-medium mb-2">
+                  Try
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {suggestions.map((q, i) => (
+                    <button
+                      key={i}
+                      onClick={() => handleSend(q)}
+                      className="text-[12.5px] px-2.5 py-1 bg-white border border-stone-200 rounded-full text-stone-700 hover:bg-stone-50 hover:border-stone-300 hover:text-stone-900 transition-colors"
+                    >
+                      {q}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+        {messages.map((m, i) => (
+          <ChatBubble
+            key={i}
+            role={m.role}
+            content={m.content}
+            mode={m.mode}
+            onCitationClick={handleCitationClick}
+          />
+        ))}
+        {streaming && (
+          <ChatBubble
+            role="assistant"
+            content={streamingContent || '…'}
+            mode={streamingMode}
+            onCitationClick={handleCitationClick}
+          />
+        )}
+        {error && (
+          <div className="text-xs text-red-700 bg-red-50 border border-red-200 rounded px-2 py-1.5 mt-2">
+            {error}
+          </div>
+        )}
+      </div>
+
+      {/* Input bar */}
+      <div className="flex-shrink-0 border-t border-stone-200 bg-white">
+        <div className="px-3 py-2 flex items-center gap-2">
           <input
             ref={inputRef}
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            onFocus={() => !isOpen && setIsOpen(true)}
             placeholder={placeholder}
-            className="flex-1 text-sm bg-transparent outline-none placeholder-stone-400"
             disabled={streaming}
+            className="flex-1 text-[14px] bg-transparent outline-none placeholder-stone-400 text-stone-900 disabled:opacity-50"
           />
           {streaming ? (
-            <Loader2 size={16} className="text-stone-600 animate-spin" />
+            <Loader2 size={14} className="text-stone-600 animate-spin" />
           ) : (
             <button
               onClick={() => handleSend()}
               disabled={!input.trim()}
-              className="p-1 hover:bg-stone-100 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+              className="p-1 hover:bg-stone-100 rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
               title="Send (Enter)"
             >
-              <Send size={16} className="text-stone-700" />
+              <Send size={14} className="text-stone-700" />
             </button>
           )}
         </div>
+        <div className="px-3 py-1 text-[10px] text-stone-500 border-t border-stone-100 bg-stone-50">
+          Grounded in PrivateBox GRC OS. Verify against published source standards before reliance.
+        </div>
       </div>
-    </div>
+    </aside>
   );
 }
+
+// Default export preserved for backward compat (Assistant -> AssistantPane).
+export default AssistantPane;
