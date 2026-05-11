@@ -318,6 +318,7 @@ function buildContextBadge(view, data) {
 export function AssistantTrigger({ view, data, onOpen }) {
   const [input, setInput] = useState('');
   const placeholder = placeholderForView(view, data);
+  const contextBadge = buildContextBadge(view, data);
 
   const submit = useCallback(() => {
     const t = input.trim();
@@ -330,10 +331,40 @@ export function AssistantTrigger({ view, data, onOpen }) {
   }, [input, onOpen]);
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-30 pointer-events-none">
-      <div className="pointer-events-auto bg-white border-t border-stone-200">
-        <div className="max-w-5xl mx-auto px-5 py-2 flex items-center gap-2.5">
-          <MessageCircle size={14} className="text-stone-500 flex-shrink-0" />
+    <div className="fixed bottom-0 left-0 right-0 z-30 pointer-events-none pb-4 px-4">
+      {/* Soft gradient mask behind the pill so page content under it
+          fades cleanly to the viewport edge */}
+      <div
+        aria-hidden
+        className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-stone-50 via-stone-50/80 to-transparent pointer-events-none"
+      />
+      <div className="pointer-events-auto mx-auto max-w-xl relative">
+        <div className="
+          group
+          relative
+          bg-white/95 backdrop-blur-xl
+          border border-stone-200
+          rounded-full
+          shadow-[0_4px_24px_-4px_rgba(28,25,23,0.10),0_8px_40px_-8px_rgba(28,25,23,0.06)]
+          hover:shadow-[0_6px_28px_-4px_rgba(28,25,23,0.14),0_12px_48px_-8px_rgba(28,25,23,0.08)]
+          hover:border-stone-300
+          focus-within:border-stone-400
+          focus-within:shadow-[0_6px_28px_-4px_rgba(28,25,23,0.16),0_12px_48px_-8px_rgba(28,25,23,0.10)]
+          transition-all duration-200
+          flex items-center gap-2.5 pl-4 pr-1.5 py-1.5
+        ">
+          <Sparkles
+            size={14}
+            className="text-stone-400 group-hover:text-stone-700 group-focus-within:text-stone-800 transition-colors flex-shrink-0"
+            strokeWidth={1.75}
+          />
+          <span
+            className="hidden md:inline font-mono text-[10.5px] text-stone-400 group-focus-within:text-stone-600 tracking-wider flex-shrink-0 transition-colors"
+            title={`Scope: ${contextBadge}`}
+          >
+            {contextBadge}
+          </span>
+          <span className="hidden md:inline w-px h-3.5 bg-stone-200 flex-shrink-0" aria-hidden />
           <input
             type="text"
             value={input}
@@ -346,15 +377,18 @@ export function AssistantTrigger({ view, data, onOpen }) {
               }
             }}
             placeholder={placeholder}
-            className="flex-1 text-[14px] bg-transparent outline-none placeholder-stone-400 text-stone-900"
+            className="flex-1 min-w-0 text-[14px] bg-transparent outline-none placeholder-stone-400 text-stone-900"
           />
-          <span className="text-[10px] font-mono text-stone-400 hidden sm:inline">⌘K</span>
+          <kbd className="hidden sm:inline-flex items-center font-mono text-[10px] text-stone-500 bg-stone-100/80 border border-stone-200 rounded h-5 px-1.5 flex-shrink-0">
+            ⌘K
+          </kbd>
           <button
             onClick={submit}
-            className="p-1 hover:bg-stone-100 rounded transition-colors text-stone-600 hover:text-stone-900"
+            className="flex items-center justify-center w-8 h-8 rounded-full bg-stone-900 hover:bg-stone-800 text-stone-50 transition-colors flex-shrink-0"
             title="Open assistant (⌘K)"
+            aria-label="Open assistant"
           >
-            <Send size={14} />
+            <Send size={13} strokeWidth={2} className="-ml-0.5" />
           </button>
         </div>
       </div>
