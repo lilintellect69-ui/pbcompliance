@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 
 import DATA from './data.json';
+import Assistant from './components/Assistant.jsx';
 
 // =============================================================================
 // Data
@@ -2139,6 +2140,9 @@ export default function App() {
               {view.type === 'graph' && <GraphView navigate={navigate} />}
             </main>
           </div>
+          {/* Bottom drawer compliance assistant — anti-context-rot chat UI */}
+          <div style={{ paddingBottom: '60px' }} />
+          <Assistant view={view} lens={lens} data={DATA} navigate={navigate} />
         </div>
       </LensSetterContext.Provider>
     </LensContext.Provider>

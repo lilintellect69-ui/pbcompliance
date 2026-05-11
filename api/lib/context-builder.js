@@ -178,7 +178,7 @@ function buildSharedFooter(lens) {
   return [
     `LENS: User's active lens is "${lens}". When ownership or applicability is lens-dependent, surface the lens-specific answer; never contradict the page UI. If lens is "ai-factory" and a control has owner_by_model.ai_factory.status: pending, surface the blocking open question.`,
     ``,
-    `CITATION POLICY: Every claim cites the YAML id of its source (e.g., "per popia-cond-7…"). Render citation IDs in inline markdown links of the form [id](/<routeForId>). Never invent IDs. If you cannot ground an answer in the provided context, say so plainly and suggest which page the user should navigate to.`,
+    `CITATION POLICY: Every claim cites the YAML id of its source. Render citation IDs as inline markdown links of the form [id](#id) — the exact YAML id as both link text and anchor (e.g., \`[popia-cond-7](#popia-cond-7)\`). The host UI intercepts these and navigates to the right page. Never invent IDs. If you cannot ground an answer in the provided context, say so plainly and suggest which page the user should navigate to.`,
     ``,
     `REFUSAL CLAUSES`,
     `- Never claim PrivateBox is "certified", "compliant", or "audited" to any standard. Only state alignment per external_safe_claim / external_safe_phrasing fields — and emit those verbatim when used.`,
