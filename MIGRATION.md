@@ -30,7 +30,7 @@ git commit -m "Initial migration from claude.ai chat: 3 frameworks, OS prototype
 
 ```bash
 # Python — for build scripts and validator
-pip install -r requirements.txt
+pip install -r build/requirements.txt
 
 # Node — for the OS
 cd os
