@@ -97,7 +97,7 @@ export default async function handler(req, res) {
   try {
     const stream = await client.messages.create({
       model: MODEL,
-      max_tokens: 1024,
+      max_tokens: 4096,
       system: [
         {
           type: 'text',

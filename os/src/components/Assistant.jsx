@@ -167,83 +167,127 @@ async function* parseSSE(response) {
   }
 }
 
+// ─── OS-native markdown components ───────────────────────────────────────────
+// No `prose` plugin — every element styled to match the OS aesthetic:
+// serif for headings (mirrors "Compliance alignment record" title style),
+// stone palette, mono IDs as pill chips, light borders, tight rhythm.
+
+function buildMarkdownComponents(onCitationClick) {
+  return {
+    a: ({ href, children }) => {
+      const isCitation = typeof href === 'string' && href.startsWith('#');
+      if (isCitation) {
+        const id = href.slice(1);
+        return (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              onCitationClick(id);
+            }}
+            className="inline-flex items-baseline font-mono text-[11.5px] px-1.5 py-0.5 rounded-md bg-stone-100 border border-stone-200 text-stone-900 hover:bg-stone-200 hover:border-stone-300 transition-colors cursor-pointer"
+            title={`Open ${id}`}
+          >
+            {children}
+          </button>
+        );
+      }
+      return (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-stone-900 underline decoration-stone-400 hover:decoration-stone-700 underline-offset-2"
+        >
+          {children}
+        </a>
+      );
+    },
+    h1: ({ children }) => (
+      <h1 className="text-[20px] font-serif text-stone-900 mt-4 mb-2 leading-tight">{children}</h1>
+    ),
+    h2: ({ children }) => (
+      <h2 className="text-[17px] font-serif text-stone-900 mt-4 mb-2 leading-tight">{children}</h2>
+    ),
+    h3: ({ children }) => (
+      <h3 className="text-[10px] uppercase tracking-[0.12em] text-stone-500 font-medium mt-4 mb-1.5">{children}</h3>
+    ),
+    p: ({ children }) => (
+      <p className="text-[14px] leading-relaxed text-stone-800 mb-2.5 last:mb-0">{children}</p>
+    ),
+    ul: ({ children }) => (
+      <ul className="text-[14px] leading-relaxed text-stone-800 mb-2.5 pl-4 space-y-1 list-disc marker:text-stone-400">{children}</ul>
+    ),
+    ol: ({ children }) => (
+      <ol className="text-[14px] leading-relaxed text-stone-800 mb-2.5 pl-4 space-y-1 list-decimal marker:text-stone-500">{children}</ol>
+    ),
+    li: ({ children }) => <li className="leading-relaxed">{children}</li>,
+    strong: ({ children }) => <strong className="font-medium text-stone-900">{children}</strong>,
+    em: ({ children }) => <em className="italic text-stone-700">{children}</em>,
+    code: ({ inline, children, ...props }) =>
+      inline ? (
+        <code className="font-mono text-[12px] bg-stone-100 border border-stone-200 px-1 py-0.5 rounded" {...props}>
+          {children}
+        </code>
+      ) : (
+        <code className="block font-mono text-[12px] bg-stone-50 border border-stone-200 rounded-md px-3 py-2 my-2 whitespace-pre overflow-x-auto text-stone-800" {...props}>
+          {children}
+        </code>
+      ),
+    pre: ({ children }) => <>{children}</>, // unwrap; we style <code> directly
+    table: ({ children }) => (
+      <div className="my-3 -mx-1 overflow-x-auto">
+        <table className="min-w-full text-[12.5px] border border-stone-200 rounded-md overflow-hidden">{children}</table>
+      </div>
+    ),
+    thead: ({ children }) => <thead className="bg-stone-50">{children}</thead>,
+    tbody: ({ children }) => <tbody className="divide-y divide-stone-200">{children}</tbody>,
+    tr: ({ children }) => <tr className="hover:bg-stone-50/60">{children}</tr>,
+    th: ({ children }) => (
+      <th className="text-[10px] uppercase tracking-wider text-stone-600 font-medium text-left px-2.5 py-2 border-b border-stone-200 align-bottom">
+        {children}
+      </th>
+    ),
+    td: ({ children }) => (
+      <td className="px-2.5 py-2 align-top text-stone-800 leading-snug">{children}</td>
+    ),
+    blockquote: ({ children }) => (
+      <blockquote className="border-l-2 border-stone-300 pl-3 my-2 text-stone-700 text-[13.5px] leading-relaxed italic">
+        {children}
+      </blockquote>
+    ),
+    hr: () => <hr className="my-3 border-stone-200" />,
+  };
+}
+
 // ─── Chat bubble ──────────────────────────────────────────────────────────────
 
 function ChatBubble({ role, content, mode, onCitationClick }) {
   const isUser = role === 'user';
+  const components = useMemo(() => buildMarkdownComponents(onCitationClick), [onCitationClick]);
+
+  if (isUser) {
+    return (
+      <div className="flex justify-end mb-4">
+        <div className="max-w-[80%] rounded-md px-3 py-2 text-[14px] leading-relaxed bg-stone-900 text-stone-50 whitespace-pre-wrap">
+          {content}
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`}>
-      <div
-        className={`max-w-[85%] rounded-lg px-3 py-2 text-sm ${
-          isUser
-            ? 'bg-stone-900 text-stone-50'
-            : 'bg-stone-100 text-stone-900 border border-stone-200'
-        }`}
-      >
-        {!isUser && mode && mode !== 'explain' && (
-          <div className="text-[10px] uppercase tracking-wider text-stone-500 mb-1 flex items-center gap-1">
-            <Sparkles size={10} />
-            {mode} mode
-          </div>
-        )}
-        {isUser ? (
-          <div className="whitespace-pre-wrap">{content}</div>
-        ) : (
-          <div className="prose prose-sm max-w-none prose-stone">
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              components={{
-                a: ({ href, children }) => {
-                  const isCitation = typeof href === 'string' && href.startsWith('#');
-                  if (isCitation) {
-                    const id = href.slice(1);
-                    return (
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          onCitationClick(id);
-                        }}
-                        className="font-mono text-xs text-indigo-700 hover:text-indigo-900 hover:underline cursor-pointer"
-                      >
-                        {children}
-                      </button>
-                    );
-                  }
-                  return (
-                    <a href={href} target="_blank" rel="noopener noreferrer" className="text-indigo-700 hover:underline">
-                      {children}
-                    </a>
-                  );
-                },
-                code: ({ inline, children, ...props }) =>
-                  inline ? (
-                    <code className="bg-stone-200 px-1 py-0.5 rounded text-[12px] font-mono" {...props}>
-                      {children}
-                    </code>
-                  ) : (
-                    <code className="block bg-stone-200 px-2 py-1 rounded text-[12px] font-mono whitespace-pre overflow-x-auto" {...props}>
-                      {children}
-                    </code>
-                  ),
-                table: ({ children }) => (
-                  <div className="overflow-x-auto my-2">
-                    <table className="min-w-full text-xs border-collapse">{children}</table>
-                  </div>
-                ),
-                th: ({ children }) => <th className="border border-stone-300 px-2 py-1 bg-stone-200 text-left">{children}</th>,
-                td: ({ children }) => <td className="border border-stone-300 px-2 py-1 align-top">{children}</td>,
-                blockquote: ({ children }) => (
-                  <blockquote className="border-l-2 border-stone-400 pl-3 my-2 text-stone-700 italic">
-                    {children}
-                  </blockquote>
-                ),
-              }}
-            >
-              {content}
-            </ReactMarkdown>
-          </div>
-        )}
+    <div className="mb-5">
+      {mode && mode !== 'explain' && (
+        <div className="text-[10px] uppercase tracking-[0.14em] text-stone-500 mb-1 flex items-center gap-1.5">
+          <Sparkles size={10} className="text-stone-400" />
+          {mode} mode
+        </div>
+      )}
+      <div className="text-stone-900">
+        <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
+          {content}
+        </ReactMarkdown>
       </div>
     </div>
   );
@@ -467,65 +511,75 @@ export default function Assistant({ view, lens, data, navigate }) {
     }
   })();
 
+  const frameworkCount = Object.keys(data.frameworks).length;
+  const requirementCount = Object.values(data.frameworks).reduce((acc, fw) => acc + (fw.requirements?.length || 0), 0);
+
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none">
       {/* Expanded panel */}
       {isOpen && (
-        <div className="pointer-events-auto mx-auto max-w-3xl mb-2 bg-white border border-stone-300 rounded-t-lg shadow-2xl flex flex-col" style={{ height: '60vh' }}>
+        <div className="pointer-events-auto mx-auto max-w-3xl mb-1 bg-white border border-stone-200 rounded-t-lg shadow-[0_-8px_30px_rgba(0,0,0,0.08)] flex flex-col" style={{ height: '64vh' }}>
           {/* Header */}
-          <div className="flex items-center justify-between px-3 py-2 border-b border-stone-200 bg-stone-50 rounded-t-lg">
-            <div className="flex items-center gap-2 text-xs">
-              <MessageCircle size={14} className="text-stone-600" />
-              <span className="font-mono uppercase tracking-wider text-stone-600">Compliance Assistant</span>
-              <span className="text-stone-400">·</span>
-              <span className="font-mono text-stone-700">{contextBadge}</span>
-              <span className="text-stone-400">·</span>
-              <span className="text-stone-700">lens: {lensLabel}</span>
+          <div className="flex items-center justify-between px-4 py-2.5 border-b border-stone-200 rounded-t-lg">
+            <div className="flex items-baseline gap-2 min-w-0">
+              <span className="text-[10px] uppercase tracking-[0.14em] text-stone-500 font-medium">Assistant</span>
+              <span className="text-stone-300 text-xs">·</span>
+              <span className="font-mono text-[12px] text-stone-700 truncate">{contextBadge}</span>
+              <span className="text-stone-300 text-xs">·</span>
+              <span className="text-[11px] text-stone-500">lens: {lensLabel.toLowerCase()}</span>
             </div>
-            <div className="flex items-center gap-1">
-              <label className="text-[10px] text-stone-500 flex items-center gap-1 cursor-pointer">
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <label className="text-[10px] text-stone-500 flex items-center gap-1.5 cursor-pointer select-none">
                 <input
                   type="checkbox"
                   checked={resetOnNav}
                   onChange={(e) => setResetOnNav(e.target.checked)}
-                  className="cursor-pointer"
+                  className="cursor-pointer accent-stone-700 w-3 h-3"
                 />
                 reset on nav
               </label>
               <button
                 onClick={handleReset}
                 title="Reset conversation"
-                className="p-1 hover:bg-stone-200 rounded"
+                className="p-1 hover:bg-stone-100 rounded transition-colors"
               >
-                <RotateCcw size={14} className="text-stone-600" />
+                <RotateCcw size={13} className="text-stone-500" />
               </button>
               <button
                 onClick={() => setIsOpen(false)}
-                title="Close"
-                className="p-1 hover:bg-stone-200 rounded"
+                title="Close (Esc)"
+                className="p-1 hover:bg-stone-100 rounded transition-colors"
               >
-                <ChevronDown size={16} className="text-stone-600" />
+                <ChevronDown size={15} className="text-stone-500" />
               </button>
             </div>
           </div>
 
           {/* Chat history */}
-          <div ref={scrollRef} className="flex-1 overflow-y-auto px-3 py-3">
+          <div ref={scrollRef} className="flex-1 overflow-y-auto px-5 py-5">
             {messages.length === 0 && !streaming && (
-              <div className="text-center text-stone-500 text-sm py-8">
-                <Sparkles size={20} className="inline mb-2 text-stone-400" />
-                <div className="mb-3">Grounded in {Object.keys(data.frameworks).length} frameworks · {Object.values(data.frameworks).reduce((acc, fw) => acc + (fw.requirements?.length || 0), 0)} controls · current page in primary context</div>
+              <div className="py-6">
+                <div className="text-[10px] uppercase tracking-[0.14em] text-stone-500 font-medium mb-2">Compliance assistant</div>
+                <h2 className="text-[22px] font-serif text-stone-900 leading-tight mb-2">
+                  Grounded in {frameworkCount} frameworks, {requirementCount} controls.
+                </h2>
+                <p className="text-[13.5px] text-stone-600 leading-relaxed mb-5 max-w-md">
+                  Your current page is the primary context. Citations link back to the page they came from — ask anything from these frameworks and the assistant won't drift outside them.
+                </p>
                 {suggestions.length > 0 && (
-                  <div className="flex flex-wrap gap-2 justify-center mt-4">
-                    {suggestions.map((q, i) => (
-                      <button
-                        key={i}
-                        onClick={() => handleSend(q)}
-                        className="text-xs px-2 py-1 bg-stone-100 border border-stone-300 rounded-full hover:bg-stone-200 transition-colors"
-                      >
-                        {q}
-                      </button>
-                    ))}
+                  <div>
+                    <div className="text-[10px] uppercase tracking-[0.14em] text-stone-500 font-medium mb-2">Try</div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {suggestions.map((q, i) => (
+                        <button
+                          key={i}
+                          onClick={() => handleSend(q)}
+                          className="text-[12.5px] px-2.5 py-1 bg-white border border-stone-200 rounded-full text-stone-700 hover:bg-stone-50 hover:border-stone-300 hover:text-stone-900 transition-colors"
+                        >
+                          {q}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
