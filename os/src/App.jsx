@@ -19,10 +19,38 @@ import {
   MessageCircle,
   PanelLeftClose,
   PanelLeftOpen,
+  Menu,
 } from 'lucide-react';
 
 import DATA from './data.json';
 import { AssistantTrigger, AssistantPane } from './components/Assistant.jsx';
+
+// =============================================================================
+// Responsive helpers
+// =============================================================================
+// `useIsLg` returns true when viewport ≥ 1024px (Tailwind `lg:` breakpoint).
+// Used wherever we need to switch behaviour (not just style) between mobile
+// and desktop — sidebar drawer vs flex child, chat fullscreen overlay vs
+// sticky right pane.
+
+function useIsLg() {
+  const [isLg, setIsLg] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return window.matchMedia('(min-width: 1024px)').matches;
+  });
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mql = window.matchMedia('(min-width: 1024px)');
+    const handler = (e) => setIsLg(e.matches);
+    if (mql.addEventListener) mql.addEventListener('change', handler);
+    else mql.addListener(handler);
+    return () => {
+      if (mql.removeEventListener) mql.removeEventListener('change', handler);
+      else mql.removeListener(handler);
+    };
+  }, []);
+  return isLg;
+}
 
 // =============================================================================
 // Data
@@ -267,25 +295,28 @@ function oqAppliesToLens(oqId, lens) {
 function LensToggle() {
   const lens = useLens();
   const setLens = useContext(LensSetterContext);
+  // Two label variants — full for desktop, abbreviated for narrow screens where
+  // the toggle would otherwise overflow the header.
   const options = [
-    { id: 'on-prem', label: 'On-prem' },
-    { id: 'ai-factory', label: 'AI Factory' },
-    { id: 'both', label: 'Both' },
+    { id: 'on-prem', label: 'On-prem', short: 'OP' },
+    { id: 'ai-factory', label: 'AI Factory', short: 'AIF' },
+    { id: 'both', label: 'Both', short: 'BOTH' },
   ];
   return (
     <div className="flex items-center gap-1 border border-stone-300 bg-white p-0.5">
-      <span className="font-mono text-xs uppercase tracking-wider text-stone-500 px-2">model:</span>
+      <span className="hidden md:inline font-mono text-xs uppercase tracking-wider text-stone-500 px-2">model:</span>
       {options.map(o => (
         <button
           key={o.id}
           onClick={() => setLens(o.id)}
-          className={`font-mono text-xs uppercase tracking-wider px-3 py-1 transition-colors ${
+          className={`font-mono text-xs uppercase tracking-wider px-2 md:px-3 py-1 transition-colors ${
             lens === o.id
               ? 'bg-stone-900 text-stone-50'
               : 'text-stone-600 hover:bg-stone-100'
           }`}
         >
-          {o.label}
+          <span className="hidden md:inline">{o.label}</span>
+          <span className="md:hidden">{o.short}</span>
         </button>
       ))}
     </div>
@@ -380,40 +411,49 @@ function Field({ label, children, className = '' }) {
 // Header
 // =============================================================================
 
-function Header({ view, navigate, back, canBack, chatOpen, onToggleChat }) {
+function Header({ view, navigate, back, canBack, chatOpen, onToggleChat, onOpenMobileSidebar }) {
   return (
-    <header className="border-b border-stone-300 bg-stone-50 sticky top-0 z-10 flex-shrink-0">
-      <div className="px-6 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-4">
+    <header className="border-b border-stone-300 bg-stone-50 sticky top-0 z-30 flex-shrink-0">
+      <div className="px-3 sm:px-4 lg:px-6 py-3 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 min-w-0">
+          {/* Hamburger — opens sidebar drawer on mobile only */}
+          <button
+            onClick={onOpenMobileSidebar}
+            className="lg:hidden p-1 -ml-1 text-stone-700 hover:text-stone-900 hover:bg-stone-100 rounded transition-colors flex-shrink-0"
+            title="Open navigation"
+          >
+            <Menu size={18} />
+          </button>
           <button
             onClick={() => navigate({ type: 'home' })}
-            className="font-serif text-lg text-stone-950 tracking-tight hover:text-amber-800 transition-colors"
+            className="font-serif text-base sm:text-lg text-stone-950 tracking-tight hover:text-amber-800 transition-colors truncate"
           >
             PrivateBox <span className="text-stone-500">/</span> GRC OS
           </button>
-          <span className="font-mono text-xs text-stone-400">v0.1 prototype</span>
+          <span className="hidden xl:inline font-mono text-xs text-stone-400 flex-shrink-0">v0.1 prototype</span>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 lg:gap-3 flex-shrink-0">
           <LensToggle />
           <button
             onClick={onToggleChat}
             title={chatOpen ? 'Close assistant (Esc)' : 'Ask assistant (⌘K / Ctrl+K)'}
-            className={`font-mono text-xs flex items-center gap-1.5 px-2 py-1 rounded border transition-colors ${
+            className={`font-mono text-xs flex items-center gap-1.5 px-1.5 sm:px-2 py-1 rounded border transition-colors ${
               chatOpen
                 ? 'border-stone-900 bg-stone-900 text-stone-50 hover:bg-stone-800'
                 : 'border-stone-300 bg-white text-stone-700 hover:border-stone-400 hover:text-stone-900'
             }`}
           >
             <MessageCircle size={12} />
-            <span>assistant</span>
-            <span className="text-[10px] opacity-60">⌘K</span>
+            <span className="hidden sm:inline">assistant</span>
+            <span className="hidden md:inline text-[10px] opacity-60">⌘K</span>
           </button>
           {canBack && (
             <button
               onClick={back}
               className="font-mono text-xs text-stone-600 hover:text-amber-800 transition-colors flex items-center gap-1"
+              title="Back"
             >
-              <ChevronLeft size={14} /> back
+              <ChevronLeft size={14} /> <span className="hidden sm:inline">back</span>
             </button>
           )}
         </div>
@@ -453,12 +493,12 @@ function Breadcrumb({ view, navigate }) {
     crumbs.push({ label: 'Cross-Framework Graph' });
   }
 
-  if (crumbs.length === 0) return <div className="h-6 px-6 border-t border-stone-200" />;
+  if (crumbs.length === 0) return <div className="h-6 px-3 sm:px-4 lg:px-6 border-t border-stone-200" />;
   return (
-    <div className="px-6 py-1.5 border-t border-stone-200 flex items-center gap-2 text-xs">
+    <div className="px-3 sm:px-4 lg:px-6 py-1.5 border-t border-stone-200 flex items-center gap-2 text-xs overflow-x-auto whitespace-nowrap scrollbar-thin">
       <button
         onClick={() => navigate({ type: 'home' })}
-        className="text-stone-500 hover:text-amber-800"
+        className="text-stone-500 hover:text-amber-800 flex-shrink-0"
       >
         Home
       </button>
@@ -484,14 +524,25 @@ function Breadcrumb({ view, navigate }) {
 // Sidebar
 // =============================================================================
 
-function Sidebar({ navigate, currentView, collapsed, onToggle }) {
+function Sidebar({ navigate, currentView, collapsed, onToggle, mobileOpen, onMobileClose }) {
+  const isLg = useIsLg();
+  // At < lg, ALWAYS render expanded layout (drawer with full labels). The
+  // collapsed-vs-expanded toggle only applies on widescreen.
+  const showCollapsed = isLg && collapsed;
+
   const isActive = (type, id) => {
     if (currentView.type !== type) return false;
     return id === undefined || currentView.id === id;
   };
 
-  // ── Collapsed (icon-only) mode ─────────────────────────────────────────────
-  if (collapsed) {
+  // Wrap navigation on mobile so the drawer closes after picking an item.
+  const handleNavigate = (route) => {
+    if (!isLg && onMobileClose) onMobileClose();
+    navigate(route);
+  };
+
+  // ── Collapsed (icon-only) mode — desktop only ──────────────────────────────
+  if (showCollapsed) {
     const iconBtn = (onClick, active, icon, tooltip) => (
       <button
         onClick={onClick}
@@ -519,12 +570,12 @@ function Sidebar({ navigate, currentView, collapsed, onToggle }) {
           <PanelLeftOpen size={16} />
         </button>
         <div className="my-1 mx-2 border-t border-stone-200" />
-        {iconBtn(() => navigate({ type: 'home' }), isActive('home'), <Home size={15} />, 'Home')}
+        {iconBtn(() => handleNavigate({ type: 'home' }), isActive('home'), <Home size={15} />, 'Home')}
         <div className="my-1 mx-2 border-t border-stone-200" />
         {Object.values(DATA.frameworks).map(fw => (
           <button
             key={fw._id}
-            onClick={() => navigate({ type: 'framework', id: fw._id })}
+            onClick={() => handleNavigate({ type: 'framework', id: fw._id })}
             title={getFrameworkLabel(fw._id)}
             className={`w-full h-10 flex items-center justify-center transition-colors border-l-2 ${
               isActive('framework', fw._id)
@@ -536,17 +587,17 @@ function Sidebar({ navigate, currentView, collapsed, onToggle }) {
           </button>
         ))}
         <div className="my-1 mx-2 border-t border-stone-200" />
-        {iconBtn(() => navigate({ type: 'openq' }), isActive('openq'), <HelpCircle size={15} />, 'Open Questions')}
-        {iconBtn(() => navigate({ type: 'graph' }), isActive('graph'), <Network size={15} />, 'Cross-Framework Graph')}
+        {iconBtn(() => handleNavigate({ type: 'openq' }), isActive('openq'), <HelpCircle size={15} />, 'Open Questions')}
+        {iconBtn(() => handleNavigate({ type: 'graph' }), isActive('graph'), <Network size={15} />, 'Cross-Framework Graph')}
       </aside>
     );
   }
 
-  // ── Expanded mode ──────────────────────────────────────────────────────────
+  // ── Expanded mode (desktop in-flow, OR mobile drawer) ──────────────────────
   const item = (label, onClick, active, icon, count) => (
     <button
       onClick={onClick}
-      className={`w-full text-left px-3 py-1.5 flex items-center gap-2 text-sm transition-colors border-l-2 ${
+      className={`w-full text-left px-3 py-2 lg:py-1.5 flex items-center gap-2 text-sm transition-colors border-l-2 ${
         active
           ? 'bg-amber-50 border-amber-700 text-amber-900'
           : 'border-transparent text-stone-700 hover:bg-stone-100 hover:border-stone-300'
@@ -560,23 +611,41 @@ function Sidebar({ navigate, currentView, collapsed, onToggle }) {
     </button>
   );
 
+  // Positioning differs on mobile (fixed slide-in drawer) vs desktop (sticky in-flow).
+  const asideClass = isLg
+    ? 'w-64 border-r border-stone-200 bg-stone-50 sticky overflow-y-auto py-4 flex-shrink-0'
+    : `w-72 max-w-[85vw] border-r border-stone-200 bg-stone-50 overflow-y-auto py-4 fixed left-0 z-40 transition-transform duration-200 shadow-xl ${
+        mobileOpen ? 'translate-x-0' : '-translate-x-full'
+      }`;
+
   return (
     <aside
-      className="w-64 border-r border-stone-200 bg-stone-50 sticky overflow-y-auto py-4 flex-shrink-0"
+      className={asideClass}
       style={{ top: '73px', height: 'calc(100vh - 73px)' }}
+      aria-hidden={!isLg && !mobileOpen}
     >
       <div className="px-3 mb-2 flex items-center justify-between">
         <span className="font-mono text-[10px] uppercase tracking-wider text-stone-500">Navigate</span>
-        <button
-          onClick={onToggle}
-          title="Collapse sidebar (⌘B / Ctrl+B)"
-          className="p-1 -mr-1 text-stone-400 hover:text-stone-700 hover:bg-stone-100 rounded transition-colors"
-        >
-          <PanelLeftClose size={14} />
-        </button>
+        {isLg ? (
+          <button
+            onClick={onToggle}
+            title="Collapse sidebar (⌘B / Ctrl+B)"
+            className="p-1 -mr-1 text-stone-400 hover:text-stone-700 hover:bg-stone-100 rounded transition-colors"
+          >
+            <PanelLeftClose size={14} />
+          </button>
+        ) : (
+          <button
+            onClick={onMobileClose}
+            title="Close navigation"
+            className="p-1 -mr-1 text-stone-400 hover:text-stone-700 hover:bg-stone-100 rounded transition-colors"
+          >
+            <X size={14} />
+          </button>
+        )}
       </div>
       <div className="mb-6">
-        {item('Home', () => navigate({ type: 'home' }), isActive('home'), <Home size={14} />)}
+        {item('Home', () => handleNavigate({ type: 'home' }), isActive('home'), <Home size={14} />)}
       </div>
 
       <div className="mb-6">
@@ -586,8 +655,8 @@ function Sidebar({ navigate, currentView, collapsed, onToggle }) {
         {Object.values(DATA.frameworks).map(fw => (
           <button
             key={fw._id}
-            onClick={() => navigate({ type: 'framework', id: fw._id })}
-            className={`w-full text-left px-3 py-1.5 flex items-center gap-2 text-sm transition-colors border-l-2 ${
+            onClick={() => handleNavigate({ type: 'framework', id: fw._id })}
+            className={`w-full text-left px-3 py-2 lg:py-1.5 flex items-center gap-2 text-sm transition-colors border-l-2 ${
               isActive('framework', fw._id)
                 ? 'bg-amber-50 border-amber-700 text-amber-900'
                 : 'border-transparent text-stone-700 hover:bg-stone-100 hover:border-stone-300'
@@ -608,14 +677,14 @@ function Sidebar({ navigate, currentView, collapsed, onToggle }) {
         </div>
         {item(
           'Open Questions',
-          () => navigate({ type: 'openq' }),
+          () => handleNavigate({ type: 'openq' }),
           isActive('openq'),
           <HelpCircle size={14} />,
           Object.keys(DATA.all_open_questions).length
         )}
         {item(
           'Cross-Framework Graph',
-          () => navigate({ type: 'graph' }),
+          () => handleNavigate({ type: 'graph' }),
           isActive('graph'),
           <Network size={14} />,
           Object.values(DATA.anchor_stats).filter(c => c >= 2).length
@@ -650,8 +719,8 @@ function HomePage({ navigate }) {
 
   return (
     <div className="max-w-4xl">
-      <div className="mb-12">
-        <h1 className="font-serif text-4xl text-stone-950 tracking-tight mb-2">
+      <div className="mb-8 lg:mb-12">
+        <h1 className="font-serif text-3xl sm:text-4xl text-stone-950 tracking-tight mb-2">
           Compliance alignment record
         </h1>
         <p className="text-stone-600 leading-relaxed max-w-2xl">
@@ -666,7 +735,7 @@ function HomePage({ navigate }) {
         )}
       </div>
 
-      <div className="grid grid-cols-4 gap-px bg-stone-200 border border-stone-200 mb-12">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-stone-200 border border-stone-200 mb-8 lg:mb-12">
         <Stat label="Frameworks" value={Object.keys(DATA.frameworks).length} />
         <Stat label="Requirements" value={totalReqs} />
         <Stat
@@ -734,7 +803,7 @@ function HomePage({ navigate }) {
 
       <div className="mb-12">
         <SectionHeader count={totalCrosswalks}>Graph density</SectionHeader>
-        <div className="grid grid-cols-3 gap-px bg-stone-200 border border-stone-200">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-stone-200 border border-stone-200">
           <Stat label="Forward edges" value={totalCrosswalks} />
           <Stat
             label="Reqs with crosswalks"
@@ -898,7 +967,7 @@ function FrameworkDetail({ fwId, navigate }) {
             <p className="text-stone-800 leading-relaxed mb-6">
               {FRAMEWORK_OVERVIEW[fw._id].plain_english}
             </p>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
               {FRAMEWORK_OVERVIEW[fw._id].key_concepts.map(c => (
                 <div key={c.label} className="p-3 border border-stone-200 bg-white">
                   <div className="font-mono text-xs uppercase tracking-wider text-amber-800 mb-1">
@@ -916,7 +985,7 @@ function FrameworkDetail({ fwId, navigate }) {
         )}
 
         {/* Issuer / type / audit type / phase dates summary */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-stone-200 border border-stone-200 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-stone-200 border border-stone-200 mb-6">
           <div className="bg-stone-50 px-4 py-2.5">
             <FieldLabel>Issuer</FieldLabel>
             <div className="text-sm text-stone-800">{fw.issuer}</div>
@@ -1073,7 +1142,7 @@ function FrameworkDetail({ fwId, navigate }) {
                 </span>
               )}
             </SectionHeader>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {visibleScenarios.map(scn => (
                 <button
                   key={scn.id}
@@ -1168,7 +1237,7 @@ function FrameworkDetail({ fwId, navigate }) {
           );
           return (
             <>
-              <div className="grid grid-cols-2 lg:grid-cols-5 gap-px bg-stone-200 border border-stone-200 mb-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-px bg-stone-200 border border-stone-200 mb-6">
                 <Stat label="Requirements" value={fw.requirements.length} />
                 <Stat
                   label="Scenarios"
@@ -1386,7 +1455,7 @@ function RequirementDetail({ reqId, navigate }) {
       </div>
 
       {/* Quick facts */}
-      <div className="grid grid-cols-3 gap-px bg-stone-200 border border-stone-200 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-stone-200 border border-stone-200 mb-8">
         {(req.owner || req.owner_by_model) && (
           <div className="bg-stone-50 px-4 py-2.5">
             <FieldLabel>
@@ -1761,7 +1830,7 @@ function ScenarioDetail({ scnId, navigate }) {
       </div>
 
       {/* Roles */}
-      <div className="grid grid-cols-2 gap-px bg-stone-200 border border-stone-200 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-stone-200 border border-stone-200 mb-8">
         {scn.pb_role && (
           <div className="bg-stone-50 px-4 py-2.5">
             <FieldLabel>PrivateBox role</FieldLabel>
@@ -2017,7 +2086,7 @@ function OpenQuestionDetail({ oq, navigate }) {
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-px bg-stone-200 border border-stone-200 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-stone-200 border border-stone-200 mb-8">
         {oq.decision_owner && (
           <div className="bg-stone-50 px-4 py-2.5">
             <FieldLabel>Decision owner</FieldLabel>
@@ -2122,7 +2191,7 @@ function GraphView({ navigate }) {
         </p>
       </div>
 
-      <div className="mb-8 grid grid-cols-4 gap-px bg-stone-200 border border-stone-200">
+      <div className="mb-8 grid grid-cols-2 lg:grid-cols-4 gap-px bg-stone-200 border border-stone-200">
         <Stat label="Forward edges" value={Object.values(DATA.forward_graph).reduce((s, v) => s + v.length, 0)} />
         <Stat label="Anchor reqs" value={Object.values(DATA.anchor_stats).filter(c => c >= 2).length} sub="2+ in" />
         <Stat label="Hub reqs" value={Object.values(DATA.anchor_stats).filter(c => c >= 3).length} sub="3+ in" />
@@ -2210,6 +2279,7 @@ export default function App() {
   const [view, setView] = useState({ type: 'home' });
   const [history, setHistory] = useState([]);
   const [lens, setLens] = useState('both');
+  const isLg = useIsLg();
 
   // UI state — chat + sidebar
   const [chatOpen, setChatOpen] = useState(() => readLS(LS_KEYS.chatOpen, false));
@@ -2217,14 +2287,32 @@ export default function App() {
   // Tracks the sidebar mode at the moment chat opened, so we can restore on close
   // (unless the user manually toggled sidebar during the open session).
   const [prevSidebarMode, setPrevSidebarMode] = useState(null);
-  // Resizable chat pane width
+  // Resizable chat pane width (desktop only)
   const [chatWidth, setChatWidth] = useState(() => readLS(LS_KEYS.chatWidth, 480));
   // Pending message from the trigger bar — sent on pane mount
   const [pendingMessage, setPendingMessage] = useState(null);
+  // Mobile sidebar drawer state (only relevant at < lg)
+  const [sidebarMobileOpen, setSidebarMobileOpen] = useState(false);
 
   useEffect(() => { writeLS(LS_KEYS.chatOpen, chatOpen); }, [chatOpen]);
   useEffect(() => { writeLS(LS_KEYS.sidebarMode, sidebarMode); }, [sidebarMode]);
   useEffect(() => { writeLS(LS_KEYS.chatWidth, chatWidth); }, [chatWidth]);
+
+  // Close mobile sidebar drawer when crossing to lg+ (avoid stuck-open state)
+  useEffect(() => {
+    if (isLg && sidebarMobileOpen) setSidebarMobileOpen(false);
+  }, [isLg, sidebarMobileOpen]);
+
+  // Lock body scroll when any mobile overlay is open (drawer or chat pane)
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    const shouldLock = !isLg && (sidebarMobileOpen || chatOpen);
+    if (shouldLock) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => { document.body.style.overflow = prev; };
+    }
+  }, [isLg, sidebarMobileOpen, chatOpen]);
 
   const navigate = useCallback((newView) => {
     setHistory(h => [...h, view]);
@@ -2242,13 +2330,17 @@ export default function App() {
   }, []);
 
   const openChat = useCallback((initialMessage) => {
-    if (sidebarMode === 'expanded') {
+    // Only auto-collapse the desktop sidebar — on mobile the chat is a
+    // fullscreen overlay and the sidebar isn't visible anyway.
+    if (isLg && sidebarMode === 'expanded') {
       setPrevSidebarMode('expanded');
       setSidebarMode('collapsed');
     }
+    // Close mobile sidebar drawer if open
+    if (sidebarMobileOpen) setSidebarMobileOpen(false);
     setChatOpen(true);
     if (initialMessage) setPendingMessage(initialMessage);
-  }, [sidebarMode]);
+  }, [isLg, sidebarMode, sidebarMobileOpen]);
 
   const closeChat = useCallback(() => {
     setChatOpen(false);
@@ -2266,10 +2358,15 @@ export default function App() {
   }, [chatOpen, openChat, closeChat]);
 
   const toggleSidebar = useCallback(() => {
+    if (!isLg) {
+      // On mobile, ⌘B toggles the drawer instead of changing desktop mode
+      setSidebarMobileOpen(o => !o);
+      return;
+    }
     setSidebarMode(m => m === 'expanded' ? 'collapsed' : 'expanded');
     // User explicit toggle — clear the auto-restore memory
     setPrevSidebarMode(null);
-  }, []);
+  }, [isLg]);
 
   // Global keyboard shortcuts: ⌘K / Ctrl+K, ⌘B / Ctrl+B, Esc
   useEffect(() => {
@@ -2281,17 +2378,20 @@ export default function App() {
       } else if (meta && e.key.toLowerCase() === 'b') {
         e.preventDefault();
         toggleSidebar();
-      } else if (e.key === 'Escape' && chatOpen) {
-        // Only close if no input is focused — don't fight other esc handlers
+      } else if (e.key === 'Escape') {
+        // Priority on mobile: close drawer first, then chat
         const tag = document.activeElement?.tagName;
-        if (tag !== 'INPUT' && tag !== 'TEXTAREA') {
+        if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+        if (sidebarMobileOpen) {
+          setSidebarMobileOpen(false);
+        } else if (chatOpen) {
           closeChat();
         }
       }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [toggleChat, toggleSidebar, closeChat, chatOpen]);
+  }, [toggleChat, toggleSidebar, closeChat, chatOpen, sidebarMobileOpen]);
 
   return (
     <LensContext.Provider value={lens}>
@@ -2304,15 +2404,28 @@ export default function App() {
             canBack={history.length > 0}
             chatOpen={chatOpen}
             onToggleChat={toggleChat}
+            onOpenMobileSidebar={() => setSidebarMobileOpen(true)}
           />
+          {/* Mobile sidebar backdrop — covers content when drawer is open at < lg */}
+          {!isLg && sidebarMobileOpen && (
+            <button
+              type="button"
+              aria-label="Close navigation"
+              onClick={() => setSidebarMobileOpen(false)}
+              className="lg:hidden fixed inset-0 z-30 bg-stone-950/40"
+              style={{ top: '73px' }}
+            />
+          )}
           <div className="flex flex-1 min-h-0">
             <Sidebar
               navigate={navigate}
               currentView={view}
               collapsed={sidebarMode === 'collapsed'}
               onToggle={toggleSidebar}
+              mobileOpen={sidebarMobileOpen}
+              onMobileClose={() => setSidebarMobileOpen(false)}
             />
-            <main className={`flex-1 min-w-0 px-8 py-10 ${chatOpen ? 'pb-10' : 'pb-20'} overflow-x-hidden`}>
+            <main className={`flex-1 min-w-0 px-4 sm:px-6 lg:px-8 py-6 lg:py-10 ${chatOpen && isLg ? 'pb-10' : 'pb-24'} overflow-x-hidden`}>
               {view.type === 'home' && <HomePage navigate={navigate} />}
               {view.type === 'framework' && <FrameworkDetail fwId={view.id} navigate={navigate} />}
               {view.type === 'requirement' && <RequirementDetail reqId={view.id} navigate={navigate} />}
@@ -2331,6 +2444,7 @@ export default function App() {
                 onResize={setChatWidth}
                 pendingMessage={pendingMessage}
                 onConsumePendingMessage={() => setPendingMessage(null)}
+                isLg={isLg}
               />
             )}
           </div>

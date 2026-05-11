@@ -331,7 +331,7 @@ export function AssistantTrigger({ view, data, onOpen }) {
   }, [input, onOpen]);
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-30 pointer-events-none pb-4 px-4">
+    <div className="fixed bottom-0 left-0 right-0 z-30 pointer-events-none pb-3 sm:pb-4 px-3 sm:px-4">
       {/* Soft gradient mask behind the pill so page content under it
           fades cleanly to the viewport edge */}
       <div
@@ -351,7 +351,7 @@ export function AssistantTrigger({ view, data, onOpen }) {
           focus-within:border-stone-400
           focus-within:shadow-[0_6px_28px_-4px_rgba(28,25,23,0.16),0_12px_48px_-8px_rgba(28,25,23,0.10)]
           transition-all duration-200
-          flex items-center gap-2.5 pl-4 pr-1.5 py-1.5
+          flex items-center gap-2 sm:gap-2.5 pl-3 sm:pl-4 pr-1.5 py-1.5
         ">
           <Sparkles
             size={14}
@@ -384,11 +384,11 @@ export function AssistantTrigger({ view, data, onOpen }) {
           </kbd>
           <button
             onClick={submit}
-            className="flex items-center justify-center w-8 h-8 rounded-full bg-stone-900 hover:bg-stone-800 text-stone-50 transition-colors flex-shrink-0"
+            className="flex items-center justify-center w-9 h-9 sm:w-8 sm:h-8 rounded-full bg-stone-900 hover:bg-stone-800 text-stone-50 transition-colors flex-shrink-0"
             title="Open assistant (⌘K)"
             aria-label="Open assistant"
           >
-            <Send size={13} strokeWidth={2} className="-ml-0.5" />
+            <Send size={14} strokeWidth={2} className="-ml-0.5" />
           </button>
         </div>
       </div>
@@ -410,6 +410,7 @@ export function AssistantPane({
   onResize,
   pendingMessage,
   onConsumePendingMessage,
+  isLg = true,
 }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -636,34 +637,52 @@ export function AssistantPane({
     0,
   );
 
+  // ── Responsive containment ──────────────────────────────────────────────────
+  // Desktop (lg+): sticky right-column flex child with the configured width
+  // and a left-edge resize handle.
+  // Mobile/tablet (< lg): fullscreen fixed overlay below the header; resize
+  // handle is hidden (no drag target on touch).
+
+  const asideClass = isLg
+    ? 'flex flex-col bg-white border-l border-stone-200 sticky flex-shrink-0 relative'
+    : 'flex flex-col bg-white fixed left-0 right-0 bottom-0 z-40';
+
+  const asideStyle = isLg
+    ? { top: '73px', height: 'calc(100vh - 73px)', width: `${width}px` }
+    : { top: '73px' };
+
   return (
     <aside
-      className="flex flex-col bg-white border-l border-stone-200 sticky flex-shrink-0 relative"
-      style={{ top: '73px', height: 'calc(100vh - 73px)', width: `${width}px` }}
+      className={asideClass}
+      style={asideStyle}
+      role="complementary"
+      aria-label="Compliance assistant"
     >
-      {/* Resize handle on left edge */}
-      <div
-        onMouseDown={startResize}
-        className="absolute left-0 top-0 bottom-0 w-1.5 cursor-col-resize group z-10"
-        title="Drag to resize"
-      >
-        <div className="absolute inset-y-0 left-0 w-px bg-stone-200 group-hover:bg-stone-400 group-hover:w-0.5 transition-all" />
-      </div>
+      {/* Resize handle on left edge — desktop only */}
+      {isLg && (
+        <div
+          onMouseDown={startResize}
+          className="absolute left-0 top-0 bottom-0 w-1.5 cursor-col-resize group z-10"
+          title="Drag to resize"
+        >
+          <div className="absolute inset-y-0 left-0 w-px bg-stone-200 group-hover:bg-stone-400 group-hover:w-0.5 transition-all" />
+        </div>
+      )}
 
       {/* Header */}
-      <div className="flex-shrink-0 px-4 py-2.5 border-b border-stone-200 flex items-center justify-between">
-        <div className="flex items-baseline gap-2 min-w-0">
-          <span className="text-[10px] uppercase tracking-[0.14em] text-stone-500 font-medium">
+      <div className="flex-shrink-0 px-3 sm:px-4 py-2.5 border-b border-stone-200 flex items-center justify-between gap-2">
+        <div className="flex items-baseline gap-1.5 sm:gap-2 min-w-0">
+          <span className="text-[10px] uppercase tracking-[0.14em] text-stone-500 font-medium flex-shrink-0">
             Assistant
           </span>
-          <span className="text-stone-300 text-xs">·</span>
+          <span className="text-stone-300 text-xs flex-shrink-0">·</span>
           <span className="font-mono text-[12px] text-stone-700 truncate">{contextBadge}</span>
-          <span className="text-stone-300 text-xs">·</span>
-          <span className="text-[11px] text-stone-500">lens: {lensLabel.toLowerCase()}</span>
+          <span className="hidden sm:inline text-stone-300 text-xs flex-shrink-0">·</span>
+          <span className="hidden sm:inline text-[11px] text-stone-500 flex-shrink-0">lens: {lensLabel.toLowerCase()}</span>
         </div>
-        <div className="flex items-center gap-2 flex-shrink-0">
+        <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
           <label
-            className="text-[10px] text-stone-500 flex items-center gap-1.5 cursor-pointer select-none"
+            className="hidden md:flex text-[10px] text-stone-500 items-center gap-1.5 cursor-pointer select-none"
             title="Clear conversation when navigating to a new page"
           >
             <input
@@ -677,16 +696,17 @@ export function AssistantPane({
           <button
             onClick={handleReset}
             title="Reset conversation"
-            className="p-1 hover:bg-stone-100 rounded transition-colors"
+            className="p-1.5 lg:p-1 hover:bg-stone-100 rounded transition-colors"
           >
-            <RotateCcw size={13} className="text-stone-500" />
+            <RotateCcw size={14} className="text-stone-500" />
           </button>
           <button
             onClick={onClose}
             title="Close (Esc)"
-            className="p-1 hover:bg-stone-100 rounded transition-colors"
+            className="p-1.5 lg:p-1 hover:bg-stone-100 rounded transition-colors"
+            aria-label="Close assistant"
           >
-            <X size={14} className="text-stone-500" />
+            <X size={16} className="text-stone-500" />
           </button>
         </div>
       </div>
@@ -750,7 +770,7 @@ export function AssistantPane({
 
       {/* Input bar */}
       <div className="flex-shrink-0 border-t border-stone-200 bg-white">
-        <div className="px-3 py-2 flex items-center gap-2">
+        <div className="px-3 py-2.5 lg:py-2 flex items-center gap-2">
           <input
             ref={inputRef}
             type="text"
@@ -759,18 +779,19 @@ export function AssistantPane({
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
             disabled={streaming}
-            className="flex-1 text-[14px] bg-transparent outline-none placeholder-stone-400 text-stone-900 disabled:opacity-50"
+            className="flex-1 min-w-0 text-[15px] lg:text-[14px] bg-transparent outline-none placeholder-stone-400 text-stone-900 disabled:opacity-50"
           />
           {streaming ? (
-            <Loader2 size={14} className="text-stone-600 animate-spin" />
+            <Loader2 size={18} className="text-stone-600 animate-spin flex-shrink-0" />
           ) : (
             <button
               onClick={() => handleSend()}
               disabled={!input.trim()}
-              className="p-1 hover:bg-stone-100 rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              className="flex items-center justify-center w-9 h-9 lg:w-7 lg:h-7 rounded-full lg:rounded bg-stone-900 lg:bg-transparent text-stone-50 lg:text-stone-700 hover:bg-stone-800 lg:hover:bg-stone-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex-shrink-0"
               title="Send (Enter)"
+              aria-label="Send message"
             >
-              <Send size={14} className="text-stone-700" />
+              <Send size={15} className="lg:w-3.5 lg:h-3.5" />
             </button>
           )}
         </div>
