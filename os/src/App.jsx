@@ -62,6 +62,7 @@ function getFrameworkLabel(fwId) {
     'popia': 'POPIA',
     'king-v': 'King V',
     'soc-2': 'SOC 2',
+    'nist': 'NIST AI / SSDF',
   };
   return labels[fwId] || fwId;
 }
@@ -76,6 +77,7 @@ function frameworkAccent(fwId) {
     'popia': 'bg-rose-700',
     'king-v': 'bg-teal-700',
     'soc-2': 'bg-cyan-700',
+    'nist': 'bg-purple-700',
   }[fwId] || 'bg-stone-400';
 }
 
@@ -88,6 +90,7 @@ function frameworkLabelClass(fwId) {
     'popia': 'text-rose-800',
     'king-v': 'text-teal-800',
     'soc-2': 'text-cyan-800',
+    'nist': 'text-purple-800',
   }[fwId] || 'text-stone-600';
 }
 
@@ -198,6 +201,15 @@ const FRAMEWORK_OVERVIEW = {
       { label: 'CC1–CC9 + optional categories', description: 'Common Criteria (Security) is mandatory. Optional: Availability (A1), Confidentiality (C1), Processing Integrity (PI1), Privacy (P1–P8). Each addition increases audit cost; PB picks based on actual commitments — Confidentiality is the natural next step after Security for legal/finance/healthcare buyers.' },
       { label: 'CUECs', description: 'Complementary User Entity Controls — controls the customer is expected to operate (local IAM, host hardening, local backups, physical security, restore testing). Auditor cannot test these; they must be documented in the system description per DC6. Substantial for an on-prem vendor.' },
       { label: 'Service commitments register', description: 'SOC 2 attests controls against PB\'s own stated commitments — not generic security. Service commitments register + system requirements register is the foundation. Marketing language that outruns commitments is the top risk. Never claim "SOC 2 certified" — reports are issued, not certified.' },
+    ],
+  },
+  'nist': {
+    plain_english: "Three NIST documents authored as one framework with sub_frameworks[]. AI RMF 1.0 (Jan 2023) + GenAI Profile (NIST AI 600-1, Jul 2024) provides the four-function structure — GOVERN, MAP, MEASURE, MANAGE — that has become the lingua franca for AI risk governance in US procurement; 72 outcomes total. SSDF 1.1 (NIST SP 800-218, Feb 2022) is the federally-mandated baseline for secure software development under EO 14028 and OMB guidance (M-22-18 / M-23-16) — vendors selling into US federal agencies attest against its 45 tasks across Prepare / Protect / Produce / Respond. SP 800-218A (Final May 2024) is the AI Overlay — 19 model-specific additions covering training-data protection, model weights, adversarial testing, prompt-injection risk, and AI supply chain. None are certifiable; self-attestation is the standard model. PrivateBox's position: \"designed in alignment with NIST AI RMF 1.0 and SSDF 1.1, with AI Overlay (SP 800-218A) recommendations applied to the AI development pipeline.\" Never claim \"NIST certified\" — there is no such thing.",
+    key_concepts: [
+      { label: 'AI RMF — GOV / MAP / MEASURE / MANAGE', description: 'The four functions structure AI risk governance: GOV (policy and oversight), MAP (context and impact), MEASURE (test and assess), MANAGE (treat and operate). 72 outcomes across the four. GenAI Profile (AI 600-1) adds confabulation, CBRN, IP, harmful-content overlays.' },
+      { label: 'SSDF tasks', description: 'PO (Prepare Organization), PS (Protect Software), PW (Produce Well-Secured Software), RV (Respond to Vulnerabilities). 45 tasks. SBOM under PS.3.2 is the M-22-18 high-bar item for US federal procurement.' },
+      { label: '218A AI Overlay', description: 'Adds AI-specific overlays to SSDF — training/fine-tuning data protection (PS.1.2), model weight protection (PS.1.3), adversarial testing (PW.3.3), prompt-injection coverage, model registry, content provenance. Out of scope: runtime deployment operations (those use AI RMF MANAGE instead).' },
+      { label: 'Voluntary, self-attestation', description: 'Unlike ISO standards (certifiable) or POPIA (binding law), NIST frameworks are voluntary — self-attestation is the standard. SSDF attestation via CISA form per OMB M-22-18 / M-23-16 is required for software sold to US federal agencies; AI RMF is purely voluntary alignment.' },
     ],
   },
 };

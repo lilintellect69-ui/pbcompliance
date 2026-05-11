@@ -1,0 +1,4428 @@
+# NIST AI / Cybersecurity Bundle — PrivateBox alignment record (schema v2)
+# Three NIST documents authored as one framework with sub_frameworks[]:
+#   - AI RMF 1.0 (Jan 2023) + GenAI Profile (Jul 2024) — function_outcome
+#   - SSDF 1.1 (NIST SP 800-218, Feb 2022) — task
+#   - SP 800-218A AI Overlay (Final May 2024) — overlay
+#
+# Schema: see /docs/schema-v2.md (sub_frameworks[] feature lines 143-165).
+# Source pack: frameworks/nist/source/privatebox-nist-architecture-pack.md
+
+schema_version: '2.0'
+id: nist
+version: 'AI RMF 1.0 + GenAI Profile Jul 2024 + SSDF 1.1 + SP 800-218A Final May 2024'
+full_name: NIST AI Risk Management Framework + Secure Software Development Framework + AI Overlay
+type: voluntary_framework
+issuer: NIST
+audit_type: self_attestation
+certifiable: false
+pb_interpretation_version: '1.0'
+pb_interpretation_owner: null
+pb_interpretation_last_reviewed: null
+roles: []
+tiers: []
+effective_dates:
+- milestone: AI RMF 1.0 published
+  date: '2023-01-26'
+  obligations: []
+- milestone: SSDF 1.1 published (NIST SP 800-218)
+  date: '2022-02-03'
+  obligations: []
+- milestone: AI RMF GenAI Profile published (NIST AI 600-1)
+  date: '2024-07-26'
+  obligations: []
+- milestone: SP 800-218A AI Overlay final
+  date: '2024-05-01'
+  obligations: []
+
+sub_frameworks:
+- id: rmf
+  name: AI Risk Management Framework
+  version: 1.0 + GenAI Profile Jul 2024
+  issuer: NIST
+- id: ssdf
+  name: Secure Software Development Framework (NIST SP 800-218)
+  version: '1.1'
+  issuer: NIST
+- id: 218a
+  name: SP 800-218A AI Overlay
+  version: Final May 2024
+  issuer: NIST
+  overlay_on: ssdf
+
+pb_application:
+  why_chosen: >-
+    NIST's AI RMF + SSDF + 218A bundle is the dominant US-government-and-enterprise voluntary
+    framework family for AI and secure software development. AI RMF 1.0 sets the four-function
+    structure (GOVERN / MAP / MEASURE / MANAGE) that has become the lingua franca for AI risk
+    governance in US procurement; SSDF 1.1 is the federally-mandated baseline for secure software
+    development under EO 14028 and subsequent OMB guidance (M-22-18 / M-23-16) — vendors selling
+    into US federal agencies attest against SSDF practices; SP 800-218A overlays AI-model-specific
+    additions onto SSDF covering training-data protection, model weights, adversarial testing,
+    prompt-injection risk, and AI supply chain. PB's commercial reality: US enterprise procurement
+    (especially financial services, healthcare, federal-adjacent) expects evidence of AI RMF
+    alignment and SSDF attestation alongside ISO 27001 / SOC 2. Unlike ISO standards (certifiable)
+    or POPIA (binding law), NIST frameworks are voluntary — self-attestation is the standard
+    model. PB's positioning: "designed in alignment with NIST AI RMF 1.0 and SSDF 1.1, with AI
+    Overlay (SP 800-218A) recommendations applied to the AI development pipeline." Never claim
+    "NIST certified" — there is no such thing.
+  scope_decisions:
+    on_prem:
+      coverage: full
+      rationale: >-
+        AI RMF outcomes apply to PB-as-AI-developer regardless of deployment. SSDF tasks apply to
+        the development pipeline that builds PB on its own infrastructure — customer deployment
+        environment is mostly out of SSDF scope. 218A overlay covers PB model sourcing, training
+        data handling, model weights, adversarial testing — entirely PB-side. Customer-hosted
+        runtime monitoring uses the AI RMF MANAGE function with shared responsibility (PB
+        provides the design and the optional telemetry, customer operates in their environment).
+    ai_factory:
+      coverage: partial
+      rationale: >-
+        AI Factory partner-DC deployment introduces a subprocessor relationship that AI RMF GOV
+        6.1 / 6.2 and SSDF PO.1.3 cover. Pending partner-DC selection, supplier-governance
+        evidence is provisional. 218A overlay applies identically since it concerns PB's model
+        development pipeline regardless of deployment substrate.
+  top_risks:
+  - >-
+    AI RMF treated as marketing alignment rather than operational implementation — outcomes named
+    in procurement responses without corresponding evidence in the engineering process.
+  - >-
+    SSDF tasks attested without recurring evidence collection across SDLC — Type II-style
+    operating-effectiveness evidence absent at audit time.
+  - >-
+    218A overlay items skipped because "AI Overlay is voluntary" — but the items it adds (model
+    weight protection, training-data integrity, adversarial testing, prompt-injection coverage)
+    are the highest-leverage AI-security controls.
+  - >-
+    Model provenance and dataset provenance undocumented — particularly for open-weight models
+    pulled from public hubs without signed verification.
+  - >-
+    Prompt-injection and jailbreak testing skipped in favour of generic security testing — known
+    218A gap pattern.
+  - >-
+    Third-party AI components (foundation models, embedding services, vector stores) entering the
+    pipeline without intake review — AI RMF GOV 6.1 / SSDF PW.4.1 high-risk gap.
+  - >-
+    No documented kill-switch / disengagement procedure for production AI features — MANAGE 2.4
+    + 218A model update/rollback failure mode.
+  - >-
+    Evaluation suites not versioned or reproducible — MEASURE 2.1 / SSDF PW.8.1 gap that
+    undermines every other AI quality claim.
+
+shared_responsibility_model:
+- area: AI governance pack (AI RMF GOV + SSDF PO)
+  pb_owned: AI policy, RACI, launch criteria, exception process, supplier governance pack.
+  cl_owned: Customer's own AI governance for their use of PrivateBox.
+  shared_note: Unified governance pack aligns AI RMF GOV 1-6 with SSDF PO.1-PO.5.
+- area: System and model inventory (AI RMF GOV 1.6 + SSDF PS.3.2 + 218A model registry)
+  pb_owned: System inventory, approved model inventory, component register, SBOM / MBOM.
+  cl_owned: Customer's deployment-side inventory of which models are in use.
+  shared_note: PB ships the approved-models list; customer logs which are activated.
+- area: Secure SDLC (SSDF PO.3 / PW + 218A 218a-PO.5.3)
+  pb_owned: SDLC SOPs, branch protections, CI/CD hardening, code review, testing artefacts.
+  cl_owned: N/A — SDLC is PB's pipeline.
+  shared_note: 218A overlay extends SDLC into model artefacts and training environments.
+- area: Model and data provenance (AI RMF MAP 4.1 + SSDF PS.3.2 + 218A model/dataset provenance)
+  pb_owned: Source records, model source approval, dataset lineage, signatures, digests.
+  cl_owned: Customer's own knowledge-base / RAG provenance.
+  shared_note: PB provides templates; customer applies them to their corpus.
+- area: TEVV and red teaming (AI RMF MAP 2.3 + MEASURE 1-4 + SSDF PW.7-8 + 218A adversarial)
+  pb_owned: TEVV plan, red-team reports, evaluation sets, regression suite, security findings.
+  cl_owned: Customer's deployment-context evaluation where applicable.
+  shared_note: PB delivers eval baseline; customer extends with sector-specific scenarios.
+- area: Runtime and incident operations (AI RMF MANAGE + SSDF RV)
+  pb_owned: Monitoring plan, incident SOP, customer communication templates, kill-switch runbook.
+  cl_owned: Customer's local monitoring of deployed system per agreed telemetry scope.
+  shared_note: 15-day EU AI Act + 72-hour POPIA notification timing baked into PB SOPs.
+- area: Customer handoff and shared responsibility (AI RMF MAP 1.1 + 3.5 + MANAGE 1.4)
+  pb_owned: Deployment guide, hardening guide, shared-responsibility matrix, residual-risk statement.
+  cl_owned: Customer reads, configures, and operates per handoff.
+  shared_note: Procurement-gold artefact set — Workday / Microsoft Service Trust Portal pattern.
+
+evidence_families:
+- id: ai_governance_pack
+  name: AI governance policy set (AI RMF GOV + SSDF PO anchor)
+  examples:
+  - AI policy with accountability, risk tiers, approvals, exceptions
+  - Third-party AI rules and approved-models list
+  - Human-oversight requirements
+  - Customer-safe-use guidelines
+  why_auditor_cares: AI RMF GOV outcomes can't be evidenced without a policy stack tying back to engineering.
+  cadence: Annual review + per material change
+  typical_owner: PB
+- id: system_and_model_inventory
+  name: System and model inventory (AI RMF GOV 1.6 / MANAGE 3.2 + SSDF PS.3.2 + 218A registry)
+  examples:
+  - Approved-models register (version, source, approval, retirement triggers)
+  - Feature inventory + deployment inventory
+  - Connector inventory
+  - Component register / SBOM / MBOM
+  - Per-customer instance log
+  why_auditor_cares: Essential for AI RMF GOV 1.6 / MANAGE 3.2 and SSDF provenance. Cannot test what you cannot inventory.
+  cadence: Continuous
+  typical_owner: PB
+- id: secure_sdlc_pack
+  name: Secure SDLC SOP + RACI + toolchain artefacts (SSDF PO.3 / PW + 218A)
+  examples:
+  - SDLC SOPs covering repos, CI/CD, code review, testing, signing, release gating
+  - Toolchain register
+  - Branch protection settings
+  - Pipeline configurations
+  - 218A-extended scope to model artefacts and training environments
+  why_auditor_cares: Core evidence for SSDF and 218A readiness; highest-volume audit area for software vendors.
+  cadence: Continuous + per release
+  typical_owner: PB
+- id: sbom_provenance_release_integrity
+  name: SBOM / provenance / release integrity bundle (SSDF PS.3.2 + 218A model provenance)
+  examples:
+  - Component inventory with origins and licences
+  - Hashes and signatures per release
+  - Build provenance metadata
+  - Release archive (immutable)
+  - Model provenance per approved model
+  - Dataset lineage for training / fine-tuning data
+  why_auditor_cares: One of the strongest attestation-style artefact families; expected in US federal procurement under M-22-18.
+  cadence: Per release
+  typical_owner: PB
+- id: model_system_card
+  name: Model / system card (AI RMF transparency artefact)
+  examples:
+  - Intended use + prohibited use statement
+  - Data boundaries and known limits
+  - Evaluation summary (representative metrics)
+  - Residual risks
+  - Support assumptions
+  - Customer-facing version
+  why_auditor_cares: Key AI RMF transparency artefact (GOV 4.2 / MAP 2.2 / MEASURE 2.8 / 2.9).
+  cadence: Per release + on material change
+  typical_owner: PB
+- id: evaluation_and_red_team_pack
+  name: Evaluation and red-team pack (AI RMF MEASURE + SSDF PW.7-8 + 218A adversarial)
+  examples:
+  - TEVV plan
+  - Versioned test datasets (including adversarial cases)
+  - Results, severity ratings, remediation log
+  - AI red-team reports (prompt injection, jailbreak, exfiltration)
+  - Regression suite outputs
+  why_auditor_cares: Converts AI governance into auditable evidence; SSDF Type II evidence collapses without it.
+  cadence: Per release + drift trigger + scheduled red-team cycle
+  typical_owner: PB
+- id: vuln_and_incident_sop
+  name: Vulnerability and incident SOP (SSDF RV + AI RMF MANAGE)
+  examples:
+  - Vulnerability disclosure policy (VDP) + intake workflow
+  - Triage + severity matrix
+  - Disclosure templates
+  - Patching SOPs
+  - Model-disablement / kill-switch runbook
+  - Communications templates
+  - RCA records + CAPA register
+  why_auditor_cares: Bridges SSDF RV and AI RMF MANAGE; visible to customers as advisories.
+  cadence: Continuous + per incident
+  typical_owner: PB
+- id: customer_deployment_guide
+  name: Customer deployment and shared-responsibility guide (AI RMF MAP 1.1 + 3.5 + MANAGE)
+  examples:
+  - Hardening tasks per customer
+  - Monitored-responsibility matrix
+  - Support-access rules
+  - Telemetry options + opt-in
+  - Patching responsibilities
+  - Fallback paths and disablement procedures
+  why_auditor_cares: Critical for on-prem credibility; mirrors SOC 2 CUEC pattern and ISO 42001 customer-relationship controls.
+  cadence: Annual + per release
+  typical_owner: PB
+- id: training_and_competence
+  name: AI training and competence records (AI RMF GOV 2.2 + SSDF PO.2.2)
+  examples:
+  - Role-based AI security training curriculum
+  - Prompt-injection awareness module
+  - Model misuse awareness
+  - Support-access training
+  - Refresher cycle records
+  why_auditor_cares: GOV 2.2 + PO.2.2 cross-cut all other outcomes; sampling-friendly Type II evidence.
+  cadence: Annual + per hire / role change
+  typical_owner: PB
+- id: third_party_model_governance
+  name: Third-party AI component governance (AI RMF GOV 6 + SSDF PW.4 + 218A)
+  examples:
+  - Supplier assessment per model / library / dataset
+  - Licence review
+  - Approved-source list
+  - Model card dossier per third-party model
+  - Vulnerability monitoring per upstream
+  why_auditor_cares: GOV 6.1 / 6.2 is the most-asked third-party-AI question in procurement.
+  cadence: Per onboarding + annual + on upstream change
+  typical_owner: PB
+- id: ai_risk_treatment_plan
+  name: AI risk register and treatment plan (AI RMF MANAGE 1)
+  examples:
+  - Risk register with AI-specific entries (hallucination, prompt injection, drift, abuse)
+  - Prioritisation by impact / likelihood / resources
+  - Treatment plans per high-priority risk
+  - Residual-risk statement
+  why_auditor_cares: MANAGE 1.1-1.4 traceable from risk to treatment to acceptance.
+  cadence: Quarterly + on material change
+  typical_owner: PB
+
+scenarios:
+- id: scn-nist-rmf-baseline-profile
+  name: AI RMF baseline profile (general AI systems)
+  framework_specific_id: NIST-Profile-1
+  description: >-
+    PrivateBox applies AI RMF 1.0 outcomes to its on-prem AI platform as a general AI system.
+    GenAI Profile considerations applied where generative features are material.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: ai_developer_and_provider
+  customer_role: ai_user_deployer
+  triggered_requirements:
+  - requirement_id: nist-gov-1.1
+    scenario_specific_note: Legal / regulatory register covers AI-specific obligations.
+  - requirement_id: nist-map-1.1
+    scenario_specific_note: Intended-use register per deployment.
+  notes: Baseline posture for procurement responses.
+- id: scn-nist-rmf-genai-profile
+  name: AI RMF GenAI Profile (NIST AI 600-1) activated
+  framework_specific_id: NIST-Profile-2
+  description: >-
+    Generative AI features (chat, summarisation, generation) trigger the GenAI Profile (NIST AI
+    600-1, Jul 2024). Adds CBRN, confabulation, intellectual-property, harmful-content, environmental
+    impact, human-AI configuration considerations.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: genai_provider
+  customer_role: genai_deployer
+  triggered_requirements:
+  - requirement_id: nist-measure-2.7
+    scenario_specific_note: GenAI security testing (jailbreak, prompt injection) becomes mandatory.
+  - requirement_id: nist-measure-2.10
+    scenario_specific_note: Privacy risk in GenAI prompts and outputs.
+  notes: PB's primary AI feature set is generative; profile applies.
+- id: scn-nist-ssdf-readiness
+  name: SSDF 1.1 readiness for US federal procurement (M-22-18 / M-23-16)
+  framework_specific_id: NIST-Profile-3
+  description: >-
+    SSDF 1.1 self-attestation per OMB M-22-18 / M-23-16 — required for software sold to US federal
+    agencies. PB attests its own production of the platform per CISA's SSDF attestation form.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: software_producer
+  customer_role: software_consumer
+  triggered_requirements:
+  - requirement_id: nist-po-1.1
+    scenario_specific_note: Foundational PO tasks must be attested.
+  - requirement_id: nist-ps-3.2
+    scenario_specific_note: SBOM / provenance is the M-22-18 high-bar item.
+  notes: Trigger for any US-federal-adjacent deal.
+- id: scn-nist-218a-overlay-activated
+  name: 218A AI Overlay activated for AI model pipeline
+  framework_specific_id: NIST-Profile-4
+  description: >-
+    SP 800-218A overlay applied on top of SSDF for PB's AI model pipeline — training data
+    protection, model weight protection, adversarial testing, AI vulnerability intake.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: ai_model_producer
+  customer_role: model_consumer
+  triggered_requirements:
+  - requirement_id: nist-218a-ps-1.2
+    scenario_specific_note: Training / fine-tuning data protected against unauthorised modification.
+  - requirement_id: nist-218a-ps-1.3
+    scenario_specific_note: Model weights protected.
+  notes: Activated when PB does any fine-tuning or guardrail-model production.
+- id: scn-nist-incident-disclosure
+  name: AI-specific incident disclosure pathway
+  framework_specific_id: NIST-Profile-5
+  description: >-
+    Behavioural AI incident (harmful output, prompt-injection breach, model exfiltration attempt)
+    triggers cross-framework notification — MANAGE 4.3 + SSDF RV.1.3 + EU AI Act Art. 73 + POPIA
+    s 22 where personal information involved.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: incident_owner
+  customer_role: notified_party
+  triggered_requirements:
+  - requirement_id: nist-manage-4.3
+    scenario_specific_note: Communication plan invoked.
+  - requirement_id: nist-rv-1.3
+    scenario_specific_note: VDP coordination.
+  notes: Aligns with established EU AI Act 15-day and POPIA 72-hour windows.
+
+open_questions:
+- id: oq-nist-rmf-profile-choice
+  question: Does PrivateBox attest against AI RMF general profile only, or also activate GenAI Profile (NIST AI 600-1)?
+  candidate_answers:
+  - General AI RMF only (lighter scope)
+  - GenAI Profile activated (covers PB's generative features explicitly)
+  - Both — general baseline plus GenAI overlay on chat / summarisation features
+  decision_owner: AI Governance Lead + Top Management
+  decision_status: pending
+  blocks_requirements: []
+  blocks_scenarios:
+  - scn-nist-rmf-genai-profile
+  notes: >-
+    PB's primary feature set is generative. GenAI Profile activation strengthens procurement story
+    for high-stakes use cases but adds CBRN / confabulation / IP-specific evidence requirements.
+  created: '2026-05-11'
+  resolved_value: null
+  resolved_at: null
+- id: oq-nist-ssdf-attestation-timing
+  question: When does PrivateBox submit the CISA SSDF attestation form (M-22-18 / M-23-16)?
+  candidate_answers:
+  - Before first US federal deal (just-in-time)
+  - On first SSDF readiness review (proactive)
+  - Wait until attestation form path stabilises (current status uncertain post-2025)
+  decision_owner: Top Management + Legal
+  decision_status: pending
+  blocks_requirements: []
+  blocks_scenarios:
+  - scn-nist-ssdf-readiness
+  notes: >-
+    M-22-18 attestation form path has been in flux 2024-2026. Verify current CISA / OMB
+    requirements before submission.
+  created: '2026-05-11'
+  resolved_value: null
+  resolved_at: null
+- id: oq-nist-sbom-tooling
+  question: Which SBOM generation and signing tooling does PrivateBox standardise on?
+  candidate_answers:
+  - Syft / Grype + Cosign (CNCF standard)
+  - GitHub Dependency Graph + dependabot (lighter)
+  - In-toto + SLSA-equivalent attestation (advanced)
+  decision_owner: AI Security Lead + DevOps
+  decision_status: pending
+  blocks_requirements:
+  - nist-ps-3.2
+  - nist-pw-4.2
+  blocks_scenarios: []
+  notes: >-
+    Syft+Cosign is the de facto standard for CycloneDX / SPDX SBOMs and signature attestation.
+    Choice affects PS.3.2 implementation depth.
+  created: '2026-05-11'
+  resolved_value: null
+  resolved_at: null
+- id: oq-nist-model-registry-tool
+  question: Which model registry / approval tooling does PrivateBox use?
+  candidate_answers:
+  - Hugging Face Hub private mirror
+  - MLflow Model Registry
+  - Custom internal registry with manual approval workflow
+  - Cloud-vendor registry (AWS / Azure / GCP)
+  decision_owner: AI Security Lead + Head of AI
+  decision_status: pending
+  blocks_requirements:
+  - nist-gov-1.6
+  - nist-manage-3.2
+  - nist-218a-x-model-provenance
+  blocks_scenarios: []
+  notes: >-
+    218A explicitly requires controlled model registry. Tooling choice affects every model-related
+    218A overlay item.
+  created: '2026-05-11'
+  resolved_value: null
+  resolved_at: null
+- id: oq-nist-redteam-cadence
+  question: What is PrivateBox's AI red-team cadence?
+  candidate_answers:
+  - Per material release + quarterly scheduled
+  - Annual external red-team + continuous internal regression
+  - Triggered by significant model change only
+  decision_owner: AI Security Lead
+  decision_status: pending
+  blocks_requirements:
+  - nist-measure-2.7
+  blocks_scenarios: []
+  notes: >-
+    218A overlay emphasises adversarial testing. Cadence affects MEASURE 2.7 evidence depth.
+  created: '2026-05-11'
+  resolved_value: null
+  resolved_at: null
+- id: oq-nist-third-party-model-workflow
+  question: What is the documented workflow for approving a new third-party / foundation model?
+  candidate_answers:
+  - Pre-sales + engineering + security + legal joint review (full)
+  - Engineering + security review only (medium)
+  - Engineering self-service from approved-source list (light)
+  decision_owner: AI Governance Lead
+  decision_status: pending
+  blocks_requirements:
+  - nist-gov-6.1
+  - nist-218a-x-third-party-model-governance
+  blocks_scenarios: []
+  notes: >-
+    GOV 6.1 + 218A third-party model governance are the highest-leverage AI supply-chain controls.
+    Workflow rigour affects every downstream model decision.
+  created: '2026-05-11'
+  resolved_value: null
+  resolved_at: null
+
+requirements:
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# AI RMF — GOVERN (19 outcomes)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+- id: nist-gov-1.1
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: GOV 1.1
+  group: GOVERN
+  group_name: Govern
+  title: Legal and regulatory AI requirements understood and documented
+  requirement: >-
+    Legal and regulatory requirements involving AI are understood, managed and documented.
+  pb_interpretation: >-
+    PB-owned with customer input. AI legal and obligations register covering contract clauses,
+    model / data / IP / privacy duties; reviewed before releases and major customer deployments.
+  owner: PB
+  documented_evidence:
+  - AI legal and obligations register
+  - Pre-release legal review records
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Per release + on regulatory change
+  failure_modes: Assuming on-prem removes compliance analysis.
+  maturity_target: AR
+  external_safe_claim: PrivateBox is designed with documented AI legal and contractual controls aligned to NIST AI RMF GOV 1.1.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-4.1
+    note: AIMS context (Clause 4.1) parallels AI RMF GOV 1.1 legal / regulatory understanding.
+
+- id: nist-gov-1.2
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: GOV 1.2
+  group: GOVERN
+  group_name: Govern
+  title: Trustworthy-AI characteristics integrated into policies
+  requirement: >-
+    Trustworthy AI characteristics are integrated into organisational policies and practices.
+  pb_interpretation: >-
+    AI Policy set covering security, reliability, privacy, transparency, human oversight. SDLC
+    gates enforce trustworthy-AI characteristics at design and release.
+  owner: PB
+  documented_evidence:
+  - AI Policy set (security / reliability / privacy / transparency / oversight)
+  - SDLC gate checklist mapped to trustworthy-AI characteristics
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual policy review + per release gate
+  failure_modes: Values statement with no operational checks.
+  maturity_target: AR
+  external_safe_claim: PrivateBox implements documented controls aligned to NIST AI RMF trustworthy-AI characteristics.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-5.2
+    note: AIMS AI Policy (Clause 5.2) operationalises trustworthy-AI characteristics.
+
+- id: nist-gov-1.3
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: GOV 1.3
+  group: GOVERN
+  group_name: Govern
+  title: Risk-management activity level matches organisational risk tolerance
+  requirement: >-
+    Processes are in place to determine the activity level of risk-management based on
+    organisational risk tolerance.
+  pb_interpretation: >-
+    AI risk-tiering standard with low / medium / high tiers. Healthcare, HR, legal, autonomous-agent
+    features escalate to high-risk treatment.
+  owner: PB
+  documented_evidence:
+  - AI risk-tiering rubric
+  - Exception register
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Per feature design + annual rubric review
+  failure_modes: Identical treatment for trivial and sensitive uses.
+  maturity_target: AR
+  external_safe_claim: PrivateBox uses risk-proportionate AI governance and testing.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-6.1.2
+    note: AIMS AI risk methodology covers tiered treatment.
+
+- id: nist-gov-1.4
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: GOV 1.4
+  group: GOVERN
+  group_name: Govern
+  title: Transparent AI risk-management process
+  requirement: >-
+    The risk-management process and its outcomes are established through transparent policies,
+    procedures and other controls.
+  pb_interpretation: >-
+    End-to-end AI risk procedure with stages, approvers, required artefacts, escalation,
+    acceptance authority. Consistent use across releases.
+  owner: PB
+  documented_evidence:
+  - AI risk SOP
+  - Approval workflow + release checklist
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Per release
+  failure_modes: Informal approvals in chat.
+  maturity_target: AR
+  external_safe_claim: PrivateBox is managed through documented AI governance procedures.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-6.1.3
+    note: AIMS risk treatment / SoA pattern.
+
+- id: nist-gov-1.5
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: GOV 1.5
+  group: GOVERN
+  group_name: Govern
+  title: Ongoing monitoring and periodic review planned with roles defined
+  requirement: >-
+    Ongoing monitoring and periodic review of the risk-management process and its outcomes are
+    planned, with organisational roles and responsibilities clearly defined.
+  pb_interpretation: >-
+    Review calendar and role map. Annual policy review; quarterly risk review; defined runtime
+    review cadence. Separate optional-support obligations for customer-deployed instances.
+  owner: PB/SH
+  documented_evidence:
+  - Review calendar + RACI
+  - Meeting records with action tracking
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual + quarterly
+  failure_modes: No cadence after deployment.
+  maturity_target: AR
+  external_safe_claim: PrivateBox supports periodic review and lifecycle governance.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-9.3
+    note: AIMS management review pattern.
+
+- id: nist-gov-1.6
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: GOV 1.6
+  group: GOVERN
+  group_name: Govern
+  title: AI systems inventoried according to risk priorities
+  requirement: >-
+    Mechanisms are in place to inventory AI systems and are resourced according to organisational
+    risk priorities.
+  pb_interpretation: >-
+    AI system and model inventory — approved-models list, feature inventory, deployment
+    inventory, connector inventory, customer-instance log, optional-telemetry / support flags.
+  owner: PB
+  documented_evidence:
+  - AI system / model inventory register
+  - Model registry / CMDB
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Continuous
+  failure_modes: No record of which model / version is where.
+  maturity_target: Cert
+  external_safe_claim: PrivateBox maintains a controlled inventory of AI components and approved models.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-a-4.2
+    - iso-42001-a-4.3
+    note: AIMS resource documentation and data-resource inventory.
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.9
+    note: Asset inventory pattern.
+
+- id: nist-gov-1.7
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: GOV 1.7
+  group: GOVERN
+  group_name: Govern
+  title: Safe decommissioning procedures exist
+  requirement: >-
+    Processes and procedures are in place for decommissioning and phasing out AI systems safely
+    and in a manner that does not increase risks or decrease the organisation's trustworthiness.
+  pb_interpretation: >-
+    AI decommissioning SOP — archive period, model / data retention, credential revocation,
+    rollback disablement, hardware-wipe responsibilities, support termination.
+  owner: PB/SH
+  documented_evidence:
+  - Retirement checklist / exit runbook
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Per retirement event + tabletop annual
+  failure_modes: Abandoned models, tokens, knowledge stores.
+  maturity_target: AR
+  external_safe_claim: PrivateBox includes documented retirement and decommissioning practices.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-gov-2.1
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: GOV 2.1
+  group: GOVERN
+  group_name: Govern
+  title: Roles, responsibilities and communication lines documented
+  requirement: >-
+    Roles, responsibilities and lines of communication related to AI risk-management are
+    documented and clear to those individuals and teams throughout the organisation.
+  pb_interpretation: >-
+    AI governance RACI assigning product, security, legal, ops, support, model owner, release
+    approver, incident owner, customer contact.
+  owner: PB
+  documented_evidence:
+  - AI governance RACI
+  - Org chart + support matrix
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual + on org change
+  failure_modes: "Everyone owns it."
+  maturity_target: Cert
+  external_safe_claim: PrivateBox assigns clear accountability for AI risks and controls.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-5.3
+    note: AIMS roles, responsibilities and authorities.
+
+- id: nist-gov-2.2
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: GOV 2.2
+  group: GOVERN
+  group_name: Govern
+  title: AI risk-management training for personnel and partners
+  requirement: >-
+    The organisation's personnel and partners receive AI risk-management training to enable them
+    to perform their duties and responsibilities consistent with related policies and procedures.
+  pb_interpretation: >-
+    Role-based AI training — security, prompt-injection, model misuse, support-access, customer-
+    safe deployment training with refresher cycle.
+  owner: PB
+  documented_evidence:
+  - AI training curriculum
+  - Attendance records
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Annual + on hire / role change
+  failure_modes: Once-off awareness only.
+  maturity_target: AR
+  external_safe_claim: PrivateBox maintains role-based AI security and governance training.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-7.2
+    note: AIMS competence.
+
+- id: nist-gov-2.3
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: GOV 2.3
+  group: GOVERN
+  group_name: Govern
+  title: Executive leadership takes AI risk responsibility
+  requirement: >-
+    Executive leadership of the organisation takes responsibility for decisions about risks
+    associated with AI system development and deployment.
+  pb_interpretation: >-
+    Executive risk acceptance and launch approval. Defined approver authority; leadership sign-off
+    for major models / features.
+  owner: PB
+  documented_evidence:
+  - Executive risk-acceptance records
+  - Board / Exco minutes referencing AI launches
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Per material release
+  failure_modes: Unowned residual risk.
+  maturity_target: Cert
+  external_safe_claim: PrivateBox subjects material AI risks to executive oversight.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: king-v
+    refs:
+    - king-v-p-1
+    note: King V Principle 1 (Leadership).
+
+- id: nist-gov-3.1
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: GOV 3.1
+  group: GOVERN
+  group_name: Govern
+  title: Diverse teams inform AI risk decisions
+  requirement: >-
+    Decision-making related to mapping, measuring and managing AI risks throughout the lifecycle
+    is informed by a diverse team.
+  pb_interpretation: >-
+    Review panels with security, domain, legal, operations, UX, customer-facing perspectives.
+    Affected-user representation where relevant.
+  owner: PB
+  documented_evidence:
+  - Review-panel terms + attendance records
+  audit_methods:
+  - Insp
+  cadence: Per material release
+  failure_modes: Only engineers review AI risk.
+  maturity_target: AR
+  external_safe_claim: PrivateBox uses interdisciplinary review in AI risk decisions.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-gov-3.2
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: GOV 3.2
+  group: GOVERN
+  group_name: Govern
+  title: Human-AI configuration and oversight roles defined
+  requirement: >-
+    Policies and procedures are in place to define and differentiate roles and responsibilities
+    for human-AI configurations and oversight of AI systems.
+  pb_interpretation: >-
+    Human-oversight design standard — approval points, override rights, escalation paths,
+    no-autonomous-final-decision rules where needed.
+  owner: PB/SH
+  documented_evidence:
+  - Human oversight SOP
+  - Architecture diagrams + UI controls
+  audit_methods:
+  - Insp
+  - Obs
+  cadence: Per release
+  failure_modes: Humans nominal but not empowered.
+  maturity_target: Cert
+  external_safe_claim: PrivateBox defines human oversight and override mechanisms where appropriate.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-a-6.2.3
+    note: AIMS human oversight.
+  - framework: eu-ai-act
+    refs:
+    - eu-ai-act-art-14
+    note: EU AI Act human oversight obligation.
+
+- id: nist-gov-4.1
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: GOV 4.1
+  group: GOVERN
+  group_name: Govern
+  title: Critical-thinking and safety-first culture
+  requirement: >-
+    Organisational policies and practices are in place to foster a critical-thinking and
+    safety-first mindset in the design, development, deployment and uses of AI systems to
+    minimise potential negative impacts.
+  pb_interpretation: >-
+    Pre-mortems, red-team reviews, "stop ship" authority, no-blame incident learning. Safety
+    concerns block release when needed.
+  owner: PB
+  documented_evidence:
+  - Security programme charter
+  - Retrospective records
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Continuous
+  failure_modes: Schedule pressure overrides risk concerns.
+  maturity_target: AR
+  external_safe_claim: PrivateBox emphasises safety-first design and release discipline.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-gov-4.2
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: GOV 4.2
+  group: GOVERN
+  group_name: Govern
+  title: AI risks and impacts documented and communicated
+  requirement: >-
+    Organisational teams document the risks and potential impacts of the AI technology they
+    design, develop, deploy, evaluate and use, and they communicate about the impacts more broadly.
+  pb_interpretation: >-
+    System / model card + deployment guidance covering intended use, prohibited use, limitations,
+    residual risk, evaluation summary, support assumptions.
+  owner: PB
+  documented_evidence:
+  - System / model cards per release
+  - Customer transparency pack
+  audit_methods:
+  - Insp
+  cadence: Per release + annual review
+  failure_modes: Outdated marketing copy.
+  maturity_target: AR
+  external_safe_claim: PrivateBox publishes evidence-backed guidance on intended use and limitations.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-a-8.2
+    note: AIMS system characteristics / documentation.
+
+- id: nist-gov-4.3
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: GOV 4.3
+  group: GOVERN
+  group_name: Govern
+  title: AI testing, incident identification, information sharing
+  requirement: >-
+    Organisational practices are in place to enable AI testing, identification of incidents and
+    information sharing.
+  pb_interpretation: >-
+    AI incident and testing programme — red-team cadence, issue intake, triage, severity,
+    notification, learning loop.
+  owner: PB/SH
+  documented_evidence:
+  - Incident SOP + test logs
+  - Contact list
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Continuous + annual tabletop
+  failure_modes: Security incidents handled but behavioural incidents ignored.
+  maturity_target: AR
+  external_safe_claim: PrivateBox maintains AI-focused testing and incident response procedures.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-gov-5.1
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: GOV 5.1
+  group: GOVERN
+  group_name: Govern
+  title: External feedback on individual and societal impacts collected
+  requirement: >-
+    Organisational policies and practices are in place to collect, consider, prioritise and
+    integrate feedback from those external to the team that developed or deployed the AI system
+    regarding the potential individual and societal impacts related to AI risks.
+  pb_interpretation: >-
+    Formal external feedback channels — support tickets, procurement feedback, pilot reviews,
+    issue reporting, harmful-output reporting.
+  owner: PB/SH
+  documented_evidence:
+  - Intake workflow + feedback log
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Continuous
+  failure_modes: No route for customers to appeal or report misuse.
+  maturity_target: AR
+  external_safe_claim: PrivateBox captures and reviews customer feedback on AI risk and performance.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-gov-5.2
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: GOV 5.2
+  group: GOVERN
+  group_name: Govern
+  title: Adjudicated feedback incorporated regularly
+  requirement: >-
+    Mechanisms are established to enable AI actors to regularly incorporate adjudicated feedback
+    from relevant AI actors into system design and implementation.
+  pb_interpretation: >-
+    Feedback-to-change procedure — classify feedback, adjudicate, convert to releases / docs /
+    config changes, communicate outcomes.
+  owner: PB/SH
+  documented_evidence:
+  - Product backlog links + CAPA records
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Continuous
+  failure_modes: Feedback collected but not actioned.
+  maturity_target: AR
+  external_safe_claim: PrivateBox incorporates validated customer and stakeholder feedback into product controls.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-gov-6.1
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: GOV 6.1
+  group: GOVERN
+  group_name: Govern
+  title: Third-party AI / data / IP / supply-chain risk policies
+  requirement: >-
+    Policies and procedures are in place to address AI risks and benefits arising from third-party
+    software and data and other supply-chain issues.
+  pb_interpretation: >-
+    Third-party model / data / component governance — vet dependencies; require provenance;
+    review licences; restrict unapproved models; maintain approved-source list.
+  owner: PB
+  documented_evidence:
+  - Supplier assessments + licence reviews
+  - Approved-models list
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per onboarding + annual review
+  failure_modes: Open-source model adoption without provenance or licence review.
+  maturity_target: Cert
+  external_safe_claim: PrivateBox governs third-party models, software and data through documented due diligence.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-a-10.2
+    note: AIMS supplier responsibility allocation.
+
+- id: nist-gov-6.2
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: GOV 6.2
+  group: GOVERN
+  group_name: Govern
+  title: Contingency for high-risk third-party AI failures
+  requirement: >-
+    Contingency processes are in place to handle failures or incidents in third-party data or AI
+    systems deemed to be high-risk.
+  pb_interpretation: >-
+    Supplier failure fallback plan — kill switch, rollback, local disablement, alternate model
+    path, notification triggers.
+  owner: PB/SH
+  documented_evidence:
+  - Contingency runbooks
+  - Contract clauses
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual tabletop + on supplier change
+  failure_modes: No action path when a model or library is withdrawn or compromised.
+  maturity_target: AR
+  external_safe_claim: PrivateBox maintains contingency procedures for material third-party AI dependencies.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# AI RMF — MAP (18 outcomes)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+- id: nist-map-1.1
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MAP 1.1
+  group: MAP
+  group_name: Map
+  title: Intended purpose and deployment context documented
+  requirement: >-
+    Intended purposes, potentially beneficial uses, context-specific laws, norms and expectations,
+    and prospective settings in which the AI system will be deployed are understood and documented.
+  pb_interpretation: >-
+    Intended-use and deployment-context register per customer deployment — use cases, prohibited
+    uses, user groups, deployment setting, data classes, norms.
+  owner: PB/SH
+  documented_evidence:
+  - Use-case form + solution design record per deployment
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per deployment
+  failure_modes: One generic use case for all clients.
+  maturity_target: AR
+  external_safe_claim: PrivateBox documents intended use, limitations and deployment context.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-4.1
+    - iso-42001-a-9.4
+    note: AIMS context + intended-use enforcement.
+
+- id: nist-map-1.2
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MAP 1.2
+  group: MAP
+  group_name: Map
+  title: Interdisciplinary AI actors for context setting
+  requirement: >-
+    Inter-disciplinary AI actors, competencies, skills and capacities for establishing context
+    reflect demographic diversity and broad domain and user experience expertise.
+  pb_interpretation: >-
+    Contextual review participants list — domain, security, legal, product, deployment ops,
+    client stakeholders.
+  owner: PB
+  documented_evidence:
+  - Review records showing interdisciplinary participation
+  audit_methods:
+  - Insp
+  cadence: Per material deployment
+  failure_modes: Deployment designed only by sales and engineering.
+  maturity_target: AR
+  external_safe_claim: PrivateBox uses cross-functional context-setting before deployment.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-map-1.3
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MAP 1.3
+  group: MAP
+  group_name: Map
+  title: Mission and AI goals documented
+  requirement: >-
+    The organisation's mission and relevant goals for AI technology are understood and documented.
+  pb_interpretation: >-
+    AI product purpose statement — why the feature exists; what business / security / privacy
+    value it should create; what it will not do.
+  owner: PB
+  documented_evidence:
+  - Product charter
+  audit_methods:
+  - Insp
+  cadence: Annual + per major feature
+  failure_modes: Adding AI features without clear purpose.
+  maturity_target: AR
+  external_safe_claim: PrivateBox ties AI capabilities to documented product and customer objectives.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-map-1.4
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MAP 1.4
+  group: MAP
+  group_name: Map
+  title: Business value or business-use context defined
+  requirement: >-
+    The business value or business-use context is clearly defined or — in the case of assessing
+    existing AI systems — re-evaluated.
+  pb_interpretation: >-
+    Value-versus-risk review — quantify value, operational benefit, residual risk, non-AI
+    alternatives. Re-evaluation after scope changes.
+  owner: PB/SH
+  documented_evidence:
+  - Business case + risk memo
+  audit_methods:
+  - Insp
+  cadence: Per feature + on scope change
+  failure_modes: '"AI because AI."'
+  maturity_target: AR
+  external_safe_claim: PrivateBox evaluates AI use cases against business value and risk.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-map-1.5
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MAP 1.5
+  group: MAP
+  group_name: Map
+  title: Organisational risk tolerances determined and documented
+  requirement: >-
+    Organisational risk tolerances are determined and documented.
+  pb_interpretation: >-
+    Customer-specific AI risk tolerance statement — acceptable error classes, approved domains,
+    prohibited automation, incident thresholds.
+  owner: PB/SH
+  documented_evidence:
+  - Deployment governance pack
+  audit_methods:
+  - Insp
+  cadence: Per deployment + annual
+  failure_modes: Vendor assumptions override client tolerance.
+  maturity_target: AR
+  external_safe_claim: PrivateBox can be configured against documented customer risk tolerances.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-map-1.6
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MAP 1.6
+  group: MAP
+  group_name: Map
+  title: System requirements account for socio-technical risk
+  requirement: >-
+    System requirements (e.g., "the system shall respect the privacy of its users") are elicited
+    from and understood by relevant AI actors. Design decisions take socio-technical implications
+    into account to address AI risks.
+  pb_interpretation: >-
+    Requirements log covering privacy, access control, retention, auditability, oversight, safe
+    response, domain boundaries, language handling.
+  owner: PB/SH
+  documented_evidence:
+  - Requirements spec + threat / risk model
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per feature
+  failure_modes: Only functional requirements captured.
+  maturity_target: AR
+  external_safe_claim: PrivateBox incorporates security, oversight and operational requirements into AI design.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-map-2.1
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MAP 2.1
+  group: MAP
+  group_name: Map
+  title: Tasks and methods documented
+  requirement: >-
+    The specific tasks and methods used to implement the tasks that the AI system will support
+    are defined (e.g., classifiers, generative models, recommenders).
+  pb_interpretation: >-
+    Model-function classification — generative Q&A, summarisation, extraction, search-grounded
+    response, agent action, classification.
+  owner: PB
+  documented_evidence:
+  - Architecture docs + system card
+  audit_methods:
+  - Insp
+  cadence: Per feature
+  failure_modes: Architecture ambiguity.
+  maturity_target: AR
+  external_safe_claim: PrivateBox documents the AI methods and tasks used for each feature.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-map-2.2
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MAP 2.2
+  group: MAP
+  group_name: Map
+  title: Knowledge limits and human oversight documented
+  requirement: >-
+    Information about the AI system's knowledge limits and how system output may be utilised and
+    overseen by humans is documented. Documentation provides sufficient information to assist
+    relevant AI actors when making decisions and taking subsequent actions.
+  pb_interpretation: >-
+    Limitations and oversight register — known failure modes, unsupported domains, confidence /
+    uncertainty cues, mandatory human review points.
+  owner: PB
+  documented_evidence:
+  - Model / system card + customer guide + UI notices
+  audit_methods:
+  - Insp
+  - Obs
+  cadence: Per release
+  failure_modes: Oversold capabilities.
+  maturity_target: AR
+  external_safe_claim: PrivateBox documents model limitations and human review requirements.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-a-6.2.3
+    note: AIMS human oversight.
+
+- id: nist-map-2.3
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MAP 2.3
+  group: MAP
+  group_name: Map
+  title: Scientific integrity and TEVV considerations documented
+  requirement: >-
+    Scientific integrity and TEVV considerations are identified and documented, including those
+    related to experimental design, data collection and selection, system trustworthiness and
+    construct validation.
+  pb_interpretation: >-
+    Evaluation design protocol — datasets, acceptance criteria, representativeness, baseline
+    comparisons, reproducibility.
+  owner: PB
+  documented_evidence:
+  - TEVV plan + evaluation report
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per release
+  failure_modes: Ad-hoc demos standing in for validation.
+  maturity_target: Cert
+  external_safe_claim: PrivateBox uses documented evaluation protocols for AI performance and risk testing.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-a-6.1.5
+    note: AIMS V&V and robustness.
+
+- id: nist-map-3.1
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MAP 3.1
+  group: MAP
+  group_name: Map
+  title: Potential benefits documented
+  requirement: >-
+    Potential benefits of intended AI system functionality and performance are examined and
+    documented.
+  pb_interpretation: >-
+    Benefit statement per feature — measurable positive outcomes and success metrics.
+  owner: PB
+  documented_evidence:
+  - Product KPI record
+  audit_methods:
+  - Insp
+  cadence: Per feature
+  failure_modes: Only harms documented.
+  maturity_target: AR
+  external_safe_claim: PrivateBox records expected benefits and success criteria for AI features.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-map-3.2
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MAP 3.2
+  group: MAP
+  group_name: Map
+  title: Potential costs and non-monetary costs documented
+  requirement: >-
+    Potential costs, including non-monetary costs, which result from expected or realised AI
+    errors or system functionality and trustworthiness are examined and documented.
+  pb_interpretation: >-
+    Harm and cost analysis — confidentiality exposure, wrong-answer cost, workflow disruption,
+    user over-reliance, reputational risk.
+  owner: PB/SH
+  documented_evidence:
+  - Risk register
+  audit_methods:
+  - Insp
+  cadence: Per feature
+  failure_modes: Ignoring non-financial harms.
+  maturity_target: AR
+  external_safe_claim: PrivateBox assesses both operational benefit and downside risk of AI use.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-map-3.3
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MAP 3.3
+  group: MAP
+  group_name: Map
+  title: Targeted application scope documented
+  requirement: >-
+    Targeted application scope is specified and documented based on the system's capability,
+    established context and AI system categorisation.
+  pb_interpretation: >-
+    Scope boundary record — in-scope users, data sources, actions, integrations, geographies,
+    languages, prohibited extensions.
+  owner: PB
+  documented_evidence:
+  - Scope sheet + deployment guide
+  audit_methods:
+  - Insp
+  - Obs
+  cadence: Per deployment
+  failure_modes: Scope creep through connectors or agent tools.
+  maturity_target: AR
+  external_safe_claim: PrivateBox defines and constrains intended application scope.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-map-3.4
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MAP 3.4
+  group: MAP
+  group_name: Map
+  title: Operator and practitioner proficiency processes defined
+  requirement: >-
+    Processes for operator and practitioner proficiency with AI system performance and
+    trustworthiness — and relevant technical standards and certifications — are defined,
+    assessed and documented.
+  pb_interpretation: >-
+    Operator competency standard — admin training, support runbooks, customer enablement,
+    escalation criteria.
+  owner: PB/SH
+  documented_evidence:
+  - Training records + SOPs
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per role assignment + annual
+  failure_modes: Powerful admin features without competency checks.
+  maturity_target: AR
+  external_safe_claim: PrivateBox supports trained administration and customer enablement.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-map-3.5
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MAP 3.5
+  group: MAP
+  group_name: Map
+  title: Human oversight processes defined
+  requirement: >-
+    Processes for human oversight, in accordance with organisational policies from GOVERN
+    function, are defined, assessed and documented.
+  pb_interpretation: >-
+    Oversight workflow — approval gates, fallback to search / manual process, escalation if
+    unsafe / low confidence.
+  owner: PB/SH
+  documented_evidence:
+  - Oversight SOP + UX design + audit logs
+  audit_methods:
+  - Insp
+  - Obs
+  cadence: Per deployment
+  failure_modes: Human review theoretically required but practically bypassed.
+  maturity_target: Cert
+  external_safe_claim: PrivateBox includes documented human oversight and fallback procedures.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-a-6.2.3
+    note: AIMS human oversight.
+
+- id: nist-map-4.1
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MAP 4.1
+  group: MAP
+  group_name: Map
+  title: Component risks including third-party mapped
+  requirement: >-
+    Approaches for mapping AI technology and legal risks of its components — including third-party
+    AI technologies — are in place.
+  pb_interpretation: >-
+    Component risk map — models, embedding engines, vector stores, open-source packages,
+    licences, datasets, update channels.
+  owner: PB
+  documented_evidence:
+  - Component register + legal review + SBOM / MBOM
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per onboarding + per release
+  failure_modes: Hidden components in packaged solutions.
+  maturity_target: Cert
+  external_safe_claim: PrivateBox maps technical, legal and supply-chain risks across AI components.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-a-10.2
+    note: AIMS supplier responsibility allocation.
+
+- id: nist-map-4.2
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MAP 4.2
+  group: MAP
+  group_name: Map
+  title: Internal risk controls for components documented
+  requirement: >-
+    Internal risk controls for components of the AI system, including third-party AI technologies,
+    are identified and documented.
+  pb_interpretation: >-
+    Component control matrix — controls for vendor models, repository sources, update approvals,
+    sandboxing, data isolation.
+  owner: PB
+  documented_evidence:
+  - Control mapping + architecture diagrams
+  audit_methods:
+  - Insp
+  cadence: Per release
+  failure_modes: Generic controls with no component focus.
+  maturity_target: AR
+  external_safe_claim: PrivateBox documents control coverage for each significant AI component.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-map-5.1
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MAP 5.1
+  group: MAP
+  group_name: Map
+  title: Likelihood and magnitude of impacts identified
+  requirement: >-
+    Likelihood and magnitude of each identified impact (both potentially beneficial and harmful)
+    based on expected use, past uses of AI systems in similar contexts, public incident reports,
+    feedback from those external to the team that developed or deployed the AI system or other
+    data are identified and documented.
+  pb_interpretation: >-
+    AI impact assessment — score confidentiality, integrity, availability, harmful output,
+    misrouting, abuse, productivity benefit.
+  owner: PB/SH
+  documented_evidence:
+  - Impact-assessment form
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per deployment
+  failure_modes: Purely qualitative, unranked impact statements.
+  maturity_target: Cert
+  external_safe_claim: PrivateBox uses documented impact assessment before material AI deployments.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-6.1.4
+    note: AIMS AI System Impact Assessment (AISIA).
+
+- id: nist-map-5.2
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MAP 5.2
+  group: MAP
+  group_name: Map
+  title: Stakeholder engagement and impact feedback practices
+  requirement: >-
+    Practices and personnel for supporting regular engagement with relevant AI actors and
+    integrating feedback about positive, negative and unanticipated impacts are in place and
+    documented.
+  pb_interpretation: >-
+    Stakeholder-impact review mechanism — post-go-live reviews, adverse-event intake,
+    procurement feedback loop.
+  owner: PB/SH
+  documented_evidence:
+  - Review schedule + incident trend reports
+  audit_methods:
+  - Insp
+  cadence: Quarterly
+  failure_modes: No field-learning loop.
+  maturity_target: AR
+  external_safe_claim: PrivateBox maintains recurring stakeholder review for AI impacts.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# AI RMF — MEASURE (22 outcomes)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+- id: nist-measure-1.1
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MEASURE 1.1
+  group: MEASURE
+  group_name: Measure
+  title: Risk metrics selected and unmeasured risks documented
+  requirement: >-
+    Approaches and metrics for measurement of AI risks enumerated during the MAP function are
+    selected for implementation, starting with the most significant AI risks.
+  pb_interpretation: >-
+    Metric selection register — quality, security, privacy, hallucination / confabulation, abuse,
+    latency, drift, override rates. Record what is not measurable.
+  owner: PB
+  documented_evidence:
+  - Metric catalogue
+  audit_methods:
+  - Insp
+  cadence: Annual review
+  failure_modes: Metrics only for accuracy.
+  maturity_target: AR
+  external_safe_claim: PrivateBox defines documented metrics for material AI risks and records current measurement gaps.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-measure-1.2
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MEASURE 1.2
+  group: MEASURE
+  group_name: Measure
+  title: Metrics and control effectiveness regularly assessed
+  requirement: >-
+    Appropriateness of AI metrics and effectiveness of existing controls are regularly assessed
+    and updated, including reports of errors and potential impacts.
+  pb_interpretation: >-
+    Metric review cycle — quarterly metric review, post-incident metric updates, client-specific
+    tuning where needed.
+  owner: PB/SH
+  documented_evidence:
+  - Metric revisions + review minutes
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Quarterly
+  failure_modes: Frozen benchmark set.
+  maturity_target: AR
+  external_safe_claim: PrivateBox reviews measurement methods and control effectiveness on a recurring basis.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-measure-1.3
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MEASURE 1.3
+  group: MEASURE
+  group_name: Measure
+  title: Independent assessors involved
+  requirement: >-
+    Internal experts who did not serve as front-line developers for the system and / or
+    independent assessors are involved in regular assessments and updates. Domain experts, users,
+    AI actors external to the team that developed or deployed the AI system, and affected
+    communities are consulted in support of assessments as necessary per organisational risk
+    tolerance.
+  pb_interpretation: >-
+    Independent assurance review — security review, peer review outside dev team, red team,
+    domain reviewer. At least one independent review per major release.
+  owner: PB
+  documented_evidence:
+  - Reviewer assignments + signed reports
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Per major release
+  failure_modes: Developers self-score.
+  maturity_target: AR
+  external_safe_claim: PrivateBox includes independent review in AI testing and assurance.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-measure-2.1
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MEASURE 2.1
+  group: MEASURE
+  group_name: Measure
+  title: TEVV test sets, metrics and tools documented
+  requirement: >-
+    Test sets, metrics and details about the tools used during TEVV are documented.
+  pb_interpretation: >-
+    TEVV documentation standard — version test sets; record tools, prompts, seeds, configs,
+    expected outcomes. Reproducible evaluations.
+  owner: PB
+  documented_evidence:
+  - Evaluation pack
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per release
+  failure_modes: Missing dataset lineage.
+  maturity_target: Cert
+  external_safe_claim: PrivateBox maintains traceable test and evaluation records.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-measure-2.2
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MEASURE 2.2
+  group: MEASURE
+  group_name: Measure
+  title: Human-subject evaluations meet requirements
+  requirement: >-
+    Evaluations involving human subjects meet applicable requirements (including human subject
+    protection) and are representative of the relevant population.
+  pb_interpretation: >-
+    Human-subject testing protocol where used — consent, ethics, sample representativeness,
+    safe data handling. Often not applicable; document if not.
+  owner: PB
+  documented_evidence:
+  - Test protocol + consent forms where applicable
+  audit_methods:
+  - Insp
+  cadence: Per study
+  failure_modes: Informal customer testing without safeguards.
+  maturity_target: AR
+  external_safe_claim: Where human-subject testing is used, PrivateBox applies a documented protocol.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-measure-2.3
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MEASURE 2.3
+  group: MEASURE
+  group_name: Measure
+  title: Performance measured under deployment-like conditions
+  requirement: >-
+    AI system performance or assurance criteria are measured qualitatively or quantitatively and
+    demonstrated for conditions similar to deployment setting(s). Measures are documented.
+  pb_interpretation: >-
+    Environment-realistic evaluation — test with local documents, likely prompt styles,
+    adversarial inputs, role access, retrieval context.
+  owner: PB
+  documented_evidence:
+  - Deployment-like test report
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per release
+  failure_modes: Only lab benchmarks.
+  maturity_target: AR
+  external_safe_claim: PrivateBox evaluates AI behaviour under deployment-relevant conditions.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-measure-2.4
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MEASURE 2.4
+  group: MEASURE
+  group_name: Measure
+  title: Production monitoring of functionality and behaviour
+  requirement: >-
+    The functionality and behaviour of the AI system and its components — as identified in the
+    MAP function — are monitored when in production.
+  pb_interpretation: >-
+    Runtime monitoring plan — log errors, refusals, overrides, tool failures, drift indicators,
+    abuse signals; respect privacy constraints.
+  owner: PB/SH
+  documented_evidence:
+  - Dashboards + alerts + SOPs
+  audit_methods:
+  - Insp
+  - Obs
+  cadence: Continuous
+  failure_modes: No feedback from production.
+  maturity_target: AR
+  external_safe_claim: PrivateBox supports monitored AI behaviour after go-live, subject to agreed operational scope.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-9.1
+    note: AIMS monitoring and KPI dashboard.
+
+- id: nist-measure-2.5
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MEASURE 2.5
+  group: MEASURE
+  group_name: Measure
+  title: System shown valid and reliable; generalisation limits documented
+  requirement: >-
+    The AI system to be deployed is demonstrated to be valid and reliable. Limitations of the
+    generalisability beyond the conditions under which the technology was developed are documented.
+  pb_interpretation: >-
+    Validity and reliability dossier — benchmark results, scenario tests, failure rates, known
+    limits, non-generalisation statement.
+  owner: PB
+  documented_evidence:
+  - Validation report
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per release
+  failure_modes: No documented limitations.
+  maturity_target: AR
+  external_safe_claim: PrivateBox documents validation results and known generalisation limits.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-measure-2.6
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MEASURE 2.6
+  group: MEASURE
+  group_name: Measure
+  title: Safety risks regularly evaluated; fail-safe behaviour exists
+  requirement: >-
+    AI system is evaluated regularly for safety risks — as identified in the MAP function. The AI
+    system to be deployed is demonstrated to be safe, its residual negative risk does not exceed
+    the risk tolerance, and it can fail safely, particularly if made to operate beyond its
+    knowledge limits. Safety metrics reflect system reliability and robustness, real-time
+    monitoring and response times for AI system failures.
+  pb_interpretation: >-
+    Safety evaluation and fail-safe design — refusal patterns, escalation, human review,
+    disablement on unsafe tool calls, safe fallback.
+  owner: PB/SH
+  documented_evidence:
+  - Safety test report + runbooks
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per release + drift trigger
+  failure_modes: Unsafe answers degrade gracefully only in theory.
+  maturity_target: AR
+  external_safe_claim: PrivateBox implements documented safeguards and fail-safe responses for identified safety risks.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-measure-2.7
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MEASURE 2.7
+  group: MEASURE
+  group_name: Measure
+  title: AI security and resilience evaluated
+  requirement: >-
+    AI system security and resilience — as identified in the MAP function — are evaluated and
+    documented.
+  pb_interpretation: >-
+    AI security test programme — prompt-injection testing, model abuse scenarios, secret-leakage
+    tests, authz bypass, malicious-document / retrieval tests.
+  owner: PB
+  documented_evidence:
+  - Security assessment results
+  - Red-team exercise records
+  audit_methods:
+  - Insp
+  - Samp
+  - Obs
+  cadence: Per material release
+  failure_modes: Traditional appsec only, no AI-specific testing.
+  maturity_target: Cert
+  external_safe_claim: PrivateBox evaluates AI-specific security and resilience risks before and after release.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-a-6.1.5
+    note: AIMS V&V and robustness with adversarial testing.
+
+- id: nist-measure-2.8
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MEASURE 2.8
+  group: MEASURE
+  group_name: Measure
+  title: Transparency and accountability risks examined
+  requirement: >-
+    Risks associated with transparency and accountability — as identified in the MAP function —
+    are examined and documented.
+  pb_interpretation: >-
+    Transparency review — system card, logs proving operator actions, disclosure text, role
+    accountability.
+  owner: PB
+  documented_evidence:
+  - Accountability matrix + transparency artefacts
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per release
+  failure_modes: Cannot explain who approved what.
+  maturity_target: AR
+  external_safe_claim: PrivateBox maintains traceable records supporting accountability and customer transparency.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-measure-2.9
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MEASURE 2.9
+  group: MEASURE
+  group_name: Measure
+  title: Model explained and contextually interpreted
+  requirement: >-
+    The AI model is explained, validated and documented, and AI system output is interpreted
+    within its context — as identified in the MAP function — to inform responsible use and
+    governance.
+  pb_interpretation: >-
+    Explanation and contextual interpretation guidance — model family, RAG grounding, limits,
+    human interpretation steps.
+  owner: PB
+  documented_evidence:
+  - Model / system card + user guide
+  audit_methods:
+  - Insp
+  cadence: Per release
+  failure_modes: End users treat outputs as authoritative.
+  maturity_target: AR
+  external_safe_claim: PrivateBox provides contextual documentation to support responsible interpretation of outputs.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-measure-2.10
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MEASURE 2.10
+  group: MEASURE
+  group_name: Measure
+  title: Privacy risk examined
+  requirement: >-
+    Privacy risk of the AI system — as identified in the MAP function — is examined and
+    documented.
+  pb_interpretation: >-
+    AI privacy assessment — sensitive-data exposure, retention, prompting leakage, logs, admin
+    access, optional telemetry.
+  owner: PB/SH
+  documented_evidence:
+  - Privacy impact assessment + retention config
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per release + per change
+  failure_modes: Logs capture more than intended.
+  maturity_target: AR
+  external_safe_claim: PrivateBox assesses and documents privacy risks for each material AI use case.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: popia
+    refs:
+    - popia-cond-2
+    - popia-s-automated-decisions
+    note: POPIA processing limitation + s 71 automated decisions.
+
+- id: nist-measure-2.11
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MEASURE 2.11
+  group: MEASURE
+  group_name: Measure
+  title: Fairness and bias evaluated
+  requirement: >-
+    Fairness and bias — as identified in the MAP function — are evaluated and results are
+    documented.
+  pb_interpretation: >-
+    Fairness review — identify protected or sensitive contexts; evaluate disparities where
+    relevant; document non-applicability decision per deployment if not.
+  owner: PB/SH
+  documented_evidence:
+  - Fairness memo or test report
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per release
+  failure_modes: Assuming enterprise-assistant use means bias is irrelevant.
+  maturity_target: AR
+  external_safe_claim: PrivateBox evaluates fairness risk where the use case makes it material.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-a-6.1.4
+    note: AIMS bias methodology.
+
+- id: nist-measure-2.12
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MEASURE 2.12
+  group: MEASURE
+  group_name: Measure
+  title: Environmental impact and sustainability assessed
+  requirement: >-
+    Environmental impact and sustainability of AI model training and management activities — as
+    identified in the MAP function — are assessed and documented.
+  pb_interpretation: >-
+    Compute and footprint record — model size, hardware load, optimisation, inference footprint
+    for local deployments.
+  owner: PB
+  documented_evidence:
+  - Architecture notes + sizing guide
+  audit_methods:
+  - Insp
+  cadence: Annual + per model change
+  failure_modes: Ignoring local compute burden for clients.
+  maturity_target: AR
+  external_safe_claim: PrivateBox documents material compute and resource considerations for deployment.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-measure-2.13
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MEASURE 2.13
+  group: MEASURE
+  group_name: Measure
+  title: TEVV metric / process effectiveness reviewed
+  requirement: >-
+    Effectiveness of the employed TEVV metrics and processes in the MEASURE function are
+    evaluated and documented.
+  pb_interpretation: >-
+    Evaluation-of-evaluation review — false assurance, missing scenarios, benchmark drift,
+    red-team coverage gaps.
+  owner: PB
+  documented_evidence:
+  - Meta-review report
+  audit_methods:
+  - Insp
+  cadence: Annual
+  failure_modes: Treating benchmark suite as final truth.
+  maturity_target: AR
+  external_safe_claim: PrivateBox reviews and improves its own evaluation methods over time.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-measure-3.1
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MEASURE 3.1
+  group: MEASURE
+  group_name: Measure
+  title: Tracking emergent and unanticipated risks
+  requirement: >-
+    Approaches, personnel and documentation are in place to regularly identify and track
+    existing, unanticipated and emergent AI risks based on factors such as intended and actual
+    performance in deployed contexts.
+  pb_interpretation: >-
+    Emergent-risk monitoring — incidents, user reports, model updates, threat intel, misuse
+    patterns.
+  owner: PB/SH
+  documented_evidence:
+  - Risk-watch log + steering review notes
+  audit_methods:
+  - Insp
+  cadence: Continuous
+  failure_modes: Static pre-launch-only risk list.
+  maturity_target: AR
+  external_safe_claim: PrivateBox tracks known and emergent AI risks throughout the lifecycle.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-measure-3.2
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MEASURE 3.2
+  group: MEASURE
+  group_name: Measure
+  title: Risk tracking where measurement is immature
+  requirement: >-
+    Risk tracking approaches are considered for settings where AI risks are difficult to assess
+    using currently available measurement techniques or where metrics are not yet available.
+  pb_interpretation: >-
+    Non-quantifiable risk log — uncertain risks, proxy indicators, monitoring plans, decision
+    rationale.
+  owner: PB
+  documented_evidence:
+  - Uncertainty register
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Quarterly
+  failure_modes: '"Can''t measure" becomes "not managed."'
+  maturity_target: AR
+  external_safe_claim: PrivateBox documents proxy measures and monitoring plans for hard-to-measure AI risks.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-measure-3.3
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MEASURE 3.3
+  group: MEASURE
+  group_name: Measure
+  title: Feedback processes enable end-user reporting and appeals
+  requirement: >-
+    Feedback processes for end users and impacted communities to report problems and appeal
+    system outcomes are established and integrated into AI system evaluation metrics.
+  pb_interpretation: >-
+    Reporting and appeal channel — in-product or help-desk route; severity path; human review
+    route; response SLA.
+  owner: PB/SH
+  documented_evidence:
+  - SOP + ticket categories + customer documentation
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Continuous
+  failure_modes: No appeal or dispute route.
+  maturity_target: AR
+  external_safe_claim: PrivateBox supports customer reporting and escalation channels for AI issues.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-measure-4.1
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MEASURE 4.1
+  group: MEASURE
+  group_name: Measure
+  title: Measurement tied to deployment context and expert input
+  requirement: >-
+    Measurement approaches for identifying AI risks are connected to deployment context(s) and
+    informed through consultation with domain experts and other end users.
+  pb_interpretation: >-
+    Context-specific evaluation profile — tailor test sets and thresholds per sector and workflow.
+  owner: PB/SH
+  documented_evidence:
+  - Customer evaluation profile
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Per material deployment
+  failure_modes: Generic evals for specialised workflows.
+  maturity_target: AR
+  external_safe_claim: PrivateBox can tailor testing to deployment-specific contexts and expert input.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-measure-4.2
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MEASURE 4.2
+  group: MEASURE
+  group_name: Measure
+  title: Trustworthiness results validated with stakeholders
+  requirement: >-
+    Measurement results regarding AI system trustworthiness in deployment context(s) and across
+    the AI lifecycle are informed by input from domain experts and relevant AI actors to validate
+    whether the system is performing consistently as intended. Results are documented.
+  pb_interpretation: >-
+    Stakeholder validation review — share results, capture objections, approve or amend
+    interpretation.
+  owner: PB/SH
+  documented_evidence:
+  - Validation meeting records + sign-off
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Per material release
+  failure_modes: Metrics reviewed without user-context sanity check.
+  maturity_target: AR
+  external_safe_claim: PrivateBox validates material evaluation results with relevant stakeholders where appropriate.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-measure-4.3
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MEASURE 4.3
+  group: MEASURE
+  group_name: Measure
+  title: Performance changes identified and documented
+  requirement: >-
+    Measurable performance improvements or declines based on consultations with relevant AI
+    actors, including affected communities, and field data about context-relevant risks and
+    trustworthiness characteristics are identified and documented.
+  pb_interpretation: >-
+    Post-deployment improvement register — regressions, drift, newly observed harms, corrective
+    actions.
+  owner: PB/SH
+  documented_evidence:
+  - Trend reports + change requests
+  audit_methods:
+  - Insp
+  cadence: Quarterly
+  failure_modes: No documented learning from production.
+  maturity_target: AR
+  external_safe_claim: PrivateBox documents performance changes and improvement actions across the AI lifecycle.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# AI RMF — MANAGE (13 outcomes)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+- id: nist-manage-1.1
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MANAGE 1.1
+  group: MANAGE
+  group_name: Manage
+  title: Go/no-go decision on whether to proceed
+  requirement: >-
+    A determination is made as to whether the AI system achieves its intended purpose and stated
+    objectives and whether its development or deployment should proceed.
+  pb_interpretation: >-
+    AI go / no-go gate — require risk, validation, security, documentation, support readiness
+    before release or deployment.
+  owner: PB
+  documented_evidence:
+  - Launch approval packet
+  audit_methods:
+  - Insp
+  cadence: Per material release
+  failure_modes: Commercial pressure bypasses evidence.
+  maturity_target: Cert
+  external_safe_claim: PrivateBox uses documented go/no-go criteria for material AI releases.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-a-6.2.5
+    note: AIMS pre-deployment approval gate.
+
+- id: nist-manage-1.2
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MANAGE 1.2
+  group: MANAGE
+  group_name: Manage
+  title: Risk treatment prioritised by impact and resources
+  requirement: >-
+    Treatment of documented AI risks is prioritised based on impact, likelihood, available
+    resources or methods.
+  pb_interpretation: >-
+    AI risk treatment plan — rank findings; set deadlines and owners; distinguish accept /
+    mitigate / avoid / transfer.
+  owner: PB
+  documented_evidence:
+  - Risk register with treatment states
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Quarterly
+  failure_modes: Long risk list with no prioritisation.
+  maturity_target: AR
+  external_safe_claim: PrivateBox prioritises AI risk treatment using documented criteria.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-manage-1.3
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MANAGE 1.3
+  group: MANAGE
+  group_name: Manage
+  title: High-priority AI risk responses planned
+  requirement: >-
+    Responses to the AI risks deemed high priority — as identified by the MAP function — are
+    developed, planned and documented.
+  pb_interpretation: >-
+    High-risk mitigation plans — extra controls for unsafe outputs, privileged actions,
+    sensitive documents, third-party models.
+  owner: PB
+  documented_evidence:
+  - Mitigation plans + config standards
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per high-risk identification
+  failure_modes: Risks documented but not engineered out.
+  maturity_target: AR
+  external_safe_claim: PrivateBox incorporates targeted mitigations for high-priority AI risks.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-manage-1.4
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MANAGE 1.4
+  group: MANAGE
+  group_name: Manage
+  title: Residual negative risks documented for users
+  requirement: >-
+    Negative residual risks (defined as the sum of all unmitigated risks) to both downstream
+    acquirers of AI systems and end users are documented.
+  pb_interpretation: >-
+    Residual-risk statement — remaining hallucination, misuse, and operational risks; safe-use
+    conditions and customer dependencies.
+  owner: PB/SH
+  documented_evidence:
+  - Residual risk register + customer handoff note
+  audit_methods:
+  - Insp
+  cadence: Per release
+  failure_modes: Implying zero-risk solution.
+  maturity_target: AR
+  external_safe_claim: PrivateBox documents residual risks and customer operating assumptions.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-manage-2.1
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MANAGE 2.1
+  group: MANAGE
+  group_name: Manage
+  title: Non-AI alternatives considered
+  requirement: >-
+    Resources required to manage AI risks are taken into account, along with viable non-AI
+    alternative systems, approaches or methods, to reduce the magnitude or likelihood of
+    potential impacts.
+  pb_interpretation: >-
+    Alternative-method review — non-AI workflow, search-only mode, or manual fallback where
+    preferable.
+  owner: PB
+  documented_evidence:
+  - Design review notes
+  audit_methods:
+  - Insp
+  cadence: Per feature
+  failure_modes: Ignoring simpler safer alternatives.
+  maturity_target: AR
+  external_safe_claim: PrivateBox evaluates AI use against viable non-AI alternatives and fallbacks.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-manage-2.2
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MANAGE 2.2
+  group: MANAGE
+  group_name: Manage
+  title: Mechanisms sustain AI system value
+  requirement: >-
+    Mechanisms are in place and applied to sustain the value of deployed AI systems.
+  pb_interpretation: >-
+    Lifecycle maintenance plan — update schedules, model / version support, retraining /
+    fine-tuning criteria, knowledge refresh, support policy.
+  owner: PB/SH
+  documented_evidence:
+  - Support lifecycle document
+  audit_methods:
+  - Insp
+  cadence: Annual
+  failure_modes: Value decays after installation.
+  maturity_target: AR
+  external_safe_claim: PrivateBox defines lifecycle maintenance processes for sustained AI system value.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-manage-2.3
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MANAGE 2.3
+  group: MANAGE
+  group_name: Manage
+  title: Procedures respond to unknown risk
+  requirement: >-
+    Procedures are followed to respond to and recover from a previously unknown risk when it is
+    identified.
+  pb_interpretation: >-
+    Novel-risk response plan — emergency disablement, temporary guardrails, hotfix, customer
+    communication, root cause.
+  owner: PB/SH
+  documented_evidence:
+  - Incident runbook
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual tabletop
+  failure_modes: No path for novel AI failure.
+  maturity_target: AR
+  external_safe_claim: PrivateBox maintains procedures to respond to newly observed AI risks.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-manage-2.4
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MANAGE 2.4
+  group: MANAGE
+  group_name: Manage
+  title: Mechanisms supersede, disengage or deactivate AI systems
+  requirement: >-
+    Mechanisms are in place and applied, and responsibilities are assigned and understood, to
+    supersede, disengage or deactivate AI systems that demonstrate performance or outcomes
+    inconsistent with intended use.
+  pb_interpretation: >-
+    Kill switch and downgrade path — manual disable, revert to search / manual process, feature
+    flag off, customer emergency procedure.
+  owner: PB/SH
+  documented_evidence:
+  - Kill-switch SOP + config controls
+  audit_methods:
+  - Insp
+  - Obs
+  cadence: Annual drill
+  failure_modes: No graceful way to turn it off.
+  maturity_target: Cert
+  external_safe_claim: PrivateBox includes documented disengagement and fallback procedures.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-manage-3.1
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MANAGE 3.1
+  group: MANAGE
+  group_name: Manage
+  title: Third-party AI risks monitored
+  requirement: >-
+    AI risks and benefits from third-party resources are regularly monitored, and risk controls
+    are applied and documented.
+  pb_interpretation: >-
+    Third-party monitoring programme — upstream models, libraries, vulnerability feeds, licence
+    changes, provider notices.
+  owner: PB
+  documented_evidence:
+  - Supplier watchlist + issue tickets
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Continuous
+  failure_modes: Upstream changes unnoticed.
+  maturity_target: AR
+  external_safe_claim: PrivateBox actively monitors material third-party AI dependencies and related controls.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-manage-3.2
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MANAGE 3.2
+  group: MANAGE
+  group_name: Manage
+  title: Pre-trained models monitored
+  requirement: >-
+    Pre-trained models which are used for development are monitored as part of AI system regular
+    monitoring and maintenance.
+  pb_interpretation: >-
+    Pretrained-model surveillance — track model versions, approvals, benchmarks, known
+    limitations, retirement triggers.
+  owner: PB
+  documented_evidence:
+  - Approved model inventory + review log
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Continuous
+  failure_modes: Shadow model swaps.
+  maturity_target: Cert
+  external_safe_claim: PrivateBox manages approved pre-trained models through a controlled inventory and review process.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-a-10.2
+    note: AIMS supplier responsibility for third-party models.
+
+- id: nist-manage-4.1
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MANAGE 4.1
+  group: MANAGE
+  group_name: Manage
+  title: Post-deployment monitoring plans
+  requirement: >-
+    Post-deployment AI system monitoring plans are implemented, including mechanisms for
+    capturing and evaluating input from users and other relevant AI actors, appeal and override,
+    decommissioning, incident response, recovery and change management.
+  pb_interpretation: >-
+    Post-deployment AI monitoring plan — who monitors, what is logged, how overrides work, how
+    changes are reviewed, how incidents are handled.
+  owner: PB/SH
+  documented_evidence:
+  - Monitoring plan + runbooks + dashboards
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Continuous + per deployment
+  failure_modes: Handoff ends at installation.
+  maturity_target: AR
+  external_safe_claim: PrivateBox supports post-deployment monitoring and change governance through documented procedures.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-manage-4.2
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MANAGE 4.2
+  group: MANAGE
+  group_name: Manage
+  title: Continual improvement integrated into updates
+  requirement: >-
+    Measurable activities for continual improvements are integrated into AI system updates and
+    include regular engagement with interested parties, including relevant AI actors.
+  pb_interpretation: >-
+    Continuous-improvement cycle — quarterly backlog from incidents, support feedback, benchmark
+    drift, security findings.
+  owner: PB/SH
+  documented_evidence:
+  - Roadmap links + CAPA register
+  audit_methods:
+  - Insp
+  cadence: Quarterly
+  failure_modes: Updates driven only by features.
+  maturity_target: AR
+  external_safe_claim: PrivateBox uses monitoring and stakeholder feedback to drive continual AI control improvement.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-manage-4.3
+  kind: function_outcome
+  sub_framework: rmf
+  native_id: MANAGE 4.3
+  group: MANAGE
+  group_name: Manage
+  title: Incidents communicated with tracking and recovery
+  requirement: >-
+    Incidents and errors are communicated to relevant AI actors, including affected communities.
+    Processes for tracking, responding to and recovering from incidents and errors are followed
+    and documented.
+  pb_interpretation: >-
+    AI incident communication plan — severity, customer notice rules, internal escalation, RCA,
+    corrective actions, shared-responsibility boundaries.
+  owner: PB/SH
+  documented_evidence:
+  - Incident log + templates + postmortems
+  audit_methods:
+  - Insp
+  - Int
+  - Samp
+  cadence: Per incident + annual tabletop
+  failure_modes: Silent handling of harmful outputs or behavioural incidents.
+  maturity_target: AR
+  external_safe_claim: PrivateBox documents AI incident handling and communication procedures.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-a-8.4
+    note: AIMS incident communication.
+  - framework: popia
+    refs:
+    - popia-cond-7
+    note: POPIA security safeguards including s 22 breach notification.
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SSDF 1.1 — Prepare the Organization (PO, 13 tasks)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+- id: nist-po-1.1
+  kind: task
+  sub_framework: ssdf
+  native_id: PO.1.1
+  group: PO
+  group_name: Prepare the Organization
+  title: Security requirements for development infrastructure
+  requirement: >-
+    Define security requirements for software development infrastructure and processes.
+  pb_interpretation: >-
+    Secure-SDLC requirements for repos, CI/CD, secrets, agents, admin tooling.
+  owner: PB
+  documented_evidence:
+  - SDLC standard
+  - Hardening baselines
+  audit_methods:
+  - Insp
+  cadence: Annual review
+  failure_modes: Undocumented tooling assumptions.
+  maturity_target: AR
+  external_safe_claim: PrivateBox operates a documented secure development standard.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-8.25
+    note: ISMS secure development lifecycle.
+
+- id: nist-po-1.2
+  kind: task
+  sub_framework: ssdf
+  native_id: PO.1.2
+  group: PO
+  group_name: Prepare the Organization
+  title: Security requirements for organization-developed software
+  requirement: >-
+    Define security requirements for organisation-developed software.
+  pb_interpretation: >-
+    Product security requirements — logging, authz, data isolation, update integrity, safe
+    defaults.
+  owner: PB
+  documented_evidence:
+  - Secure product requirements catalogue
+  audit_methods:
+  - Insp
+  cadence: Per release + annual
+  failure_modes: Missing non-functional security requirements.
+  maturity_target: AR
+  external_safe_claim: PrivateBox defines product security requirements throughout the SDLC.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-po-1.3
+  kind: task
+  sub_framework: ssdf
+  native_id: PO.1.3
+  group: PO
+  group_name: Prepare the Organization
+  title: Communicate requirements to suppliers
+  requirement: >-
+    Communicate security requirements to third-party suppliers and services.
+  pb_interpretation: >-
+    Contract and assess model, library, hosting, update, support, and tooling suppliers.
+  owner: PB
+  documented_evidence:
+  - Supplier clauses + onboarding checklist
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per onboarding
+  failure_modes: Inherited weakness from unmanaged vendors.
+  maturity_target: AR
+  external_safe_claim: PrivateBox extends security expectations to relevant third parties.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-a-10.2
+    note: AIMS supplier responsibility.
+
+- id: nist-po-2.1
+  kind: task
+  sub_framework: ssdf
+  native_id: PO.2.1
+  group: PO
+  group_name: Prepare the Organization
+  title: Define SDLC roles and responsibilities
+  requirement: >-
+    Define and maintain SDLC roles and responsibilities.
+  pb_interpretation: >-
+    Repo owners, security approvers, release approvers, incident lead, supplier owner, support
+    owner.
+  owner: PB
+  documented_evidence:
+  - RACI
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual
+  failure_modes: Unclear ownership.
+  maturity_target: AR
+  external_safe_claim: PrivateBox assigns clear SDLC and security responsibilities.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-po-2.2
+  kind: task
+  sub_framework: ssdf
+  native_id: PO.2.2
+  group: PO
+  group_name: Prepare the Organization
+  title: Role-based training
+  requirement: >-
+    Provide role-based training to personnel with security responsibilities.
+  pb_interpretation: >-
+    Train devs, reviewers, DevOps, support, customer-facing staff on AI-secure development.
+  owner: PB
+  documented_evidence:
+  - Training records
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Annual + per hire
+  failure_modes: Generic awareness only.
+  maturity_target: AR
+  external_safe_claim: PrivateBox maintains role-based security training.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-po-2.3
+  kind: task
+  sub_framework: ssdf
+  native_id: PO.2.3
+  group: PO
+  group_name: Prepare the Organization
+  title: Management commitment and messaging
+  requirement: >-
+    Obtain upper management or authorising official commitment to secure development.
+  pb_interpretation: >-
+    Executive sponsorship for secure development and release discipline.
+  owner: PB
+  documented_evidence:
+  - Policy approvals + management communications
+  audit_methods:
+  - Insp
+  cadence: Annual
+  failure_modes: Security seen as optional.
+  maturity_target: AR
+  external_safe_claim: PrivateBox's secure development programme is management-backed.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-po-3.1
+  kind: task
+  sub_framework: ssdf
+  native_id: PO.3.1
+  group: PO
+  group_name: Prepare the Organization
+  title: Specify required tools and integration
+  requirement: >-
+    Specify the security-related tools and tool integrations that the organisation requires.
+  pb_interpretation: >-
+    Approved SDLC toolchain and integration map.
+  owner: PB
+  documented_evidence:
+  - Toolchain inventory
+  audit_methods:
+  - Insp
+  cadence: Annual
+  failure_modes: Shadow tools.
+  maturity_target: AR
+  external_safe_claim: PrivateBox uses an approved and documented secure toolchain.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-po-3.2
+  kind: task
+  sub_framework: ssdf
+  native_id: PO.3.2
+  group: PO
+  group_name: Prepare the Organization
+  title: Securely deploy and operate tools
+  requirement: >-
+    Follow recommended security practices to deploy, operate, and maintain tools and toolchains.
+  pb_interpretation: >-
+    Harden CI/CD, code repos, issue trackers, package registries.
+  owner: PB
+  documented_evidence:
+  - Hardening SOPs + access reviews
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Quarterly
+  failure_modes: CI pipeline takeover.
+  maturity_target: AR
+  external_safe_claim: PrivateBox secures and maintains its development toolchain.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-8.31
+    note: ISMS separation of development / test / production.
+
+- id: nist-po-3.3
+  kind: task
+  sub_framework: ssdf
+  native_id: PO.3.3
+  group: PO
+  group_name: Prepare the Organization
+  title: Configure tools to generate artefacts
+  requirement: >-
+    Configure tools to generate artefacts supporting secure development.
+  pb_interpretation: >-
+    CI/CD emits logs, build records, approvals, scan outputs, signatures.
+  owner: PB
+  documented_evidence:
+  - Pipeline artefacts
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per release
+  failure_modes: No audit trail.
+  maturity_target: AR
+  external_safe_claim: PrivateBox retains artefacts demonstrating secure development controls.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-po-4.1
+  kind: task
+  sub_framework: ssdf
+  native_id: PO.4.1
+  group: PO
+  group_name: Prepare the Organization
+  title: Define criteria for security checks
+  requirement: >-
+    Define criteria for software security checks and track them.
+  pb_interpretation: >-
+    What scans, tests, reviews, and gates are required by risk tier.
+  owner: PB
+  documented_evidence:
+  - Gating standard
+  audit_methods:
+  - Insp
+  cadence: Annual
+  failure_modes: Inconsistent checks.
+  maturity_target: AR
+  external_safe_claim: PrivateBox applies defined release gates and security checks.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-po-4.2
+  kind: task
+  sub_framework: ssdf
+  native_id: PO.4.2
+  group: PO
+  group_name: Prepare the Organization
+  title: Exception handling
+  requirement: >-
+    Implement processes, mechanisms, etc., to gather and safeguard the necessary information in
+    support of the criteria.
+  pb_interpretation: >-
+    Formal exception workflow with expiry, rationale, compensating controls.
+  owner: PB
+  documented_evidence:
+  - Exception register
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Continuous + quarterly review
+  failure_modes: Permanent waivers.
+  maturity_target: AR
+  external_safe_claim: PrivateBox manages exceptions through a documented approval process.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-po-5.1
+  kind: task
+  sub_framework: ssdf
+  native_id: PO.5.1
+  group: PO
+  group_name: Prepare the Organization
+  title: Protect development environments
+  requirement: >-
+    Separate and protect each environment involved in software development.
+  pb_interpretation: >-
+    Segregate dev / test / prod; restrict admin; monitor CI/CD and build hosts.
+  owner: PB
+  documented_evidence:
+  - Environment diagrams + access logs
+  audit_methods:
+  - Insp
+  - Obs
+  cadence: Quarterly
+  failure_modes: Shared admin credentials.
+  maturity_target: AR
+  external_safe_claim: PrivateBox protects development environments against unauthorized access and tampering.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-8.31
+    note: ISMS separation of dev / test / prod.
+
+- id: nist-po-5.2
+  kind: task
+  sub_framework: ssdf
+  native_id: PO.5.2
+  group: PO
+  group_name: Prepare the Organization
+  title: Secure development endpoints
+  requirement: >-
+    Secure and harden development endpoints.
+  pb_interpretation: >-
+    Harden engineer workstations, support laptops, build runners.
+  owner: PB
+  documented_evidence:
+  - Endpoint standard + compliance reports
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Quarterly
+  failure_modes: Privileged unmanaged laptops.
+  maturity_target: AR
+  external_safe_claim: PrivateBox hardens endpoints used for development and support.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SSDF 1.1 — Protect the Software (PS, 4 tasks)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+- id: nist-ps-1.1
+  kind: task
+  sub_framework: ssdf
+  native_id: PS.1.1
+  group: PS
+  group_name: Protect the Software
+  title: Store code with least privilege
+  requirement: >-
+    Store all forms of code — including source code, executable code and configuration-as-code —
+    based on the principle of least privilege so that only authorised personnel, tools, services,
+    etc., have access.
+  pb_interpretation: >-
+    Protect source, config-as-code, prompts, templates, evaluation assets, deployment scripts.
+  owner: PB
+  documented_evidence:
+  - Repo ACLs + signed commits
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Quarterly access review
+  failure_modes: Over-broad write access.
+  maturity_target: AR
+  external_safe_claim: PrivateBox stores code and configuration under least-privilege controls.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-ps-2.1
+  kind: task
+  sub_framework: ssdf
+  native_id: PS.2.1
+  group: PS
+  group_name: Protect the Software
+  title: Release integrity verification info available to acquirers
+  requirement: >-
+    Make software integrity verification information available to acquirers.
+  pb_interpretation: >-
+    Provide signatures, hashes, release notes, verification instructions.
+  owner: PB
+  documented_evidence:
+  - Signed release package
+  audit_methods:
+  - Insp
+  cadence: Per release
+  failure_modes: Unverifiable updates.
+  maturity_target: AR
+  external_safe_claim: PrivateBox supports verification of delivered release integrity.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-ps-3.1
+  kind: task
+  sub_framework: ssdf
+  native_id: PS.3.1
+  group: PS
+  group_name: Protect the Software
+  title: Securely archive release files
+  requirement: >-
+    Securely archive the necessary files and supporting data to be retained for each software
+    release.
+  pb_interpretation: >-
+    Archive installers, manifests, configs, signatures, release approvals.
+  owner: PB
+  documented_evidence:
+  - Immutable release archive
+  audit_methods:
+  - Insp
+  cadence: Per release
+  failure_modes: Cannot reconstruct what was shipped.
+  maturity_target: AR
+  external_safe_claim: PrivateBox archives release artefacts for traceability and incident response.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-ps-3.2
+  kind: task
+  sub_framework: ssdf
+  native_id: PS.3.2
+  group: PS
+  group_name: Protect the Software
+  title: Maintain provenance data for release components (SBOM)
+  requirement: >-
+    Collect, safeguard, maintain and share provenance data for all components of each software
+    release (e.g., in a software bill of materials [SBOM]).
+  pb_interpretation: >-
+    SBOM, build provenance, dependency records, model provenance where relevant.
+  owner: PB
+  documented_evidence:
+  - SBOM / provenance bundle
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per release
+  failure_modes: No provenance for third-party components.
+  maturity_target: Cert
+  external_safe_claim: PrivateBox maintains provenance data for software components and releases.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SSDF 1.1 — Produce Well-Secured Software (PW, 19 tasks)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+- id: nist-pw-1.1
+  kind: task
+  sub_framework: ssdf
+  native_id: PW.1.1
+  group: PW
+  group_name: Produce Well-Secured Software
+  title: Use risk modelling
+  requirement: >-
+    Use forms of risk modelling — such as threat modelling, attack modelling or attack-surface
+    mapping — to help assess the security risk for the software.
+  pb_interpretation: >-
+    Threat model AI workflows, admin planes, RAG, support access, update channel.
+  owner: PB
+  documented_evidence:
+  - Threat model
+  audit_methods:
+  - Insp
+  cadence: Per feature + annual
+  failure_modes: Missing model-specific attack paths.
+  maturity_target: AR
+  external_safe_claim: PrivateBox uses documented threat modelling and risk analysis.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-pw-1.2
+  kind: task
+  sub_framework: ssdf
+  native_id: PW.1.2
+  group: PW
+  group_name: Produce Well-Secured Software
+  title: Track security requirements and design decisions
+  requirement: >-
+    Track and maintain the software's security requirements, risks and design decisions.
+  pb_interpretation: >-
+    Design-decision log, accepted risks, approved exceptions.
+  owner: PB
+  documented_evidence:
+  - Design records
+  audit_methods:
+  - Insp
+  cadence: Continuous
+  failure_modes: No rationale history.
+  maturity_target: AR
+  external_safe_claim: PrivateBox maintains design and risk traceability.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-pw-1.3
+  kind: task
+  sub_framework: ssdf
+  native_id: PW.1.3
+  group: PW
+  group_name: Produce Well-Secured Software
+  title: Build in standard security features
+  requirement: >-
+    Where appropriate, build in support for using standardised security features and services.
+  pb_interpretation: >-
+    Use standard authn / authz, logging, secrets, encryption, identity integration.
+  owner: PB
+  documented_evidence:
+  - Architecture patterns
+  audit_methods:
+  - Insp
+  cadence: Per feature
+  failure_modes: Custom security where standard controls exist.
+  maturity_target: AR
+  external_safe_claim: PrivateBox uses standard security services and patterns wherever feasible.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-pw-2.1
+  kind: task
+  sub_framework: ssdf
+  native_id: PW.2.1
+  group: PW
+  group_name: Produce Well-Secured Software
+  title: Review design for compliance
+  requirement: >-
+    Review the software design to verify compliance with security requirements and risk information.
+  pb_interpretation: >-
+    Design review before build / release. Unresolved design issues block progression.
+  owner: PB
+  documented_evidence:
+  - Signed design review + issue tracker items
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per material feature
+  failure_modes: Reviews after build only.
+  maturity_target: AR
+  external_safe_claim: PrivateBox verifies design against defined security requirements before release.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-pw-4.1
+  kind: task
+  sub_framework: ssdf
+  native_id: PW.4.1
+  group: PW
+  group_name: Produce Well-Secured Software
+  title: Acquire and maintain well-secured third-party components
+  requirement: >-
+    Acquire and maintain well-secured software components from commercial, open-source and
+    other third-party developers for use by the organisation's software.
+  pb_interpretation: >-
+    Approved dependency process for packages, models, libraries, container bases.
+  owner: PB
+  documented_evidence:
+  - Intake assessment
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per onboarding
+  failure_modes: Unmanaged open-source intake.
+  maturity_target: Cert
+  external_safe_claim: PrivateBox uses controlled intake for third-party components.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-a-10.2
+    note: AIMS supplier responsibility allocation.
+
+- id: nist-pw-4.2
+  kind: task
+  sub_framework: ssdf
+  native_id: PW.4.2
+  group: PW
+  group_name: Produce Well-Secured Software
+  title: Maintain provenance for components
+  requirement: >-
+    Create and maintain provenance data for components.
+  pb_interpretation: >-
+    Preserve source, version, licence, digest, origin, build metadata.
+  owner: PB
+  documented_evidence:
+  - Provenance database + SBOM
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per release
+  failure_modes: Incomplete component metadata.
+  maturity_target: AR
+  external_safe_claim: PrivateBox keeps provenance records for key software components.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-pw-4.3
+  kind: task
+  sub_framework: ssdf
+  native_id: PW.4.3
+  group: PW
+  group_name: Produce Well-Secured Software
+  title: Verify component integrity
+  requirement: >-
+    Verify the integrity of all software components.
+  pb_interpretation: >-
+    Verify hashes / signatures of dependencies and releases.
+  owner: PB
+  documented_evidence:
+  - Verification logs
+  audit_methods:
+  - Insp
+  - Obs
+  cadence: Continuous
+  failure_modes: Blind trust in upstream packages / models.
+  maturity_target: AR
+  external_safe_claim: PrivateBox verifies component integrity before use and release.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-pw-4.4
+  kind: task
+  sub_framework: ssdf
+  native_id: PW.4.4
+  group: PW
+  group_name: Produce Well-Secured Software
+  title: Review human-readable third-party software
+  requirement: >-
+    Review human-readable third-party software to confirm it meets security requirements.
+  pb_interpretation: >-
+    Source review for critical libraries, agent tools, deployment scripts.
+  owner: PB
+  documented_evidence:
+  - Review records
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per critical component
+  failure_modes: Critical component accepted without review.
+  maturity_target: AR
+  external_safe_claim: PrivateBox applies risk-based review to material third-party code.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-pw-4.5
+  kind: task
+  sub_framework: ssdf
+  native_id: PW.4.5
+  group: PW
+  group_name: Produce Well-Secured Software
+  title: Reuse well-secured internal software
+  requirement: >-
+    Reuse existing, well-secured software components from internal sources where feasible.
+  pb_interpretation: >-
+    Use approved internal components rather than ad hoc reinvention.
+  owner: PB
+  documented_evidence:
+  - Secure component catalogue
+  audit_methods:
+  - Insp
+  cadence: Per feature
+  failure_modes: Duplicate insecure utilities.
+  maturity_target: AR
+  external_safe_claim: PrivateBox reuses approved internal components to reduce avoidable risk.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-pw-5.1
+  kind: task
+  sub_framework: ssdf
+  native_id: PW.5.1
+  group: PW
+  group_name: Produce Well-Secured Software
+  title: Follow secure coding practices
+  requirement: >-
+    Follow secure coding practices.
+  pb_interpretation: >-
+    Coding standards for auth, input handling, secret use, logging, file parsing, command
+    execution.
+  owner: PB
+  documented_evidence:
+  - Coding standard + linting rules
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per PR
+  failure_modes: Secure coding guidance not enforced.
+  maturity_target: AR
+  external_safe_claim: PrivateBox follows documented secure coding practices.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-8.28
+    note: ISMS secure coding.
+
+- id: nist-pw-5.2
+  kind: task
+  sub_framework: ssdf
+  native_id: PW.5.2
+  group: PW
+  group_name: Produce Well-Secured Software
+  title: Detect and prevent coding defects
+  requirement: >-
+    Detect and prevent coding defects through automated tooling.
+  pb_interpretation: >-
+    Linters, secret scanning, code quality and security tooling in PR workflow.
+  owner: PB
+  documented_evidence:
+  - Pipeline outputs
+  audit_methods:
+  - Insp
+  - Obs
+  cadence: Per PR
+  failure_modes: Manual review only.
+  maturity_target: AR
+  external_safe_claim: PrivateBox uses automated checks to support secure coding.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-pw-6.1
+  kind: task
+  sub_framework: ssdf
+  native_id: PW.6.1
+  group: PW
+  group_name: Produce Well-Secured Software
+  title: Configure compile / build for executable security
+  requirement: >-
+    Configure compilation, interpreter and build processes to improve executable security.
+  pb_interpretation: >-
+    Harden builds, enable safer defaults, dependency locking, reproducible builds where feasible.
+  owner: PB
+  documented_evidence:
+  - Build config
+  audit_methods:
+  - Insp
+  cadence: Per release
+  failure_modes: Insecure build configurations.
+  maturity_target: AR
+  external_safe_claim: PrivateBox hardens build and packaging processes.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-pw-6.2
+  kind: task
+  sub_framework: ssdf
+  native_id: PW.6.2
+  group: PW
+  group_name: Produce Well-Secured Software
+  title: Document build tools and settings
+  requirement: >-
+    Determine and document appropriate build / packaging tools and settings.
+  pb_interpretation: >-
+    Build policy for compilers, containers, packagers, signing steps, warnings-as-failures where
+    appropriate.
+  owner: PB
+  documented_evidence:
+  - Build standard
+  audit_methods:
+  - Insp
+  cadence: Annual
+  failure_modes: Inconsistent build practices.
+  maturity_target: AR
+  external_safe_claim: PrivateBox standardises and documents secure build settings.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-pw-7.1
+  kind: task
+  sub_framework: ssdf
+  native_id: PW.7.1
+  group: PW
+  group_name: Produce Well-Secured Software
+  title: Define code review strategy
+  requirement: >-
+    Define and use criteria for code review and analysis.
+  pb_interpretation: >-
+    Peer review depth, SAST rules, high-risk branch protections.
+  owner: PB
+  documented_evidence:
+  - PR policy
+  audit_methods:
+  - Insp
+  cadence: Annual
+  failure_modes: Inconsistent review expectations.
+  maturity_target: AR
+  external_safe_claim: PrivateBox defines structured code review and analysis requirements.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-pw-7.2
+  kind: task
+  sub_framework: ssdf
+  native_id: PW.7.2
+  group: PW
+  group_name: Produce Well-Secured Software
+  title: Review human-readable code
+  requirement: >-
+    Review human-readable code for vulnerabilities and verify compliance with security
+    requirements.
+  pb_interpretation: >-
+    Peer review, SAST, IaC review, prompt / agent logic review.
+  owner: PB
+  documented_evidence:
+  - PR records
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per PR
+  failure_modes: Review rubber-stamping.
+  maturity_target: AR
+  external_safe_claim: PrivateBox conducts documented code review and static analysis before release.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-pw-8.1
+  kind: task
+  sub_framework: ssdf
+  native_id: PW.8.1
+  group: PW
+  group_name: Produce Well-Secured Software
+  title: Define testing strategy
+  requirement: >-
+    Define and use criteria for executable-code testing.
+  pb_interpretation: >-
+    DAST, API tests, integration tests, security tests, environment-specific regression tests.
+  owner: PB
+  documented_evidence:
+  - Test strategy
+  audit_methods:
+  - Insp
+  cadence: Annual
+  failure_modes: Functional tests only.
+  maturity_target: AR
+  external_safe_claim: PrivateBox defines release-testing criteria that include security-relevant scenarios.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-pw-8.2
+  kind: task
+  sub_framework: ssdf
+  native_id: PW.8.2
+  group: PW
+  group_name: Produce Well-Secured Software
+  title: Test executable code
+  requirement: >-
+    Test executable code and verify compliance with security requirements.
+  pb_interpretation: >-
+    Run automated and manual tests; block release on critical findings.
+  owner: PB
+  documented_evidence:
+  - Test reports + release decision
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per release
+  failure_modes: Findings waived without control.
+  maturity_target: AR
+  external_safe_claim: PrivateBox validates releases against documented security test criteria.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-pw-9.1
+  kind: task
+  sub_framework: ssdf
+  native_id: PW.9.1
+  group: PW
+  group_name: Produce Well-Secured Software
+  title: Define secure default settings
+  requirement: >-
+    Define secure settings by default for software, including configuration values.
+  pb_interpretation: >-
+    Default deny external connectivity, least privilege, telemetry off unless agreed, admin
+    features disabled by default where sensible.
+  owner: PB/SH
+  documented_evidence:
+  - Default config baseline
+  audit_methods:
+  - Insp
+  - Obs
+  cadence: Per release
+  failure_modes: Insecure convenience defaults.
+  maturity_target: AR
+  external_safe_claim: PrivateBox ships with security-conscious default settings.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-pw-9.2
+  kind: task
+  sub_framework: ssdf
+  native_id: PW.9.2
+  group: PW
+  group_name: Produce Well-Secured Software
+  title: Implement and document secure configuration changes
+  requirement: >-
+    Implement and document secure default configuration and changes.
+  pb_interpretation: >-
+    Maintain config guide, hardening guide, and approved change path.
+  owner: PB/SH
+  documented_evidence:
+  - Deployment guide + hardening checklist
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per release + annual
+  failure_modes: Undocumented configuration drift.
+  maturity_target: AR
+  external_safe_claim: PrivateBox documents secure baseline configuration and controlled changes.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SSDF 1.1 — Respond to Vulnerabilities (RV, 9 tasks)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+- id: nist-rv-1.1
+  kind: task
+  sub_framework: ssdf
+  native_id: RV.1.1
+  group: RV
+  group_name: Respond to Vulnerabilities
+  title: Gather vulnerability information
+  requirement: >-
+    Gather information from software acquirers, users and public sources on potential
+    vulnerabilities in the software.
+  pb_interpretation: >-
+    Monitor CVEs, provider notices, AI-specific issue feeds, customer reports, model-library
+    security news.
+  owner: PB
+  documented_evidence:
+  - Vulnerability intake log
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Continuous
+  failure_modes: No AI-specific feed coverage.
+  maturity_target: AR
+  external_safe_claim: PrivateBox continuously monitors relevant vulnerability and security reports.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-rv-1.2
+  kind: task
+  sub_framework: ssdf
+  native_id: RV.1.2
+  group: RV
+  group_name: Respond to Vulnerabilities
+  title: Review code for undetected vulnerabilities
+  requirement: >-
+    Review, analyse and / or test the organisation's code to identify or confirm the presence of
+    previously undetected vulnerabilities.
+  pb_interpretation: >-
+    Recurring reassessment, including AI-specific tests after changes.
+  owner: PB
+  documented_evidence:
+  - Scheduled scan / test records
+  audit_methods:
+  - Insp
+  cadence: Recurring per cadence
+  failure_modes: Testing only pre-release.
+  maturity_target: AR
+  external_safe_claim: PrivateBox performs recurring reassessment for previously undetected vulnerabilities.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-rv-1.3
+  kind: task
+  sub_framework: ssdf
+  native_id: RV.1.3
+  group: RV
+  group_name: Respond to Vulnerabilities
+  title: Vulnerability disclosure and remediation policy
+  requirement: >-
+    Have a policy that addresses vulnerability disclosure and remediation, and implement the
+    roles, responsibilities and processes needed to support that policy.
+  pb_interpretation: >-
+    Public / internal reporting path, response SLAs, coordination rules, remediation workflow.
+  owner: PB
+  documented_evidence:
+  - VDP + SOP
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual review
+  failure_modes: No route for external researchers or customers.
+  maturity_target: Cert
+  external_safe_claim: PrivateBox maintains a structured vulnerability disclosure and remediation process.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-rv-2.1
+  kind: task
+  sub_framework: ssdf
+  native_id: RV.2.1
+  group: RV
+  group_name: Respond to Vulnerabilities
+  title: Analyse vulnerabilities for remediation planning
+  requirement: >-
+    Analyse each vulnerability sufficiently to plan remediation or other response.
+  pb_interpretation: >-
+    Severity, exploitability, affected versions, customer exposure, compensating controls.
+  owner: PB
+  documented_evidence:
+  - Triage tickets
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per vulnerability
+  failure_modes: Remediation with poor scoping.
+  maturity_target: AR
+  external_safe_claim: PrivateBox triages vulnerabilities using documented risk criteria.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-rv-2.2
+  kind: task
+  sub_framework: ssdf
+  native_id: RV.2.2
+  group: RV
+  group_name: Respond to Vulnerabilities
+  title: Plan and implement risk responses
+  requirement: >-
+    Plan and implement risk responses for vulnerabilities.
+  pb_interpretation: >-
+    Patch, workaround, disable feature, rotate credentials, notify customers, publish advisory.
+  owner: PB/SH
+  documented_evidence:
+  - Remediation plan + advisory + patch notes
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per vulnerability
+  failure_modes: Fix exists but customers cannot operationalise it.
+  maturity_target: AR
+  external_safe_claim: PrivateBox defines and communicates risk responses for identified vulnerabilities.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-rv-3.1
+  kind: task
+  sub_framework: ssdf
+  native_id: RV.3.1
+  group: RV
+  group_name: Respond to Vulnerabilities
+  title: Identify root causes
+  requirement: >-
+    Identify root causes of vulnerabilities.
+  pb_interpretation: >-
+    RCA for code, design, toolchain, model / config, supplier failure.
+  owner: PB
+  documented_evidence:
+  - Postmortems
+  audit_methods:
+  - Insp
+  cadence: Per material vulnerability
+  failure_modes: Patching symptoms only.
+  maturity_target: AR
+  external_safe_claim: PrivateBox performs root-cause analysis for material vulnerabilities.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-rv-3.2
+  kind: task
+  sub_framework: ssdf
+  native_id: RV.3.2
+  group: RV
+  group_name: Respond to Vulnerabilities
+  title: Remediate root causes
+  requirement: >-
+    Remediate root causes through process and tool improvements.
+  pb_interpretation: >-
+    Update standards, training, build checks, review gates, supplier controls.
+  owner: PB
+  documented_evidence:
+  - CAPA log
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per RCA
+  failure_modes: Repeating same class of defect.
+  maturity_target: AR
+  external_safe_claim: PrivateBox uses vulnerability learnings to strengthen its SDLC.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-rv-3.3
+  kind: task
+  sub_framework: ssdf
+  native_id: RV.3.3
+  group: RV
+  group_name: Respond to Vulnerabilities
+  title: Capture lessons learned
+  requirement: >-
+    Capture lessons learned and improve practices.
+  pb_interpretation: >-
+    Feed lessons into engineering standards, procurement answers, customer guides.
+  owner: PB
+  documented_evidence:
+  - Lessons-learned register
+  audit_methods:
+  - Insp
+  cadence: Per material vulnerability
+  failure_modes: Postmortem not actioned.
+  maturity_target: AR
+  external_safe_claim: PrivateBox uses structured lessons learned to improve security practices.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-rv-3.4
+  kind: task
+  sub_framework: ssdf
+  native_id: RV.3.4
+  group: RV
+  group_name: Respond to Vulnerabilities
+  title: Share remediation information
+  requirement: >-
+    Share root-cause and remediation information as appropriate.
+  pb_interpretation: >-
+    Internal knowledge base and customer advisories when relevant.
+  owner: PB/SH
+  documented_evidence:
+  - Advisories + KB articles
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per material vulnerability
+  failure_modes: Inconsistent communications.
+  maturity_target: AR
+  external_safe_claim: PrivateBox communicates material remediation information through defined channels.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SP 800-218A AI Overlay (19 overlay items)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+- id: nist-218a-po-5.3
+  kind: overlay
+  sub_framework: 218a
+  native_id: PO.5.3 (218A)
+  group: 218A-PO
+  group_name: 218A — Prepare the Organization
+  title: Monitor software execution in dev environments
+  overlay_target_id: nist-po-5.1
+  overlay_modifies: >-
+    Adds AI-specific dev-environment monitoring on top of SSDF PO.5.1 — covers build runners,
+    training / fine-tuning hosts, model APIs, weights, configs, datasets with alerting on
+    suspicious activity.
+  requirement: >-
+    Continuously monitor software execution performance and behaviour in development environments.
+  pb_interpretation: >-
+    Monitor build runners, training / fine-tuning hosts, model APIs, weights, configs, datasets.
+    Alerting on suspicious activity.
+  owner: PB
+  documented_evidence:
+  - Dev-environment monitoring config
+  audit_methods:
+  - Insp
+  - Obs
+  cadence: Continuous
+  failure_modes: Model assets unmonitored in dev.
+  maturity_target: AR
+  external_safe_claim: PrivateBox continuously monitors environments that host AI model development assets.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-218a-ps-1.2
+  kind: overlay
+  sub_framework: 218a
+  native_id: PS.1.2 (218A)
+  group: 218A-PS
+  group_name: 218A — Protect the Software
+  title: Protect training / fine-tuning / alignment data
+  overlay_target_id: nist-ps-1.1
+  overlay_modifies: >-
+    Extends SSDF PS.1.1 (code storage least privilege) to specifically cover training, testing,
+    fine-tuning and alignment datasets — segregation, write-access restriction, checksums,
+    approval workflow for dataset changes.
+  requirement: >-
+    Protect training, testing, fine-tuning and alignment data against unauthorised access and
+    modification.
+  pb_interpretation: >-
+    Segregate datasets, restrict write access, checksum critical sets, approval for dataset
+    changes.
+  owner: PB
+  documented_evidence:
+  - Dataset ACLs + lineage logs
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Continuous
+  failure_modes: Silent dataset poisoning or corruption.
+  maturity_target: Cert
+  external_safe_claim: PrivateBox protects AI development datasets with controlled access and change records.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-218a-ps-1.3
+  kind: overlay
+  sub_framework: 218a
+  native_id: PS.1.3 (218A)
+  group: 218A-PS
+  group_name: 218A — Protect the Software
+  title: Protect model weights and configuration parameters
+  overlay_target_id: nist-ps-1.1
+  overlay_modifies: >-
+    New 218A task — adds model-weight and configuration-parameter protection on top of SSDF
+    PS.1.1. Separate weights from datasets; least privilege; encryption / hashes / signatures;
+    optional air gap for sensitive weights.
+  requirement: >-
+    Protect model weights and configuration parameters against unauthorised access and modification.
+  pb_interpretation: >-
+    Separate weights from datasets; least privilege; encryption / hashes / signatures; optional
+    air gap for sensitive weights.
+  owner: PB
+  documented_evidence:
+  - Model registry + signature records
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Continuous
+  failure_modes: Model theft or tampering.
+  maturity_target: Cert
+  external_safe_claim: PrivateBox applies access, integrity and provenance controls to model weights and parameters.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-218a-ps-1.1-overlay
+  kind: overlay
+  sub_framework: 218a
+  native_id: PS.1.1 (218A overlay)
+  group: 218A-PS
+  group_name: 218A — Protect the Software
+  title: Code storage extended to AI artefacts
+  overlay_target_id: nist-ps-1.1
+  overlay_modifies: >-
+    Clarifies SSDF PS.1.1 to include AI models, model weights, pipelines, reward models,
+    evaluation suites and other AI elements as protected code artefacts.
+  requirement: >-
+    Treat prompts, system instructions, pipelines, reward models, evaluation suites as protected
+    code artefacts under PS.1.1 controls.
+  pb_interpretation: >-
+    Protected repositories and registries for AI elements alongside traditional code.
+  owner: PB
+  documented_evidence:
+  - Protected repositories / registries
+  audit_methods:
+  - Insp
+  - Obs
+  cadence: Continuous
+  failure_modes: Protecting code but not model artefacts.
+  maturity_target: AR
+  external_safe_claim: PrivateBox protects model artefacts and AI pipeline elements as part of software security.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-218a-x-model-provenance
+  kind: overlay
+  sub_framework: 218a
+  native_id: 218A — Model provenance
+  group: 218A-X
+  group_name: 218A — Cross-cutting
+  title: Model provenance tracking
+  overlay_target_id: nist-ps-3.2
+  overlay_modifies: >-
+    Extends SSDF PS.3.2 (provenance for components) to specifically include AI models — track
+    provenance of models, weights, sources, versions, and approvals.
+  requirement: >-
+    Track provenance of models, weights, sources, versions and approvals.
+  pb_interpretation: >-
+    Approved model inventory and source provenance package. Model cards, registry, approval records.
+  owner: PB
+  documented_evidence:
+  - Model cards + registry + approval records
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per model
+  failure_modes: No authoritative model registry.
+  maturity_target: Cert
+  external_safe_claim: PrivateBox maintains provenance and approval records for approved AI models.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-218a-x-dataset-provenance
+  kind: overlay
+  sub_framework: 218a
+  native_id: 218A — Dataset provenance
+  group: 218A-X
+  group_name: 218A — Cross-cutting
+  title: Dataset provenance tracking
+  overlay_target_id: nist-ps-3.2
+  overlay_modifies: >-
+    Extends SSDF PS.3.2 to cover training, testing, fine-tuning and alignment data provenance.
+    Records unknown provenance where applicable.
+  requirement: >-
+    Track provenance of training, testing, fine-tuning and alignment data; record unknown
+    provenance where applicable.
+  pb_interpretation: >-
+    Data-source register and known / unknown provenance flags. Lineage register for training data.
+  owner: PB
+  documented_evidence:
+  - Lineage register
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per dataset
+  failure_modes: Undocumented sources and rights.
+  maturity_target: AR
+  external_safe_claim: PrivateBox tracks provenance information for AI development data where known and records gaps where it is not.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-218a-pw-3.3
+  kind: overlay
+  sub_framework: 218a
+  native_id: PW.3.3 (218A)
+  group: 218A-PW
+  group_name: 218A — Produce Well-Secured Software
+  title: Adversarial samples in training and testing
+  overlay_target_id: nist-pw-8.1
+  overlay_modifies: >-
+    Adds 218A recommendation to include adversarial samples in training and testing data to
+    improve attack prevention — most relevant where PB fine-tunes or runs its own classifiers /
+    guardrails.
+  requirement: >-
+    Include adversarial samples in training and testing data to improve attack prevention.
+  pb_interpretation: >-
+    Adversarial prompt library and malicious-document tests. Rerun before major releases.
+  owner: PB
+  documented_evidence:
+  - Adversarial dataset + test outcomes
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per material release
+  failure_modes: No adversarial coverage.
+  maturity_target: AR
+  external_safe_claim: PrivateBox uses adversarial test cases to strengthen AI safeguards where technically applicable.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-218a-x-prompt-injection
+  kind: overlay
+  sub_framework: 218a
+  native_id: 218A — Prompt-injection / jailbreak risk
+  group: 218A-X
+  group_name: 218A — Cross-cutting
+  title: Prompt-injection and jailbreak risk testing
+  overlay_target_id: nist-measure-2.7
+  overlay_modifies: >-
+    Highlights AI-specific injection-style attacks not covered by traditional security testing.
+    Direct and indirect prompt injection, malicious retrieved content, connector abuse, rogue
+    instructions in documents.
+  requirement: >-
+    Test for direct and indirect prompt injection, malicious retrieved content, connector abuse,
+    and rogue instructions embedded in documents.
+  pb_interpretation: >-
+    AI red-team playbooks and results. Regression suite. Both direct prompts and retrieved-
+    content vectors.
+  owner: PB
+  documented_evidence:
+  - AI red-team playbooks + results
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per material release + scheduled
+  failure_modes: Only direct prompts tested.
+  maturity_target: Cert
+  external_safe_claim: PrivateBox tests for prompt-injection and jailbreak-style attacks in relevant workflows.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-a-6.1.5
+    note: AIMS V&V with adversarial testing.
+
+- id: nist-218a-x-unsafe-tool-use
+  kind: overlay
+  sub_framework: 218a
+  native_id: 218A — Unsafe tool / agent use
+  group: 218A-X
+  group_name: 218A — Cross-cutting
+  title: Unsafe tool or agent use controls
+  overlay_target_id: nist-manage-2.4
+  overlay_modifies: >-
+    Adds controls for agentic / tool-enabled workflows — scoped actions and execution controls
+    for AI-initiated tool use.
+  requirement: >-
+    Restrict tool permissions, sandbox execution, require human approval for sensitive actions,
+    record tool calls.
+  pb_interpretation: >-
+    Tool allow-list, sandbox config, logs. Human approval for sensitive actions.
+  owner: PB/SH
+  documented_evidence:
+  - Tool allow-list + sandbox config + logs
+  audit_methods:
+  - Insp
+  - Obs
+  cadence: Per release
+  failure_modes: Over-privileged agents.
+  maturity_target: AR
+  external_safe_claim: Where tool use is enabled, PrivateBox constrains and logs AI-initiated actions.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-a-6.2.3
+    note: AIMS human oversight for AI tool use.
+
+- id: nist-218a-x-model-release-integrity
+  kind: overlay
+  sub_framework: 218a
+  native_id: 218A — Model release integrity
+  group: 218A-X
+  group_name: 218A — Cross-cutting
+  title: AI model release integrity
+  overlay_target_id: nist-ps-2.1
+  overlay_modifies: >-
+    Extends SSDF PS.2.1 (release integrity) to specifically cover AI model artefacts — signing,
+    hashing, controlled publication.
+  requirement: >-
+    Sign installers and, where feasible, model artefacts; preserve verification instructions.
+  pb_interpretation: >-
+    Signed releases for software AND model artefacts. Preserve verification instructions for
+    customers / auditors.
+  owner: PB
+  documented_evidence:
+  - Signatures + release manifest
+  audit_methods:
+  - Insp
+  - Obs
+  cadence: Per release
+  failure_modes: Unsigned or mutable model packages.
+  maturity_target: AR
+  external_safe_claim: PrivateBox uses integrity controls for software and AI model delivery.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-218a-x-model-update-rollback
+  kind: overlay
+  sub_framework: 218a
+  native_id: 218A — Model update / rollback
+  group: 218A-X
+  group_name: 218A — Cross-cutting
+  title: Model update and rollback control
+  overlay_target_id: nist-manage-2.4
+  overlay_modifies: >-
+    Adds AI model change control beyond standard software change — approval, testing,
+    reversibility, customer advisory.
+  requirement: >-
+    Define model change CAB, regression testing, rollback package, customer advisory.
+  pb_interpretation: >-
+    Change tickets, rollback SOP, drilled rollback.
+  owner: PB/SH
+  documented_evidence:
+  - Change tickets + rollback SOP
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per model change
+  failure_modes: Silent model swap.
+  maturity_target: Cert
+  external_safe_claim: PrivateBox controls model changes through approval, testing and rollback procedures.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-6.3
+    note: AIMS planning of changes including AI-specific change types.
+
+- id: nist-218a-x-secure-finetuning-rag
+  kind: overlay
+  sub_framework: 218a
+  native_id: 218A — Secure fine-tuning / RAG
+  group: 218A-X
+  group_name: 218A — Cross-cutting
+  title: Secure fine-tuning and RAG
+  overlay_target_id: nist-ps-1.1
+  overlay_modifies: >-
+    Adds controls for fine-tuning, retrieval and data-grounding workflows — additional poisoning
+    and leakage risk beyond standard data security.
+  requirement: >-
+    Separate knowledge stores per tenant; approve ingestion sources; scan documents; bound
+    retrieval scope.
+  pb_interpretation: >-
+    Connector policy, ingestion SOP, malicious-document injection tests.
+  owner: PB/SH
+  documented_evidence:
+  - Connector policy + ingestion SOP
+  audit_methods:
+  - Insp
+  - Obs
+  cadence: Per release + per corpus change
+  failure_modes: Cross-tenant or poisoned retrieval context.
+  maturity_target: AR
+  external_safe_claim: PrivateBox applies controls to knowledge ingestion and retrieval-grounded workflows.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-218a-x-ai-vuln-intake
+  kind: overlay
+  sub_framework: 218a
+  native_id: 218A — AI vulnerability intake
+  group: 218A-X
+  group_name: 218A — Cross-cutting
+  title: Vulnerability intake for AI models
+  overlay_target_id: nist-rv-1.1
+  overlay_modifies: >-
+    Extends SSDF RV.1.1 to include AI-model and framework vulnerabilities — model-library
+    advisories, AI-framework CVEs, model-incident databases.
+  requirement: >-
+    Monitor AI-framework, model and library vulnerability sources and incident databases.
+  pb_interpretation: >-
+    Watchlists and ticket feed covering AI-framework and model-library vulnerabilities.
+  owner: PB
+  documented_evidence:
+  - Watchlists + ticket feed
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Continuous
+  failure_modes: App vulnerabilities tracked, model vulnerabilities ignored.
+  maturity_target: AR
+  external_safe_claim: PrivateBox includes AI-model and framework issues in vulnerability monitoring.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-218a-x-model-scanning-audits
+  kind: overlay
+  sub_framework: 218a
+  native_id: 218A — AI model scanning / audits
+  group: 218A-X
+  group_name: 218A — Cross-cutting
+  title: AI model scanning and audits
+  overlay_target_id: nist-rv-1.2
+  overlay_modifies: >-
+    Adds recurring AI model security scans and periodic audit review to SSDF RV.1.2.
+  requirement: >-
+    Regular model security scans, behaviour tests, and periodic audit review.
+  pb_interpretation: >-
+    Recurring model security testing and audit review per policy cadence.
+  owner: PB
+  documented_evidence:
+  - Scan records + audit reports
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per cadence + per retraining
+  failure_modes: No retesting after retraining or config changes.
+  maturity_target: AR
+  external_safe_claim: PrivateBox performs recurring model security testing and audit review.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-218a-x-ai-disclosure
+  kind: overlay
+  sub_framework: 218a
+  native_id: 218A — AI-specific disclosure
+  group: 218A-X
+  group_name: 218A — Cross-cutting
+  title: AI-specific disclosure to users
+  overlay_target_id: nist-rv-3.4
+  overlay_modifies: >-
+    Adds AI-specific disclosure obligations to customers — limitations and reporting mechanisms.
+  requirement: >-
+    Provide safe-use instructions, limitations, issue-reporting route, unsupported use cases.
+  pb_interpretation: >-
+    Customer deployment guide + UI notices conveying AI limitations and issue-reporting.
+  owner: PB/SH
+  documented_evidence:
+  - Customer deployment guide + UI notices
+  audit_methods:
+  - Insp
+  - Obs
+  cadence: Per release
+  failure_modes: Customers unaware of reporting mechanism.
+  maturity_target: AR
+  external_safe_claim: PrivateBox provides documented limitations and issue-reporting guidance for customers.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-218a-x-rebuild-replace
+  kind: overlay
+  sub_framework: 218a
+  native_id: 218A — Rebuild / replace economics
+  group: 218A-X
+  group_name: 218A — Cross-cutting
+  title: Rebuild / replace / retire economic criteria
+  overlay_target_id: nist-rv-2.2
+  overlay_modifies: >-
+    Adds AI-specific risk-response decision criteria — when to patch, retrain, replace, retire
+    or disable a model given rebuild cost vs risk.
+  requirement: >-
+    Define criteria for patch, retrain, replace, retire, or disable decisions for AI models.
+  pb_interpretation: >-
+    Decision matrix applied to hypothetical compromised model scenarios.
+  owner: PB
+  documented_evidence:
+  - Decision matrix
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual + per material event
+  failure_modes: Keeping a risky model because retraining is expensive.
+  maturity_target: AR
+  external_safe_claim: PrivateBox uses documented criteria for retraining, replacement and retirement of AI models.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-218a-x-third-party-model-governance
+  kind: overlay
+  sub_framework: 218a
+  native_id: 218A — Third-party model governance
+  group: 218A-X
+  group_name: 218A — Cross-cutting
+  title: Third-party model governance and monitoring
+  overlay_target_id: nist-pw-4.1
+  overlay_modifies: >-
+    Extends SSDF PW.4.1 (acquire well-secured third-party components) to AI-specific intake —
+    transparency artefacts, source commits, checkpoints, licences.
+  requirement: >-
+    Review third-party model transparency artefacts and monitor external models used in systems.
+  pb_interpretation: >-
+    Third-party model dossiers — model cards, system cards, source commits, checkpoints,
+    licences, terms.
+  owner: PB
+  documented_evidence:
+  - Third-party model dossiers
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per onboarding + monitoring
+  failure_modes: Adopting a model with opaque provenance.
+  maturity_target: AR
+  external_safe_claim: PrivateBox applies due diligence to third-party models before approval.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-a-10.2
+    note: AIMS supplier responsibility allocation.
+
+- id: nist-218a-x-content-provenance
+  kind: overlay
+  sub_framework: 218a
+  native_id: 218A — Content provenance
+  group: 218A-X
+  group_name: 218A — Cross-cutting
+  title: Generated-content provenance
+  overlay_target_id: nist-pw-9.1
+  overlay_modifies: >-
+    Adds 218A and GenAI Profile recommendation for provenance data tracking and synthetic-
+    content transparency where content generation is material.
+  requirement: >-
+    Where content generation is material, attach provenance metadata or watermark strategy if
+    feasible; document limits if not used.
+  pb_interpretation: >-
+    Content provenance design note. Document limits where provenance / watermarking is not
+    feasible.
+  owner: PB
+  documented_evidence:
+  - Content provenance design note
+  audit_methods:
+  - Insp
+  cadence: Per release
+  failure_modes: Generated content indistinguishable by policy and process.
+  maturity_target: AR
+  external_safe_claim: PrivateBox documents provenance and transparency measures for generated content where applicable.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: nist-218a-x-model-supply-chain
+  kind: overlay
+  sub_framework: 218a
+  native_id: 218A — Model security supply chain
+  group: 218A-X
+  group_name: 218A — Cross-cutting
+  title: AI model supply chain security
+  overlay_target_id: nist-pw-4.3
+  overlay_modifies: >-
+    Adds 218A model-signing and registry controls to SSDF PW.4.3 (verify component integrity).
+  requirement: >-
+    Use signed internal model registry, controlled mirroring, checksum verification, approval
+    workflow for model intake.
+  pb_interpretation: >-
+    Model registry controls including signed mirroring and approval.
+  owner: PB
+  documented_evidence:
+  - Model registry controls
+  audit_methods:
+  - Insp
+  - Obs
+  cadence: Per onboarding
+  failure_modes: Model pulled directly from public hub into production workflow.
+  maturity_target: Cert
+  external_safe_claim: PrivateBox applies provenance and approval controls to the AI model supply chain.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []

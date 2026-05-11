@@ -848,6 +848,10 @@ requirements:
     refs:
     - iso-27701-cl-4.1
     note: HLS-aligned. AIMS context complements PIMS context with AI scope.
+  - framework: nist
+    refs:
+    - nist-gov-1.1
+    note: NIST AI RMF GOV 1.1 legal / regulatory understanding aligns with AIMS context.
 
 - id: iso-42001-cl-4.2
   kind: clause
@@ -896,6 +900,10 @@ requirements:
     refs:
     - iso-27701-cl-4.2
     note: HLS-aligned; PIMS interested-party identification extends to AI-context data subjects.
+  - framework: nist
+    refs:
+    - nist-gov-5.1
+    note: NIST AI RMF GOV 5.1 external feedback aligns with interested-parties identification.
 
 - id: iso-42001-cl-4.3
   kind: clause
@@ -1051,6 +1059,10 @@ requirements:
     refs:
     - popia-cond-1
     note: POPIA accountability principle (s 8) requires top-management oversight of personal-information processing; AIMS leadership scope covers PB-as-RP duties.
+  - framework: nist
+    refs:
+    - nist-gov-2.3
+    note: NIST AI RMF GOV 2.3 executive responsibility aligns with AIMS leadership.
 
 - id: iso-42001-cl-5.2
   kind: clause
@@ -1102,6 +1114,10 @@ requirements:
     refs:
     - popia-cond-1
     note: AI Policy operationalises POPIA accountability for AI-specific processing; cross-policy alignment with PB privacy notice required.
+  - framework: nist
+    refs:
+    - nist-gov-1.2
+    note: NIST AI RMF GOV 1.2 trustworthy-AI characteristics integrated into policies.
 
 - id: iso-42001-cl-5.3
   kind: clause
@@ -1164,6 +1180,10 @@ requirements:
 # ─────────────────────────────────────────────────────────────────────────────
 # Clause 6 — Planning
 # ─────────────────────────────────────────────────────────────────────────────
+  - framework: nist
+    refs:
+    - nist-gov-2.1
+    note: NIST AI RMF GOV 2.1 roles and responsibilities documented.
 
 - id: iso-42001-cl-6.1.1
   kind: clause
@@ -1261,6 +1281,14 @@ requirements:
     refs:
     - popia-cond-7
     note: AI risk methodology must address POPIA s 19 security safeguards as a core risk class for any AI handling personal information.
+  - framework: nist
+    refs:
+    - nist-map-1.6
+    note: NIST AI RMF MAP 1.6 system requirements account for socio-technical risk.
+  - framework: nist
+    refs:
+    - nist-measure-1.1
+    note: NIST AI RMF MEASURE 1.1 risk metric selection.
 
 - id: iso-42001-cl-6.1.3
   kind: clause
@@ -1378,6 +1406,10 @@ requirements:
     refs:
     - popia-cond-7
     note: AISIA security treatment maps to POPIA s 19 safeguards.
+  - framework: nist
+    refs:
+    - nist-map-5.1
+    note: NIST AI RMF MAP 5.1 likelihood and magnitude of impacts — AISIA equivalent.
 
 - id: iso-42001-cl-6.2
   kind: clause
@@ -1570,6 +1602,10 @@ requirements:
     refs:
     - eu-ai-act-art-4
     note: EU AI Act Art. 4 AI-literacy obligations are operationalised through the AIMS competence framework.
+  - framework: nist
+    refs:
+    - nist-gov-2.2
+    note: NIST AI RMF GOV 2.2 personnel and partners receive AI risk-management training.
 
 - id: iso-42001-cl-7.3
   kind: clause
@@ -1768,6 +1804,10 @@ requirements:
     refs:
     - eu-ai-act-art-9
     note: Operational planning satisfies the operational portion of Art. 9 risk-management for high-risk AI.
+  - framework: nist
+    refs:
+    - nist-manage-2.2
+    note: NIST AI RMF MANAGE 2.2 mechanisms sustain AI system value.
 
 - id: iso-42001-cl-8.2
   kind: clause
@@ -1901,6 +1941,10 @@ requirements:
 # ─────────────────────────────────────────────────────────────────────────────
 # Clause 9 — Performance Evaluation
 # ─────────────────────────────────────────────────────────────────────────────
+  - framework: nist
+    refs:
+    - nist-measure-2.4
+    note: NIST AI RMF MEASURE 2.4 production monitoring of functionality and behaviour.
 
 - id: iso-42001-cl-9.1
   kind: clause
@@ -1957,6 +2001,10 @@ requirements:
     refs:
     - popia-cond-7
     note: AIMS monitoring includes POPIA s 19 security-safeguard verification and s 22 incident-detection cadence.
+  - framework: nist
+    refs:
+    - nist-measure-2.4
+    note: NIST AI RMF MEASURE 2.4 + MANAGE 4.1 post-deployment monitoring.
 
 - id: iso-42001-cl-9.2
   kind: clause
@@ -2003,6 +2051,10 @@ requirements:
     refs:
     - iso-27701-cl-9.2
     note: HLS-aligned.
+  - framework: nist
+    refs:
+    - nist-measure-1.3
+    note: NIST AI RMF MEASURE 1.3 independent assessors involved.
 
 - id: iso-42001-cl-9.3
   kind: clause
@@ -2151,6 +2203,10 @@ requirements:
 # ─────────────────────────────────────────────────────────────────────────────
 
 # ── A.2 — Policies related to AI ──
+  - framework: nist
+    refs:
+    - nist-manage-4.3
+    note: NIST AI RMF MANAGE 4.3 incident communication and recovery.
 
 - id: iso-42001-a-2.2
   kind: control_aims
@@ -2199,6 +2255,10 @@ requirements:
     refs:
     - popia-cond-1
     note: AI Policy aligned to POPIA accountability principle; sales / marketing red-flag list reduces s 69 (direct marketing) and external-claim exposure.
+  - framework: nist
+    refs:
+    - nist-gov-1.2
+    note: NIST AI RMF GOV 1.2 trustworthy-AI policy framework.
 
 - id: iso-42001-a-2.3
   kind: control_aims
@@ -2339,6 +2399,10 @@ requirements:
     refs:
     - popia-s-information-officer
     note: AI Governance roles overlap with POPIA Information Officer duties; cross-engagement on incidents and data-subject requests.
+  - framework: nist
+    refs:
+    - nist-gov-2.1
+    note: NIST AI RMF GOV 2.1 roles, responsibilities and communication lines.
 
 - id: iso-42001-a-3.3
   kind: control_aims
@@ -2460,6 +2524,10 @@ requirements:
     refs:
     - eu-ai-act-art-10
     note: Data governance for high-risk AI under Art. 10.
+  - framework: nist
+    refs:
+    - nist-gov-1.6
+    note: NIST AI RMF GOV 1.6 AI system / model inventory.
 
 - id: iso-42001-a-4.4
   kind: control_aims
@@ -2632,6 +2700,10 @@ requirements:
     refs:
     - popia-s-automated-decisions
     note: AISIA methodology covers POPIA s 71 automated decision-making analysis where AI makes consequential decisions.
+  - framework: nist
+    refs:
+    - nist-map-5.1
+    note: NIST AI RMF MAP 5.1 impact assessment methodology.
 
 - id: iso-42001-a-5.3
   kind: control_aims
@@ -2898,6 +2970,10 @@ requirements:
     refs:
     - eu-ai-act-art-11
     note: Technical documentation for high-risk AI under Annex IV.
+  - framework: nist
+    refs:
+    - nist-gov-4.2
+    note: NIST AI RMF GOV 4.2 risks and impacts documented.
 
 - id: iso-42001-a-6.1.4
   kind: control_aims
@@ -2942,6 +3018,10 @@ requirements:
     refs:
     - popia-s-automated-decisions
     note: Bias methodology supports POPIA s 71 substantial-effect analysis for automated decisions.
+  - framework: nist
+    refs:
+    - nist-measure-2.11
+    note: NIST AI RMF MEASURE 2.11 fairness and bias evaluation.
 
 - id: iso-42001-a-6.1.5
   kind: control_aims
@@ -2987,6 +3067,18 @@ requirements:
     refs:
     - eu-ai-act-art-15
     note: Accuracy, robustness and cybersecurity obligations for high-risk AI.
+  - framework: nist
+    refs:
+    - nist-measure-2.5
+    note: NIST AI RMF MEASURE 2.5 validity and reliability.
+  - framework: nist
+    refs:
+    - nist-measure-2.7
+    note: NIST AI RMF MEASURE 2.7 AI security and resilience evaluation.
+  - framework: nist
+    refs:
+    - nist-218a-x-prompt-injection
+    note: NIST 218A adversarial / prompt-injection testing.
 
 - id: iso-42001-a-6.2.1
   kind: control_aims
@@ -3109,6 +3201,14 @@ requirements:
     refs:
     - popia-s-automated-decisions
     note: Human oversight is the primary safeguard for POPIA s 71 automated decision-making in consequential workflows.
+  - framework: nist
+    refs:
+    - nist-map-3.5
+    note: NIST AI RMF MAP 3.5 human oversight processes.
+  - framework: nist
+    refs:
+    - nist-gov-3.2
+    note: NIST AI RMF GOV 3.2 human-AI configuration and oversight roles.
 
 - id: iso-42001-a-6.2.4
   kind: control_aims
@@ -3165,6 +3265,10 @@ requirements:
     refs:
     - popia-cond-7
     note: Event logging supports POPIA s 19 security-safeguard verification and s 22 incident investigation.
+  - framework: nist
+    refs:
+    - nist-measure-2.4
+    note: NIST AI RMF MEASURE 2.4 production monitoring including event logs.
 
 - id: iso-42001-a-6.2.5
   kind: control_aims
@@ -3212,6 +3316,10 @@ requirements:
     note: Separation of dev/test/production environments.
 
 # ── A.7 — Data for AI systems ──
+  - framework: nist
+    refs:
+    - nist-manage-1.1
+    note: NIST AI RMF MANAGE 1.1 go / no-go decision.
 
 - id: iso-42001-a-7.2
   kind: control_aims
@@ -3261,6 +3369,10 @@ requirements:
     refs:
     - popia-cond-2
     note: Data governance frame applies POPIA processing-limitation conditions (ss 9-12) — minimisation, lawful basis, direct collection.
+  - framework: nist
+    refs:
+    - nist-map-4.1
+    note: NIST AI RMF MAP 4.1 component risks including data.
 
 - id: iso-42001-a-7.3
   kind: control_aims
@@ -3418,6 +3530,10 @@ requirements:
     refs:
     - popia-s-special-pi
     note: Special-PI handling in AI subject to POPIA ss 26-33 enhanced-control regime.
+  - framework: nist
+    refs:
+    - nist-measure-2.10
+    note: NIST AI RMF MEASURE 2.10 privacy risk examination.
 
 - id: iso-42001-a-8.2
   kind: control_aims
@@ -3464,6 +3580,10 @@ requirements:
     refs:
     - popia-cond-6
     note: System characteristics documentation feeds POPIA s 18 collection-notice obligations for AI deployments.
+  - framework: nist
+    refs:
+    - nist-gov-4.2
+    note: NIST AI RMF GOV 4.2 system / model card documentation.
 
 - id: iso-42001-a-8.3
   kind: control_aims
@@ -3547,6 +3667,10 @@ requirements:
     refs:
     - popia-cond-7
     note: Incident communication includes POPIA s 22 breach notification (operator notifies RP immediately; RP notifies Regulator + data subjects).
+  - framework: nist
+    refs:
+    - nist-manage-4.3
+    note: NIST AI RMF MANAGE 4.3 incident communication.
 
 - id: iso-42001-a-8.5
   kind: control_aims
@@ -3750,6 +3874,10 @@ requirements:
     refs:
     - popia-s-automated-decisions
     note: Intended-use scope flags AI workflows that may trigger POPIA s 71 substantial-effect analysis.
+  - framework: nist
+    refs:
+    - nist-map-3.3
+    note: NIST AI RMF MAP 3.3 targeted application scope.
 
 - id: iso-42001-a-10.2
   kind: control_aims
@@ -3815,6 +3943,14 @@ requirements:
     refs:
     - popia-cond-7
     note: Supplier due diligence covers POPIA s 20-21 operator obligations; sub-processor authorisation under s 21.
+  - framework: nist
+    refs:
+    - nist-gov-6.1
+    note: NIST AI RMF GOV 6.1 third-party AI / data / IP / supply-chain risk.
+  - framework: nist
+    refs:
+    - nist-218a-x-third-party-model-governance
+    note: NIST 218A third-party model governance.
 
 - id: iso-42001-a-10.3
   kind: control_aims
