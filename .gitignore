@@ -1,7 +1,8 @@
 # Build artifacts
 os/dist/
 os/node_modules/
-os/src/data.json
+# os/src/data.json — committed for deploy purposes (Vercel reads it at build time).
+# Regenerate via `make data` after YAML edits and commit alongside.
 
 # Python
 __pycache__/
