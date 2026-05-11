@@ -1,0 +1,2997 @@
+# SOC 2 — PrivateBox alignment record (schema v2)
+# AICPA Trust Services Criteria (TSP Section 100) + Description Criteria (DC Section 200).
+# Source-of-truth file for the GRC OS. Edits go in version control.
+#
+# Schema: see /docs/schema-v2.md
+# PB-curated source pack: frameworks/soc-2/source/privatebox-soc-2-architecture-pack.md
+#
+# SOC 2 is an attestation framework — CPA-issued opinion, not certification. Reports are Type I
+# (point-in-time design) or Type II (period-of-effectiveness). Security (Common Criteria CC1-CC9)
+# is the mandatory baseline; Availability, Confidentiality, Processing Integrity, Privacy are
+# optional categories added only where PrivateBox's actual service commitments support them.
+#
+# Crosswalks: SOC 2 carries outgoing crosswalks to ISO 27001 (heavy CC6/CC7 security overlap),
+# selective to 27701 / 42001 / POPIA / king-v. No retroactive edits to other YAMLs needed —
+# SOC 2 is a parallel attestation framework, not foundational law.
+
+schema_version: '2.0'
+id: soc-2
+version: '2017 TSC + 2022 SSAE 18 framework'
+full_name: AICPA SOC 2 (System and Organization Controls 2) — Trust Services Criteria
+type: attestation
+issuer: AICPA
+audit_type: attestation
+certifiable: false
+pb_interpretation_version: '1.0'
+pb_interpretation_owner: null
+pb_interpretation_last_reviewed: null
+roles: []
+tiers: []
+effective_dates: []
+
+pb_application:
+  why_chosen: >-
+    SOC 2 is the dominant US / global enterprise procurement attestation. Legal, finance and
+    healthcare buyers — particularly US-headquartered or US-investor-backed — demand a SOC 2 Type II
+    report before signing material contracts. Unlike ISO 27001 (certification) or POPIA (statutory
+    law), SOC 2 is a CPA-issued attestation evaluated against PrivateBox's own stated service
+    commitments and system requirements. The Trust Services Criteria are organisation-neutral
+    principles; the audit assesses whether PrivateBox's controls — as designed (Type I) and as
+    operated (Type II) — meet its own commitments. For a customer-hosted AI vendor, the real audit
+    question is "what system is in scope, what promises does PrivateBox make, and which controls are
+    owned by PrivateBox, the customer, or carved-out subservice organisations?" PB's position:
+    Security category (CC1-CC9) is the mandatory baseline; Confidentiality is the natural next
+    addition given the legal/finance/healthcare confidentiality stake; Availability and Privacy are
+    added only where service commitments genuinely warrant them. PB never claims "SOC 2 certified" —
+    SOC 2 reports are issued, not certified. PB publishes reports under NDA via a Trust Center model
+    (Workday / Microsoft / Anthropic pattern).
+  scope_decisions:
+    on_prem:
+      coverage: partial
+      rationale: >-
+        SOC 2 system scope is the set of components PrivateBox actually operates or owns. For
+        on-prem deployments, PrivateBox's in-scope system covers product development, build pipelines,
+        repositories, code-signing, update delivery infrastructure, support tooling, telemetry
+        relays (where used), customer-facing documentation, and corporate functions (HR, finance,
+        legal). Customer-hosted runtime components are CUEC-controlled (Complementary User Entity
+        Controls) — the customer assumes responsibility for local IAM, host hardening, local
+        backups, physical security, lane controls for remote support, SIEM review, restore testing.
+        This split is described explicitly in the system description per DC1-DC9.
+    ai_factory:
+      coverage: partial
+      rationale: >-
+        AI Factory ringfenced multi-tenant deployment in a partner DC adds the partner DC as a
+        subservice organisation. Carve-out vs inclusive treatment is an open question
+        (oq-soc-2-subservice-treatment). Until partner DC is selected and a SOC 2 report is
+        available from that provider, the scope and treatment are provisional.
+  top_risks:
+  - >-
+    Marketing language outrunning SOC 2 commitments — "fully secure", "100% available", "AI is
+    always accurate" — none of which can be attested. Marketing alignment to commitments register
+    is the control.
+  - >-
+    Implicit broader categories — claiming SOC 2 without specifying which Trust Services Criteria
+    are in scope (e.g., implying Availability or Privacy when only Security is attested).
+  - >-
+    Complementary user entity controls (CUECs) not communicated to customers in the admin guide /
+    deployment prerequisites — leading to gaps that the auditor cannot test and the customer cannot
+    operate.
+  - >-
+    Subservice organisations not declared (code signing, CI/CD, support tooling, telemetry relays,
+    ticketing, identity providers). Carve-out vs inclusive treatment must be explicit.
+  - >-
+    System description out of sync with what auditors observe — e.g., model swaps, connector
+    additions, support tooling changes that occurred during a Type II period without being captured
+    in DC9 (significant changes).
+  - >-
+    Type II evidence collapses for "policy-only" controls — procedures written but not actually
+    followed in practice. CC5.3 is the bellwether.
+  - >-
+    Remediation tracker without closure proof — open findings ageing without owner / due date /
+    closure evidence. CC4.2 audit-readiness indicator.
+  - >-
+    Vendor due diligence absent for AI-specific suppliers (foundation models, code signing,
+    telemetry relays) — CC9.2 high-impact gap.
+
+soa_guidance:
+  principles: >-
+    Unlike ISO 27001, SOC 2 has no Statement of Applicability concept. The functional equivalent is
+    the criteria-to-control mapping in the system description (DC5 + CC5.1) which traces each
+    in-scope criterion to specific PrivateBox controls. Best practice: maintain a SOC 2 Control
+    Universe document with columns for criterion / control title / control description / control
+    owner / control frequency / type I evidence / type II evidence / observation period / supporting
+    SOPs.
+  na_justification_rules: >-
+    Non-applicable criteria must be explained in the system description per DC8. Common
+    exclusions: full Privacy category (P1-P8) where PrivateBox does not collect personal information
+    in its in-scope system; selected Processing Integrity sub-criteria where PrivateBox makes no
+    bounded reliability commitments; specific Availability criteria where the customer owns runtime
+    capacity. Exclusions must connect to scope and service role, not "we don't want to" or "our
+    policy forbids that event".
+  honesty_rules: >-
+    Service commitments and system requirements (DC2) must match real operations. Avoid vague
+    promises like "fully secure by default" or "always available". State precisely what PrivateBox
+    operates and what it does NOT operate. External claims register tracks every public-facing SOC 2
+    statement and its supporting evidence.
+
+shared_responsibility_model:
+- area: System scope and description
+  pb_owned: System description per DC1-DC9; service commitments register; system requirements register.
+  cl_owned: Customer's own internal documentation of its use of PrivateBox.
+  shared_note: Customer responsibilities (CUECs) explicitly enumerated in the system description.
+- area: Control execution
+  pb_owned: All controls within PrivateBox's in-scope system (development, build, signing, distribution, support, telemetry).
+  cl_owned: Local IAM, host hardening, physical security, local backups, restore testing, SIEM review (CUECs).
+  shared_note: Auditor cannot test CUECs; report describes them so customer's own audit can verify.
+- area: Subservice organisations
+  pb_owned: Vendor due diligence; subservice register; assessment of subservice SOC 2 reports.
+  cl_owned: Customer's own assessment of PrivateBox as a subservice in customer's SOC 2.
+  shared_note: Carve-out vs inclusive treatment declared per subservice in DC7.
+- area: Type II evidence collection
+  pb_owned: Continuous evidence collection across observation period; remediation tracker; control execution logs.
+  cl_owned: N/A for SOC 2 attestation period (customer is report consumer, not control operator for PB's system).
+  shared_note: Trust Center / NDA-gated distribution; customer ingests report as part of own vendor risk programme.
+- area: External claims
+  pb_owned: Marketing / sales language alignment with commitments register; red-flag claim list (no "certified").
+  cl_owned: Customer's own marketing about its use of PrivateBox.
+  shared_note: Customer-facing security overview reflects actual SOC 2 scope and report status.
+
+evidence_families:
+- id: governance_and_oversight
+  name: Governance, oversight, and ethical conduct
+  examples:
+  - Code of conduct + acknowledgements
+  - Disciplinary process
+  - Contractor security clauses
+  - Oversight body charter + minutes
+  - Org chart + RACI + role descriptions
+  why_auditor_cares: CC1.1-CC1.5 foundation; ethical tone and accountability anchor every later criterion.
+  cadence: Annual review + per hire / org change
+  typical_owner: PB
+- id: information_and_communication
+  name: Information and communication
+  examples:
+  - Information governance standard
+  - System inventories (assets, users, releases)
+  - Policy management process
+  - Internal change-communication records
+  - Customer-facing security overview / admin guide / support terms
+  - Incident comms plan + notification templates
+  why_auditor_cares: CC2.1-CC2.3; shared-responsibility clarity tested via external comms artefacts.
+  cadence: Continuous + per material change
+  typical_owner: PB
+- id: risk_assessment
+  name: Risk assessment, fraud risk, change risk
+  examples:
+  - Risk methodology
+  - Risk register (AI, support, deployment, customer-hosting risks)
+  - Fraud-risk considerations
+  - Change-risk intake / architecture review records
+  why_auditor_cares: CC3.1-CC3.4; living risk process tied to service commitments.
+  cadence: Quarterly register review + annual methodology + on material change
+  typical_owner: PB
+- id: monitoring_and_remediation
+  name: Monitoring activities and remediation tracker
+  examples:
+  - Monitoring calendar
+  - Internal review plan + records
+  - Pen-test reports
+  - Issue management workflow
+  - Corrective-action register with closure evidence
+  why_auditor_cares: CC4.1-CC4.2; Type II depends on recurring monitoring and timely remediation.
+  cadence: Continuous + per audit cycle
+  typical_owner: PB
+- id: control_activities_and_sdlc
+  name: Control activities and technology general controls (SDLC)
+  examples:
+  - Control matrix / risk-to-control mapping
+  - SDLC standard
+  - Secrets management standard
+  - Infrastructure / pipeline configurations
+  - Repository protection settings
+  - SOP library + version history
+  why_auditor_cares: CC5.1-CC5.3; high-weight audit area for software vendors.
+  cadence: Per release + annual review
+  typical_owner: PB
+- id: logical_access
+  name: Logical access security (provisioning, RBAC, least privilege)
+  examples:
+  - Asset inventory
+  - Authentication standards (MFA)
+  - Joiner / mover / leaver process
+  - RBAC matrix
+  - Privileged access management
+  - Periodic access review records
+  why_auditor_cares: CC6.1-CC6.3; most buyer diligence lands on access controls.
+  cadence: Event-driven + quarterly review
+  typical_owner: PB-SH
+- id: physical_and_environmental
+  name: Physical access and asset disposal
+  examples:
+  - Physical security standard
+  - Visitor controls
+  - Deployment prerequisites
+  - Media sanitisation standard
+  - RMA / disposal records + certificates
+  why_auditor_cares: CC6.4-CC6.5; CUEC-shared in on-prem deployments.
+  cadence: Continuous + per disposal event
+  typical_owner: PB-SH
+- id: boundary_transmission_malware
+  name: Boundary protection, transmission, malware prevention
+  examples:
+  - Network security baseline
+  - Remote support policy + JIT-access workflow
+  - Encryption standard + TLS settings
+  - Code-signing process + signed packages
+  - Anti-malware standard + EDR status
+  - Package validation logs
+  why_auditor_cares: CC6.6-CC6.8; major shared-responsibility area in customer-hosted deployments.
+  cadence: Event-driven + per release
+  typical_owner: PB-SH
+- id: vulnerability_and_monitoring
+  name: Vulnerability management and operational monitoring
+  examples:
+  - Hardening baselines
+  - Scan schedules + reports
+  - SIEM integration points
+  - Alert catalogue + response runbooks
+  - Drift detection / FIM alerts
+  why_auditor_cares: CC7.1-CC7.2; telemetry-off customers need explicit caveats.
+  cadence: Weekly / monthly + per change
+  typical_owner: PB-SH
+- id: incident_response
+  name: Security event evaluation, IR execution, recovery
+  examples:
+  - Event triage process + severity matrix
+  - IR plan + playbooks
+  - Tabletop programme + records
+  - PIR / post-incident review records
+  - Recovery runbooks
+  why_auditor_cares: CC7.3-CC7.5; zero-events periods still need event listings and rationale.
+  cadence: Event-driven + annual exercise
+  typical_owner: PB-SH
+- id: change_management
+  name: Change management for code, models, prompts, configs
+  examples:
+  - Change management policy
+  - SDLC / change workflow
+  - PR approvals + tickets
+  - Test evidence + release notes
+  - Rollback evidence
+  - Emergency change records
+  why_auditor_cares: CC8.1; model updates and prompt/config changes must be treated as controlled changes.
+  cadence: Every change
+  typical_owner: PB
+- id: bcp_dr_and_vendor
+  name: Business continuity, DR, and vendor risk management
+  examples:
+  - BCP / DR plan + BIA
+  - DR test records
+  - Vendor risk management process
+  - Due diligence records
+  - Vendor contracts + review logs
+  why_auditor_cares: CC9.1-CC9.2; vendor governance for AI-specific suppliers is a recurring gap.
+  cadence: Annual + on vendor onboarding / change
+  typical_owner: PB
+- id: availability_artefacts
+  name: Availability — capacity, backups, recovery (conditional)
+  examples:
+  - Capacity planning records + utilisation reports
+  - Backup standard + job logs
+  - Restore configuration + drill records
+  - Environmental controls
+  - DR testing programme
+  why_auditor_cares: A1.1-A1.3; only when Availability is in scope and service commitments warrant.
+  cadence: Continuous + annual DR test
+  typical_owner: PB-SH
+- id: confidentiality_artefacts
+  name: Confidentiality — classification, retention, disposal (conditional)
+  examples:
+  - Data classification scheme
+  - Retention schedule
+  - Disposal standard + destruction logs
+  - Support-data handling procedures
+  why_auditor_cares: C1.1-C1.2; often added even when Privacy is not scoped, for legal / finance / healthcare buyers.
+  cadence: Continuous + annual classification review
+  typical_owner: PB-SH
+- id: processing_integrity_artefacts
+  name: Processing Integrity — specs, input / processing / output / storage (conditional)
+  examples:
+  - Processing specifications + acceptance criteria
+  - Input validation rules + connector controls
+  - Job logs + reconciliations + regression tests
+  - Output distribution controls + delivery logs
+  - Storage / archival standard
+  why_auditor_cares: PI1.1-PI1.5; only scope where bounded reliability commitments exist.
+  cadence: Per release + continuous operation
+  typical_owner: PB-SH
+- id: privacy_artefacts
+  name: Privacy — notice, consent, collection, use, access, disclosure (conditional)
+  examples:
+  - Privacy notice + version history
+  - Consent / lawful-basis records
+  - Data minimisation standard
+  - Retention / deletion records
+  - DSAR process + responses
+  - Vendor privacy clauses + breach notice templates
+  why_auditor_cares: P1-P8; often customer-owned in customer-hosted deployments; exclusions explained per DC8.
+  cadence: Continuous + per change
+  typical_owner: SH
+- id: type_i_and_type_ii_evidence_packs
+  name: Type I and Type II evidence packs
+  examples:
+  - Type I design evidence (point-in-time)
+  - Type II evidence (continuous collection across observation period)
+  - Service auditor walkthrough notes
+  - Sampled control execution records
+  why_auditor_cares: Distinct evidentiary models; Type I asks "designed?", Type II asks "operated?".
+  cadence: Per audit cycle
+  typical_owner: PB
+- id: system_description_and_commitments
+  name: System description and service commitments
+  examples:
+  - System description per DC1-DC9
+  - Service commitments register
+  - System requirements register
+  - Customer responsibility matrix (CUECs)
+  - Subservice register (carve-out / inclusive treatment)
+  - Significant changes log (DC9)
+  why_auditor_cares: The system description is the foundation; everything else is tested against it.
+  cadence: Annual + per material change
+  typical_owner: PB
+- id: subservice_governance
+  name: Subservice organisation governance
+  examples:
+  - Subservice register
+  - Carve-out / inclusive treatment decisions per subservice
+  - Subservice SOC 2 reports (ingested + reviewed)
+  - Vendor due diligence package
+  why_auditor_cares: DC7; auditor reviews how PrivateBox governs its own subservice organisations.
+  cadence: Per onboarding + annual review
+  typical_owner: PB
+- id: customer_responsibility_artefacts
+  name: Customer responsibility matrix / CUEC documentation
+  examples:
+  - Customer admin guide
+  - Deployment prerequisites
+  - Local IAM / host hardening guidance
+  - Backup / restore testing guidance
+  - Physical security guidance
+  why_auditor_cares: DC6; substantial in on-prem scope; auditor cannot test CUECs but verifies they are documented.
+  cadence: Annual + per material change
+  typical_owner: PB
+
+description_criteria:
+- id: dc-1
+  title: Types of services provided
+  requirement: Describe the services provided.
+  pb_interpretation: >-
+    PrivateBox is a customer-hosted AI software / appliance with optional remote support, telemetry,
+    updates, and maintenance. The system description distinguishes default local deployment from any
+    managed or remote components in scope.
+  mandatory: true
+  on_prem_note: >-
+    Default local deployment must be separated from optional managed / support features so the
+    auditor understands which components PrivateBox actually operates.
+  evidence: Service catalogue; product architecture summary; deployment reference architecture.
+- id: dc-2
+  title: Principal service commitments and system requirements
+  requirement: State principal service commitments and system requirements.
+  pb_interpretation: >-
+    SOC 2 is evaluated against service commitments and system requirements, not generic security
+    claims. PrivateBox states exactly what it does and does not operate in customer environments.
+    Commitments cover security, support response, update delivery, confidentiality, and any bounded
+    processing or availability commitments — narrowly and precisely.
+  mandatory: true
+  on_prem_note: >-
+    Avoid vague promises like "fully secure by default" or "always available". State what
+    PrivateBox does NOT operate in customer environments.
+  evidence: Contract templates; SLA / SOW language; security commitments register.
+- id: dc-3
+  title: Infrastructure, software, people, procedures, and data
+  requirement: Describe infrastructure, software, people, procedures, and data.
+  pb_interpretation: >-
+    Infrastructure covers PB dev / support / update infrastructure plus any customer-hosted runtime
+    components in scope. Software covers the core AI service, models, connectors, admin portals,
+    support tools, update services, logging / monitoring tools. People covers engineering, security,
+    support, deployment, customer success, incident coordinators. Procedures cover provisioning,
+    support access, release, patch advisory, incident handling, export handling, RMA, backup /
+    restore. Data covers customer documents, prompts, logs, telemetry, model artefacts, admin data,
+    support bundles, audit records.
+  mandatory: true
+  on_prem_note: >-
+    Customer-hosted servers, models, connectors, update tools, and support channels must be
+    explicitly addressed if relevant; identify which runtime infrastructure is customer-owned and
+    whether included, carved out, or a CUEC dependency.
+  evidence: Architecture diagram; software inventory / SBOM; org chart; SOP library; data-flow diagrams.
+- id: dc-4
+  title: Significant system incidents
+  requirement: Disclose significant system incidents.
+  pb_interpretation: >-
+    Material incidents affecting commitments must be disclosed in the system description. Include
+    incidents in PrivateBox-managed components and clearly allocate customer-site incidents by
+    responsibility. Zero-incident periods still need event listings and rationale.
+  mandatory: false
+  on_prem_note: >-
+    Separate PrivateBox-owned incidents from customer-local incidents beyond PrivateBox visibility
+    or responsibility.
+  evidence: Incident register; customer comms; PIRs.
+- id: dc-5
+  title: Applicable trust services criteria and related controls
+  requirement: Describe applicable criteria and related controls.
+  pb_interpretation: >-
+    The narrative ties stated controls to the chosen trust services criteria. If PrivateBox claims
+    alignment to Security only, the description does not imply broader categories unless they are
+    actually scoped. Criteria-to-control mapping is the functional equivalent of an SoA.
+  mandatory: true
+  on_prem_note: >-
+    Do not imply Availability / Privacy if these are really customer-owned or out of scope.
+  evidence: Scope memo; criteria-to-control mapping; SOC 2 Control Universe document.
+- id: dc-6
+  title: Complementary user entity controls (CUECs)
+  requirement: Describe complementary user entity controls assumed in design.
+  pb_interpretation: >-
+    Substantial for PrivateBox in on-prem scope. CUECs cover local IAM, host hardening, local
+    backups, physical security, lane controls for remote support, SIEM review, restore testing.
+    Customer responsibility matrix is the productised artefact.
+  mandatory: true
+  on_prem_note: >-
+    Likely the most material section for an on-prem AI vendor — most operational controls have CUEC
+    dependencies.
+  evidence: Customer responsibility matrix; admin guide; deployment prerequisites.
+- id: dc-7
+  title: Subservice organisations and carve-out / inclusive treatment
+  requirement: Describe subservice organisations and carve-out or inclusive treatment.
+  pb_interpretation: >-
+    Third-party services relied on by the in-scope system must be described. Examples for PB
+    include update delivery services, support portals, remote-access tooling, ticketing, telemetry
+    relays, code-signing services, CI/CD providers. State whether inclusive or carve-out model is
+    used per subservice. Subservice SOC 2 reports ingested where available.
+  mandatory: false
+  on_prem_note: >-
+    Carve-out vs inclusive treatment is a scoping decision that affects the audit scope and report
+    structure. Default for PB is carve-out for most subservices; inclusive only where PB has
+    significant operational control.
+  evidence: Vendor register; contracts; SOC reports; architecture diagrams.
+- id: dc-8
+  title: Nonrelevant criteria
+  requirement: Explain nonrelevant criteria.
+  pb_interpretation: >-
+    Critical for Privacy and some Processing Integrity criteria in a customer-controlled
+    environment. Exclusion rationale must connect to scope and service role — not to "we don't want
+    to" or "our policy forbids that event".
+  mandatory: true
+  on_prem_note: >-
+    Especially important when Privacy is excluded from scope despite PrivateBox being sold into
+    sectors that process personal information — explain that PrivateBox's in-scope system does not
+    collect personal information directly from data subjects.
+  evidence: Scope rationale; legal / data-role memo.
+- id: dc-9
+  title: Significant system changes during the Type II period
+  requirement: Describe significant system changes during the Type II period.
+  pb_interpretation: >-
+    Type II mandatory if changes occurred. Material candidates include version shifts, model swaps,
+    new connectors, remote-support changes, telemetry changes, organisational changes. In a
+    rapidly-changing AI product company, this section is non-trivial.
+  mandatory: false
+  on_prem_note: >-
+    Track model and prompt-template changes as system changes; they materially affect controls
+    around AI behaviour and customer experience.
+  evidence: Change log; release history; architecture review minutes.
+
+scenarios:
+- id: scn-soc-2-type-i
+  name: Type I attestation — point-in-time design
+  framework_specific_id: SOC2-Report-1
+  description: >-
+    SOC 2 Type I report addresses whether the system description is presented in accordance with the
+    description criteria and whether controls were suitably designed as of a point in time. No
+    operating-effectiveness evidence required.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: service_organisation
+  customer_role: report_consumer
+  triggered_requirements:
+  - requirement_id: soc-2-cc-1.1
+    scenario_specific_note: All CC criteria in scope by design.
+  - requirement_id: soc-2-cc-5.1
+    scenario_specific_note: Risk-to-control mapping is the primary Type I artefact.
+  notes: Suitable as first-time SOC 2 milestone; ~6-month preparation cycle. Type II follow-up typical.
+- id: scn-soc-2-type-ii-short
+  name: Type II attestation — 3-month observation period (first-time)
+  framework_specific_id: SOC2-Report-2
+  description: >-
+    First-time Type II report covering a short observation period (typically 3 months). Establishes
+    operating-effectiveness baseline; report acceptable for procurement but with explicit period
+    caveat.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: service_organisation
+  customer_role: report_consumer
+  triggered_requirements:
+  - requirement_id: soc-2-cc-4.1
+    scenario_specific_note: Monitoring activities must be evidenced over the period.
+  - requirement_id: soc-2-cc-5.3
+    scenario_specific_note: Procedure execution evidence for the period.
+  notes: Public examples show 3-month and 11-month and 12-month periods in use.
+- id: scn-soc-2-type-ii-full
+  name: Type II attestation — 11-12 month observation period (mature)
+  framework_specific_id: SOC2-Report-3
+  description: >-
+    Mature Type II report covering full annual cycle. Procurement-preferred. Subsequent reports may
+    "bridge" between periods.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: service_organisation
+  customer_role: report_consumer
+  triggered_requirements:
+  - requirement_id: soc-2-cc-4.1
+    scenario_specific_note: Annual monitoring cycle traced through evidence.
+  - requirement_id: soc-2-cc-8.1
+    scenario_specific_note: Change management evidence across releases.
+  notes: Standard for procurement diligence at scale; bridge letters between periods.
+- id: scn-soc-2-subservice-carveout
+  name: Subservice organisation — carve-out treatment
+  framework_specific_id: SOC2-Subservice-Carveout
+  description: >-
+    PrivateBox identifies the subservice (e.g., update delivery, ticketing, code signing) in the
+    system description but the auditor does not test the subservice's controls. The customer is
+    expected to obtain assurance over the subservice (typically via that subservice's own SOC 2
+    report).
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: service_organisation
+  customer_role: report_consumer
+  triggered_requirements:
+  - requirement_id: soc-2-cc-9.2
+    scenario_specific_note: Vendor due diligence covers carved-out subservices.
+  notes: Default treatment for most PrivateBox subservices; reduces audit scope.
+- id: scn-soc-2-subservice-inclusive
+  name: Subservice organisation — inclusive treatment
+  framework_specific_id: SOC2-Subservice-Inclusive
+  description: >-
+    PrivateBox treats the subservice as part of its own system; the auditor tests subservice
+    controls or relies on subservice management's representations. Typical only where PrivateBox
+    has significant operational control over the subservice.
+  applies_to_business_models: [on-prem, ai-factory]
+  pb_role: service_organisation
+  customer_role: report_consumer
+  triggered_requirements:
+  - requirement_id: soc-2-cc-9.2
+    scenario_specific_note: Subservice subject to PB-led vendor governance.
+  notes: Rare for PrivateBox; only for tightly-integrated subservices where audit visibility is high.
+
+open_questions:
+- id: oq-soc-2-type-i-or-direct-ii
+  question: Does PrivateBox pursue Type I first, then Type II, or go straight to Type II?
+  candidate_answers:
+  - Type I first (3-6 months), then Type II (covering 3-12 months)
+  - Straight to Type II (3-month initial period, then 12-month subsequent periods)
+  - Bridge approach (Type I plus simultaneous Type II observation)
+  decision_owner: Top Management + CFO
+  decision_status: pending
+  blocks_requirements: []
+  blocks_scenarios:
+  - scn-soc-2-type-i
+  - scn-soc-2-type-ii-short
+  notes: >-
+    Type I provides faster market signal but requires Type II follow-up for procurement
+    credibility. Many vendors do Type I → Type II in sequence over 9-12 months.
+  created: '2026-05-11'
+  resolved_value: null
+  resolved_at: null
+- id: oq-soc-2-service-auditor
+  question: Which CPA firm performs the SOC 2 attestation?
+  candidate_answers:
+  - Schellman (specialist; widely accepted)
+  - A-LIGN (specialist; cost-competitive)
+  - EY / KPMG / PwC / Deloitte (Big 4; high enterprise prestige)
+  - BDO / Grant Thornton / Mid-tier
+  decision_owner: Top Management
+  decision_status: pending
+  blocks_requirements: []
+  blocks_scenarios: []
+  notes: >-
+    Service auditor choice affects cost, audit-time, prestige signal, and depth of process.
+    Impartiality: any firm used for advisory cannot then perform the attestation engagement.
+  created: '2026-05-11'
+  resolved_value: null
+  resolved_at: null
+- id: oq-soc-2-additional-categories
+  question: Which additional Trust Services categories beyond Security are in scope?
+  candidate_answers:
+  - Security only (CC1-CC9 baseline)
+  - Security + Confidentiality (procurement-friendly for legal / finance / healthcare)
+  - Security + Confidentiality + Availability
+  - Security + Confidentiality + Availability + Processing Integrity
+  - All five categories including Privacy
+  decision_owner: Top Management + Sales / Procurement Engineering
+  decision_status: pending
+  blocks_requirements:
+  - soc-2-a-1.1
+  - soc-2-c-1.1
+  - soc-2-pi-1.1
+  - soc-2-p-1.1
+  blocks_scenarios: []
+  notes: >-
+    Each additional category adds audit cost and effort. Confidentiality is the natural next
+    addition; Privacy is often customer-owned in customer-hosted deployments and may be excluded
+    with DC8 rationale.
+  created: '2026-05-11'
+  resolved_value: null
+  resolved_at: null
+- id: oq-soc-2-observation-period
+  question: What observation period does PrivateBox commit to for its first Type II report?
+  candidate_answers:
+  - 3 months (rapid first signal)
+  - 6 months (balanced)
+  - 11-12 months (mature; matches public examples)
+  decision_owner: Top Management + Audit / Risk / Tech committee
+  decision_status: pending
+  blocks_requirements: []
+  blocks_scenarios:
+  - scn-soc-2-type-ii-short
+  - scn-soc-2-type-ii-full
+  notes: >-
+    Source pack notes public reports range from 3-month to 12-month observation periods. Shorter
+    periods get a report faster but with explicit period caveat.
+  created: '2026-05-11'
+  resolved_value: null
+  resolved_at: null
+- id: oq-soc-2-subservice-treatment
+  question: What is PrivateBox's default subservice organisation treatment — carve-out or inclusive?
+  candidate_answers:
+  - Carve-out by default (reduces audit scope; customer obtains subservice assurance)
+  - Inclusive for tightly-integrated subservices only
+  - Per-subservice decision documented in DC7
+  decision_owner: AI Governance Lead + CFO
+  decision_status: pending
+  blocks_requirements:
+  - soc-2-cc-9.2
+  blocks_scenarios:
+  - scn-soc-2-subservice-carveout
+  - scn-soc-2-subservice-inclusive
+  notes: >-
+    Carve-out is standard for most subservices. Inclusive is rare and only where PB has significant
+    operational control.
+  created: '2026-05-11'
+  resolved_value: null
+  resolved_at: null
+- id: oq-soc-2-customer-distribution
+  question: How does PrivateBox distribute SOC 2 reports to customers?
+  candidate_answers:
+  - Trust Center / portal under NDA (Workday / Microsoft / Anthropic pattern)
+  - Per-customer NDA + emailed report
+  - Per-customer access via legal review per request
+  decision_owner: Top Management + Legal
+  decision_status: pending
+  blocks_requirements: []
+  blocks_scenarios: []
+  notes: >-
+    Trust Center model is procurement-friendly and scales. NDA pattern matters for SOC 2 distribution
+    by AICPA distribution restrictions.
+  created: '2026-05-11'
+  resolved_value: null
+  resolved_at: null
+- id: oq-soc-2-readiness-disclosure
+  question: How does PrivateBox disclose SOC 2 readiness pre-first-attestation?
+  candidate_answers:
+  - 'Aligned-to': "PB has implemented controls aligned to SOC 2 Trust Services Criteria; first audit in progress"
+  - 'In progress': "PB is preparing for first SOC 2 attestation; readiness review complete"
+  - Silent until first report issued
+  decision_owner: Top Management + Marketing + Legal
+  decision_status: pending
+  blocks_requirements: []
+  blocks_scenarios: []
+  notes: >-
+    Source pack flags marketing language as a top risk. Pre-attestation phrasing must avoid implying
+    a report has been issued.
+  created: '2026-05-11'
+  resolved_value: null
+  resolved_at: null
+
+requirements:
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Common Criteria — Control Environment (CC1)
+# ─────────────────────────────────────────────────────────────────────────────
+
+- id: soc-2-cc-1.1
+  kind: criterion
+  native_id: CC1.1
+  group: CC1
+  group_name: Control environment
+  title: Integrity and ethical values
+  requirement: >-
+    The entity demonstrates a commitment to integrity and ethical values through standards of
+    conduct that are communicated, with deviations addressed.
+  pb_interpretation: >-
+    Board-approved code of conduct; security expectations for staff and contractors; disciplinary
+    process. Small-company governance acceptable if oversight is real and evidenced.
+  owner: PB
+  documented_evidence:
+  - Code of conduct (board-approved)
+  - Acknowledgement records
+  - Disciplinary process
+  - Contractor security clauses
+  type_i_evidence: >-
+    Approved policies; signed acknowledgements; issue log demonstrating the disciplinary path exists
+    and has been used.
+  type_ii_evidence: >-
+    Onboarding attestations across the period; annual refresh records; event-driven enforcement
+    records.
+  suggested_observation_period: 6-12 months typical
+  audit_methods:
+  - Insp
+  - Int
+  - Samp
+  cadence: On hire; annual; event-driven
+  failure_modes: >-
+    Missing attestations; inconsistent enforcement; unapproved policy; no contractor scope.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox maintains documented ethical and security conduct standards aligned to SOC 2 CC1.1.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.4
+    note: ISMS management responsibilities; ethical-conduct overlay.
+  - framework: king-v
+    refs:
+    - king-v-p-2
+    - king-v-rp-12
+    note: King V Principle 2 ethics + Practice 12 code of ethics.
+
+- id: soc-2-cc-1.2
+  kind: criterion
+  native_id: CC1.2
+  group: CC1
+  group_name: Control environment
+  title: Oversight independence
+  requirement: >-
+    The board of directors (or equivalent oversight body) demonstrates independence from management
+    and exercises oversight of the development and performance of internal control.
+  pb_interpretation: >-
+    Oversight body or formal leadership forum with security agenda. Founder-led firms still need
+    demonstrable oversight even if not a public-company board. King V independent NED appointment
+    strengthens this.
+  owner: PB
+  documented_evidence:
+  - Governance charter
+  - Security review cadence
+  - Minutes with challenge and follow-up
+  type_i_evidence: >-
+    Charter; meeting cadence schedule.
+  type_ii_evidence: >-
+    Minutes across the period showing actual challenge and follow-up; quarterly or more frequent
+    meetings.
+  suggested_observation_period: 6-12 months
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Quarterly or more often
+  failure_modes: >-
+    Security oversight only informal; meetings held but no challenge or action.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox has documented oversight of its control environment.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-5.1
+    note: ISMS leadership and commitment.
+  - framework: king-v
+    refs:
+    - king-v-p-1
+    note: King V Principle 1 leadership.
+
+- id: soc-2-cc-1.3
+  kind: criterion
+  native_id: CC1.3
+  group: CC1
+  group_name: Control environment
+  title: Structure, authority and responsibility
+  requirement: >-
+    Management, with board oversight, establishes structures, reporting lines, and appropriate
+    authorities and responsibilities in pursuit of objectives.
+  pb_interpretation: >-
+    Org chart and responsibility matrix covering product, ops, security, support. Include remote
+    support authority and emergency powers explicitly.
+  owner: PB
+  documented_evidence:
+  - Org chart
+  - RACI matrix
+  - Role descriptions
+  - Approvals matrix
+  type_i_evidence: >-
+    Org chart and role descriptions; RACI covering support and security.
+  type_ii_evidence: >-
+    Approved org updates across the period; delegated approvals samples.
+  suggested_observation_period: 6-12 months
+  audit_methods:
+  - Insp
+  - Int
+  cadence: As changed; at least annual review
+  failure_modes: >-
+    Ambiguous authority; no owner list; outdated org chart; approval by wrong person.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox defines security and operational responsibilities clearly.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-5.3
+    note: ISMS roles, responsibilities and authorities.
+  - framework: king-v
+    refs:
+    - king-v-p-5
+    - king-v-rp-82
+    note: King V composition + Delegation of Authority Framework.
+
+- id: soc-2-cc-1.4
+  kind: criterion
+  native_id: CC1.4
+  group: CC1
+  group_name: Control environment
+  title: Competence and staffing
+  requirement: >-
+    The entity demonstrates a commitment to attract, develop and retain competent individuals in
+    alignment with objectives.
+  pb_interpretation: >-
+    Formal hiring criteria; onboarding checklist; annual security education. Local-hosted
+    deployments still require competent support and deployment staff.
+  owner: PB
+  documented_evidence:
+  - Hiring process / criteria
+  - Onboarding checklist
+  - Training programme + completion records
+  - Background check records (where lawful)
+  - Skills matrix
+  type_i_evidence: >-
+    Hiring checklist; training plan; role-based training mapping.
+  type_ii_evidence: >-
+    Training logs across the period; onboarding records sampled by hire; annual training completion.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Per hire + annual
+  failure_modes: >-
+    No role-based training; missed training; incomplete onboarding.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox aligns staffing and training to secure service delivery.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-7.2
+    note: ISMS competence.
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-7.2
+    note: AIMS competence; AI-specific skills.
+
+- id: soc-2-cc-1.5
+  kind: criterion
+  native_id: CC1.5
+  group: CC1
+  group_name: Control environment
+  title: Accountability
+  requirement: >-
+    The entity holds individuals accountable for their internal control responsibilities in pursuit
+    of objectives.
+  pb_interpretation: >-
+    Security duties tied to performance reviews and policy attestations. If duties are informal,
+    evidence usually weakens quickly.
+  owner: PB
+  documented_evidence:
+  - Performance review process
+  - Policy attestation workflow
+  - Review records
+  - Signed attestations
+  - Corrective action records
+  type_i_evidence: >-
+    Attestation flow; review process documentation.
+  type_ii_evidence: >-
+    Reviews completed across the period; sanctions log; policy attestations refreshed.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Int
+  - Samp
+  cadence: Annual + event-driven
+  failure_modes: >-
+    Policies without enforcement path; reviews omitted; no action on breaches.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox assigns accountability for control execution.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-5.3
+    note: ISMS roles and accountability.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Common Criteria — Communication and Information (CC2)
+# ─────────────────────────────────────────────────────────────────────────────
+
+- id: soc-2-cc-2.1
+  kind: criterion
+  native_id: CC2.1
+  group: CC2
+  group_name: Communication and information
+  title: Quality information
+  requirement: >-
+    The entity obtains or generates and uses relevant, quality information to support the
+    functioning of internal control.
+  pb_interpretation: >-
+    Key control data sources defined: asset lists, user lists, release records, incidents. For
+    customer-hosted estates, distinguish PB-known data from customer-only data.
+  owner: PB
+  documented_evidence:
+  - Information governance standard
+  - System inventories (assets / users / releases)
+  - Data-owner assignments
+  type_i_evidence: >-
+    Inventory governance documentation; data owners named.
+  type_ii_evidence: >-
+    Current inventories maintained across the period; reconciliations.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Ongoing + periodic reconciliation
+  failure_modes: >-
+    Stale or conflicting inventories; local estates create inventory gaps.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox maintains quality operational and security information.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.9
+    - iso-27001-a-5.12
+    note: ISMS asset inventory + data classification.
+
+- id: soc-2-cc-2.2
+  kind: criterion
+  native_id: CC2.2
+  group: CC2
+  group_name: Communication and information
+  title: Internal communication
+  requirement: >-
+    The entity internally communicates information, including objectives and responsibilities for
+    internal control, necessary to support the functioning of internal control.
+  pb_interpretation: >-
+    Formal channels for policy publication and change communication. Evidence should show both
+    publication and receipt.
+  owner: PB
+  documented_evidence:
+  - Policy management process
+  - Internal communications cadence
+  - Published policies + changelogs
+  - Acknowledgement records
+  type_i_evidence: >-
+    Policy portal / publication record; change-notification process.
+  type_ii_evidence: >-
+    Acknowledgements across the period; change notices; meeting notes.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Int
+  - Samp
+  cadence: Ongoing
+  failure_modes: >-
+    "Available on request" only; messages posted but not acknowledged.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox communicates security and operational duties internally.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-7.4
+    note: ISMS communication.
+
+- id: soc-2-cc-2.3
+  kind: criterion
+  native_id: CC2.3
+  group: CC2
+  group_name: Communication and information
+  title: External communication
+  requirement: >-
+    The entity communicates with external parties regarding matters affecting the functioning of
+    internal control.
+  pb_interpretation: >-
+    Critical for shared-responsibility clarity. Customer-facing documentation for local
+    responsibilities, support paths, and incident routing. Vague promises and missing customer
+    duties are the central failure modes.
+  owner: PB/SH
+  documented_evidence:
+  - Customer-facing security overview
+  - Customer admin guide
+  - Support terms
+  - Incident comms plan + notification templates
+  - Shared-responsibility matrix
+  type_i_evidence: >-
+    Security overview; support terms; shared-responsibility matrix template.
+  type_ii_evidence: >-
+    Customer documentation versions across the period; contract clauses; notifications sent.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Onboarding + change-driven
+  failure_modes: >-
+    Vague promises; missing customer duties; customer docs inconsistent with support reality.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox provides clear security and responsibility information to customers.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.34
+    note: ISMS privacy / external disclosure overlap.
+  - framework: iso-27701
+    refs:
+    - iso-27701-a1-3
+    note: PIMS notice to data subjects.
+  - framework: popia
+    refs:
+    - popia-cond-6
+    note: POPIA openness condition (collection notice).
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Common Criteria — Risk Assessment (CC3)
+# ─────────────────────────────────────────────────────────────────────────────
+
+- id: soc-2-cc-3.1
+  kind: criterion
+  native_id: CC3.1
+  group: CC3
+  group_name: Risk assessment
+  title: Objectives and commitments
+  requirement: >-
+    The entity specifies objectives with sufficient clarity to enable the identification and
+    assessment of risks relating to objectives.
+  pb_interpretation: >-
+    Contractual and operational commitments written precisely. Service commitments register;
+    scope statement. Avoid vague promises like "fully secure by default".
+  owner: PB
+  documented_evidence:
+  - Service commitments register
+  - Scope statement
+  - Contracts
+  - Security whitepaper
+  type_i_evidence: >-
+    Service commitments register; system requirements register.
+  type_ii_evidence: >-
+    Current commitments across the period; contract-to-control mapping.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Annual + on change
+  failure_modes: >-
+    Marketing claims exceed control reality; sales language outruns documented scope.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox documents service commitments and system requirements.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-6.2
+    note: ISMS objectives.
+
+- id: soc-2-cc-3.2
+  kind: criterion
+  native_id: CC3.2
+  group: CC3
+  group_name: Risk assessment
+  title: Risk identification and analysis
+  requirement: >-
+    The entity identifies risks to the achievement of its objectives across the entity and analyses
+    risks as a basis for determining how risks should be managed.
+  pb_interpretation: >-
+    Risk register including AI, support, deployment, and customer-hosting risks. Include prompt
+    injection, data leakage, unsafe connector use, remote-support misuse, update tampering.
+  owner: PB
+  documented_evidence:
+  - Risk management process
+  - Risk register (current)
+  - Treatment plans
+  - Review minutes
+  type_i_evidence: >-
+    Risk methodology; current register.
+  type_ii_evidence: >-
+    Risk reviews across the period; treatment updates; closures.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Quarterly or on change
+  failure_modes: >-
+    One-off risk workshop only; stale register; actions never close.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox operates a documented risk-management process.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-6.1.2
+    note: ISMS risk assessment.
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-6.1.2
+    note: AIMS AI risk methodology.
+  - framework: king-v
+    refs:
+    - king-v-p-8
+    note: King V Principle 8 risk.
+
+- id: soc-2-cc-3.3
+  kind: criterion
+  native_id: CC3.3
+  group: CC3
+  group_name: Risk assessment
+  title: Fraud risk
+  requirement: >-
+    The entity considers the potential for fraud in assessing risks to the achievement of
+    objectives.
+  pb_interpretation: >-
+    Insider misuse, credential abuse, falsified approvals, audit-log tampering. For AI tooling,
+    include prompt abuse and fabricated output workflows where relied upon.
+  owner: PB
+  documented_evidence:
+  - Fraud-risk considerations in risk process
+  - Risk register fraud entries
+  - Control mappings
+  - Investigation procedures
+  type_i_evidence: >-
+    Fraud scenarios in risk register; abuse cases.
+  type_ii_evidence: >-
+    Fraud-risk review notes across the period; investigation records (if any).
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Periodic
+  failure_modes: >-
+    Fraud considered "not applicable"; AI misuse omitted from risk design.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox considers misuse and fraud risks in its control design.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: soc-2-cc-3.4
+  kind: criterion
+  native_id: CC3.4
+  group: CC3
+  group_name: Risk assessment
+  title: Change risk
+  requirement: >-
+    The entity identifies and assesses changes that could significantly impact the system of
+    internal control.
+  pb_interpretation: >-
+    Model changes, new connectors, new support tooling, new data flows trigger re-assessment.
+    Many readiness programmes fail here after fast product iteration.
+  owner: PB
+  documented_evidence:
+  - Change-risk intake form
+  - Architecture review process records
+  - Change records
+  - Risk reassessment evidence
+  type_i_evidence: >-
+    Change-risk trigger list; architecture / risk review gate documentation.
+  type_ii_evidence: >-
+    Change review packs across the period; reassessment records for material changes.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Int
+  - Samp
+  cadence: On material change
+  failure_modes: >-
+    Changes shipped without reassessment; model / connector changes treated as routine.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox reassesses risk when its system changes materially.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-6.3
+    note: ISMS planning of changes.
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-6.3
+    note: AIMS planning of changes including AI-specific change types.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Common Criteria — Monitoring Activities (CC4)
+# ─────────────────────────────────────────────────────────────────────────────
+
+- id: soc-2-cc-4.1
+  kind: criterion
+  native_id: CC4.1
+  group: CC4
+  group_name: Monitoring activities
+  title: Ongoing and separate monitoring
+  requirement: >-
+    The entity selects, develops, and performs ongoing and / or separate evaluations to ascertain
+    whether the components of internal control are present and functioning.
+  pb_interpretation: >-
+    Combine management reviews, internal reviews, vulnerability testing, periodic independent
+    assessments. Monitoring should cover product, support environment, and customer-facing
+    documentation.
+  owner: PB
+  documented_evidence:
+  - Monitoring calendar
+  - Internal review plan
+  - Review minutes
+  - Pen-test reports
+  - Internal audit notes
+  type_i_evidence: >-
+    Monitoring calendar; internal review plan.
+  type_ii_evidence: >-
+    Review minutes across the period; pen-test results; internal audit notes; samples often shown
+    monthly or periodic.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Ongoing + periodic independent assessments
+  failure_modes: >-
+    Monitoring cadence slips; monitoring undefined or ad hoc.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox performs ongoing and periodic control monitoring.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-9.1
+    note: ISMS monitoring, measurement, analysis and evaluation.
+  - framework: king-v
+    refs:
+    - king-v-rp-110
+    note: King V periodic assurance over technology.
+
+- id: soc-2-cc-4.2
+  kind: criterion
+  native_id: CC4.2
+  group: CC4
+  group_name: Monitoring activities
+  title: Deficiency communication and remediation
+  requirement: >-
+    The entity evaluates and communicates internal control deficiencies in a timely manner to
+    those parties responsible for taking corrective action, including senior management and the
+    board as appropriate.
+  pb_interpretation: >-
+    Formal remediation tracker with severity, owner, due date, and closure evidence. Auditor
+    confidence rises sharply when closure evidence is clean.
+  owner: PB
+  documented_evidence:
+  - Issue management process
+  - Corrective action workflow
+  - Risk / issues register
+  - Remediation tickets + closure approvals
+  type_i_evidence: >-
+    Issue tracker workflow; severity rules and closure validation pattern.
+  type_ii_evidence: >-
+    Remediation tickets across the period; ageing reports; closure approvals.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Int
+  - Samp
+  cadence: Event-driven + periodic review
+  failure_modes: >-
+    Findings vanish into chats / email; open issues without owner or closure proof.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox tracks and remediates control deficiencies.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-cl-10.2
+    note: ISMS nonconformity and corrective action.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Common Criteria — Control Activities (CC5)
+# ─────────────────────────────────────────────────────────────────────────────
+
+- id: soc-2-cc-5.1
+  kind: criterion
+  native_id: CC5.1
+  group: CC5
+  group_name: Control activities
+  title: Select and design control activities
+  requirement: >-
+    The entity selects and develops control activities that contribute to the mitigation of risks
+    to the achievement of objectives to acceptable levels.
+  pb_interpretation: >-
+    Risk-to-control mapping across product, support, and corporate environments. Good place to
+    align security, support, and AI quality governance in one matrix.
+  owner: PB
+  documented_evidence:
+  - Control matrix
+  - Risk-to-control mapping
+  - Control owners
+  - Walkthrough notes
+  type_i_evidence: >-
+    Control matrix; risk-control linkage and owner assignment.
+  type_ii_evidence: >-
+    Evidence across mapped controls demonstrating execution.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Ongoing
+  failure_modes: >-
+    Matrix exists but controls not performed; controls listed but not risk-linked.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox maps controls to assessed risks.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: soc-2-cc-5.2
+  kind: criterion
+  native_id: CC5.2
+  group: CC5
+  group_name: Control activities
+  title: Technology general controls
+  requirement: >-
+    The entity selects and develops general control activities over technology to support the
+    achievement of objectives.
+  pb_interpretation: >-
+    Build pipelines, repositories, secrets, environments, release tooling. Usually a high-weight
+    audit area for software vendors.
+  owner: PB
+  documented_evidence:
+  - SDLC standard
+  - Secrets management
+  - Infrastructure standards
+  - Pipeline configs
+  - Repository protections
+  - Approvals records
+  - Secrets inventory
+  type_i_evidence: >-
+    SDLC; secrets management; repo protections.
+  type_ii_evidence: >-
+    Pipeline approvals across the period; environment separation evidence; secret rotations.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Obs
+  - Samp
+  cadence: Ongoing + release / event-driven
+  failure_modes: >-
+    Shared credentials; no branch protections; repo bypasses; unreviewed changes; stale secrets.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox operates technology controls over the systems that support its service.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-8.25
+    - iso-27001-a-8.26
+    - iso-27001-a-8.27
+    - iso-27001-a-8.28
+    - iso-27001-a-8.29
+    note: ISMS secure SDLC + secure architecture + secure coding + security testing.
+  - framework: iso-42001
+    refs:
+    - iso-42001-a-6.1.2
+    note: AIMS responsible design and development.
+
+- id: soc-2-cc-5.3
+  kind: criterion
+  native_id: CC5.3
+  group: CC5
+  group_name: Control activities
+  title: Policies and procedures
+  requirement: >-
+    The entity deploys control activities through policies that establish what is expected and
+    procedures that put policies into action.
+  pb_interpretation: >-
+    Convert policy to step-by-step SOPs for provisioning, support, change, incident, and release.
+    If only policies exist, Type II evidence usually collapses.
+  owner: PB
+  documented_evidence:
+  - Policy framework
+  - SOP library
+  - SOPs with version history + review records
+  type_i_evidence: >-
+    SOP set; periodic review records.
+  type_ii_evidence: >-
+    SOP-linked tickets / execution logs across the period; staff don't rely on memory.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Int
+  cadence: Per procedure
+  failure_modes: >-
+    Policy-only programme; staff rely on memory or chats.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox operationalises documented policies through repeatable procedures.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Common Criteria — Logical and Physical Access Controls (CC6)
+# ─────────────────────────────────────────────────────────────────────────────
+
+- id: soc-2-cc-6.1
+  kind: criterion
+  native_id: CC6.1
+  group: CC6
+  group_name: Logical and physical access controls
+  title: Access security architecture
+  requirement: >-
+    The entity implements logical access security software, infrastructure, and architectures over
+    protected information assets to protect them from security events to meet the entity's
+    objectives.
+  pb_interpretation: >-
+    Inventory product nodes, model artefacts, vectors, connectors, admin APIs, support tools.
+    Require MFA and segmentation where feasible. Customer-hosted systems may implement part via
+    CUECs.
+  owner: PB/SH
+  documented_evidence:
+  - Asset inventory
+  - Authentication standards (MFA)
+  - Hardening baseline
+  - Key management procedures
+  - Network diagrams
+  type_i_evidence: >-
+    Inventory; auth standard; network diagrams; segmentation design.
+  type_ii_evidence: >-
+    MFA state samples across the period; inventory reconciliations; config samples; stale-key reviews.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Obs
+  - Samp
+  cadence: Ongoing + periodic review
+  failure_modes: >-
+    Unknown assets; MFA gaps; stale keys.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox designs access protections for product and support components.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.15
+    - iso-27001-a-8.2
+    - iso-27001-a-8.3
+    - iso-27001-a-8.5
+    note: ISMS access control + privileged access + secure authentication.
+
+- id: soc-2-cc-6.2
+  kind: criterion
+  native_id: CC6.2
+  group: CC6
+  group_name: Logical and physical access controls
+  title: User provisioning and deprovisioning
+  requirement: >-
+    Prior to issuing system credentials and granting system access, the entity registers and
+    authorises new internal and external users whose access is administered by the entity.
+  pb_interpretation: >-
+    Ticketed approvals; named accounts; prompt deprovisioning of local and support access.
+    Distinguish customer-local admins from PB remote-support users.
+  owner: PB/SH
+  documented_evidence:
+  - Joiner / mover / leaver process
+  - Account approval workflow
+  - Access tickets
+  - User listings
+  - Termination records
+  type_i_evidence: >-
+    JML workflow; ticket form.
+  type_ii_evidence: >-
+    Access tickets across the period; terminations sampled; deprovisioning timeliness.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Event-driven
+  failure_modes: >-
+    Shared accounts; no removal step; late deprovisioning; missing approval.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox operates controlled access onboarding and offboarding processes.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.16
+    - iso-27001-a-5.17
+    - iso-27001-a-5.18
+    note: ISMS identity management + authentication information + access rights.
+
+- id: soc-2-cc-6.3
+  kind: criterion
+  native_id: CC6.3
+  group: CC6
+  group_name: Logical and physical access controls
+  title: Role-based access and least privilege
+  requirement: >-
+    The entity authorises, modifies, or removes access to data, software, functions, and other
+    protected information assets based on roles, responsibilities, or the system design and
+    changes, giving consideration to the concepts of least privilege and segregation of duties.
+  pb_interpretation: >-
+    Role matrix for support, engineering, deployment, and customer admins; review privileged
+    access. Support break-glass access should be rare, approved, and logged.
+  owner: PB/SH
+  documented_evidence:
+  - RBAC standard
+  - Privileged access process
+  - Role matrix
+  - Admin account lists
+  - Periodic access review records
+  type_i_evidence: >-
+    Role matrix; admin model; privileged review design.
+  type_ii_evidence: >-
+    Access review records across the period; admin lists; SoD checks.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Obs
+  - Samp
+  cadence: Periodic + event-driven
+  failure_modes: >-
+    Flat admin rights; no SoD; privilege creep.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox aligns system access to roles and least-privilege principles.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-8.2
+    note: ISMS privileged access rights.
+
+- id: soc-2-cc-6.4
+  kind: criterion
+  native_id: CC6.4
+  group: CC6
+  group_name: Logical and physical access controls
+  title: Physical access restrictions
+  requirement: >-
+    The entity restricts physical access to facilities and protected information assets to
+    authorised personnel to meet the entity's objectives.
+  pb_interpretation: >-
+    PB sites: badge / visitor / media controls. Customer-hosted nodes: minimum customer
+    responsibilities defined as CUECs. In pure customer-hosted scope, much execution may sit with
+    the customer.
+  owner: PB/SH
+  documented_evidence:
+  - Physical security standard
+  - Visitor controls
+  - Customer deployment prerequisites
+  - Facility access logs
+  - Visitor logs
+  type_i_evidence: >-
+    Physical security standard; visitor controls; deployment prerequisites.
+  type_ii_evidence: >-
+    Badge logs and visitor logs across the period; periodic review.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Obs
+  - Samp
+  cadence: Ongoing + periodic review
+  failure_modes: >-
+    No physical-scope decision; no review of old badges; visitor gaps.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox defines and operates physical security controls relevant to its scope.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-7.2
+    - iso-27001-a-7.3
+    note: ISMS physical entry controls + securing offices.
+
+- id: soc-2-cc-6.5
+  kind: criterion
+  native_id: CC6.5
+  group: CC6
+  group_name: Logical and physical access controls
+  title: Secure asset disposal
+  requirement: >-
+    The entity discontinues logical and physical protections over physical assets only after the
+    ability to read or recover data and software from those assets has been diminished and is no
+    longer required to meet the entity's objectives.
+  pb_interpretation: >-
+    Secure wipe / dekey procedures for appliances, RMA devices, removable media, and support
+    exports. Especially important for field hardware and removable support media.
+  owner: PB/SH
+  documented_evidence:
+  - Media sanitisation standard
+  - RMA process
+  - Disposal certificates
+  - Wipe logs
+  - Dekey records
+  type_i_evidence: >-
+    Disposal / RMA procedure; crypto-erase or wipe validation.
+  type_ii_evidence: >-
+    Wipe / dekey evidence across the period; disposal records.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Obs
+  - Samp
+  cadence: Event-driven
+  failure_modes: >-
+    Disposal undefined for field hardware; missing sanitisation proof.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox uses secure disposal and sanitisation processes.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-7.14
+    note: ISMS secure disposal or re-use of equipment.
+
+- id: soc-2-cc-6.6
+  kind: criterion
+  native_id: CC6.6
+  group: CC6
+  group_name: Logical and physical access controls
+  title: Boundary protection
+  requirement: >-
+    The entity implements logical access security measures to protect against threats from sources
+    outside its system boundaries.
+  pb_interpretation: >-
+    Disable remote access by default; require customer approval, MFA, session logging, and network
+    restrictions. Major shared-responsibility area for on-prem customers.
+  owner: PB/SH
+  documented_evidence:
+  - Remote support policy
+  - Network security baseline
+  - Firewall configs
+  - VPN / tunnel settings
+  - Enablement approvals
+  type_i_evidence: >-
+    Network baseline; remote-support policy; default-off remote support and MFA design.
+  type_ii_evidence: >-
+    Firewall samples; tunnel approvals; session logs; permanent-exception reviews.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Obs
+  - Samp
+  cadence: Ongoing + periodic review
+  failure_modes: >-
+    Permanent always-on support tunnel; permanent exceptions; undocumented remote sessions.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox uses controlled boundary protection for remote access and administration.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-8.20
+    - iso-27001-a-8.21
+    - iso-27001-a-8.22
+    note: ISMS network security + segregation + network services.
+
+- id: soc-2-cc-6.7
+  kind: criterion
+  native_id: CC6.7
+  group: CC6
+  group_name: Logical and physical access controls
+  title: Secure transmission and removal
+  requirement: >-
+    The entity restricts the transmission, movement, and removal of information to authorised
+    internal and external users and processes, and protects it during transmission, movement, or
+    removal to meet the entity's objectives.
+  pb_interpretation: >-
+    Encrypt exports, support bundles, backups, and updates; sign packages; document offline-
+    transfer methods. Air-gapped deployments need explicit offline controls.
+  owner: PB/SH
+  documented_evidence:
+  - Encryption standard
+  - Transfer protocol standard
+  - Code-signing process
+  - TLS settings
+  - Signed packages
+  - Transfer approvals
+  - Export logs
+  type_i_evidence: >-
+    Transfer standard; encryption requirements; signed updates and offline media procedures.
+  type_ii_evidence: >-
+    Signed releases across the period; export logs; encryption-evidence samples.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Obs
+  - Samp
+  cadence: Event-driven + ongoing
+  failure_modes: >-
+    Ad hoc file transfer methods; informal transfers; unsigned packages.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox uses protected mechanisms for transmitting and removing data.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.14
+    - iso-27001-a-8.24
+    note: ISMS information transfer + cryptography.
+
+- id: soc-2-cc-6.8
+  kind: criterion
+  native_id: CC6.8
+  group: CC6
+  group_name: Logical and physical access controls
+  title: Malicious software prevention
+  requirement: >-
+    The entity implements controls to prevent or detect and act upon the introduction of
+    unauthorised or malicious software to meet the entity's objectives.
+  pb_interpretation: >-
+    Scan build artefacts, endpoints, support uploads, imported packages; restrict installs. In
+    customer environments, some execution may be customer-owned.
+  owner: PB/SH
+  documented_evidence:
+  - Anti-malware standard
+  - Package validation process
+  - Endpoint controls
+  - Scan logs
+  - EDR status
+  - Package scan results
+  type_i_evidence: >-
+    EDR / AV standard; scan process; build / package scanning design.
+  type_ii_evidence: >-
+    Scan logs across the period; EDR status; agent activity.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Obs
+  - Samp
+  cadence: Ongoing
+  failure_modes: >-
+    Reliance on customer AV only; agents inactive; packages unscanned.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox applies malware and unauthorised-software controls across relevant environments.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-8.7
+    note: ISMS protection against malware.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Common Criteria — System Operations (CC7)
+# ─────────────────────────────────────────────────────────────────────────────
+
+- id: soc-2-cc-7.1
+  kind: criterion
+  native_id: CC7.1
+  group: CC7
+  group_name: System operations
+  title: Vulnerability and configuration monitoring
+  requirement: >-
+    To meet its objectives, the entity uses detection and monitoring procedures to identify
+    changes to configurations that result in the introduction of new vulnerabilities, and
+    susceptibilities to newly discovered vulnerabilities.
+  pb_interpretation: >-
+    Maintain hardening baselines; run infra, container, dependency, and configuration scans;
+    issue advisories to customers. Telemetry-off customers may need to self-run some controls with
+    PB guidance.
+  owner: PB/SH
+  documented_evidence:
+  - Vulnerability management process
+  - Baseline config standard
+  - Scan reports
+  - Remediation tickets
+  - Customer advisories
+  - FIM alerts
+  type_i_evidence: >-
+    Hardening baseline; scan schedule; FIM and remediation SLA design.
+  type_ii_evidence: >-
+    Scan reports across the period; remediation tickets; FIM alert handling.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Weekly / monthly + after change
+  failure_modes: >-
+    Scans run but no response design; findings linger.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox monitors vulnerabilities and configuration drift relevant to its system.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-8.8
+    - iso-27001-a-8.9
+    note: ISMS management of technical vulnerabilities + configuration management.
+
+- id: soc-2-cc-7.2
+  kind: criterion
+  native_id: CC7.2
+  group: CC7
+  group_name: System operations
+  title: System and anomaly monitoring
+  requirement: >-
+    The entity monitors system components and the operation of those components for anomalies that
+    are indicative of malicious acts, natural disasters, and errors affecting the entity's ability
+    to meet its objectives; anomalies are analysed to determine whether they represent security
+    events.
+  pb_interpretation: >-
+    Define minimum log set, SIEM integration points, alert catalogue, support-event logging. If
+    customer disables telemetry, PB should clearly describe what it cannot observe.
+  owner: PB/SH
+  documented_evidence:
+  - Logging and monitoring standard
+  - Alert response runbooks
+  - Log retention settings
+  - Alerts / dashboards
+  - Response records
+  type_i_evidence: >-
+    Logging standard; alert matrix; minimum log list.
+  type_ii_evidence: >-
+    Alert reviews across the period; dashboards; investigations.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Obs
+  - Samp
+  cadence: Daily / ongoing
+  failure_modes: >-
+    "We log everything" with no specifics; alert fatigue; no closed-loop review.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox defines monitoring requirements and operates its own in-scope monitoring controls.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-8.15
+    - iso-27001-a-8.16
+    - iso-27001-a-8.17
+    note: ISMS logging + monitoring + clock synchronisation.
+  - framework: iso-42001
+    refs:
+    - iso-42001-a-6.2.4
+    note: AIMS AI event logs.
+
+- id: soc-2-cc-7.3
+  kind: criterion
+  native_id: CC7.3
+  group: CC7
+  group_name: System operations
+  title: Security event evaluation
+  requirement: >-
+    The entity evaluates security events to determine whether they could or have resulted in a
+    failure of the entity to meet its objectives (security incidents) and, if so, takes actions to
+    prevent or address such failures.
+  pb_interpretation: >-
+    Severity matrix and decision tree; include customer-impact and AI-misuse analysis. Customer-
+    originated events still need to be routed into PB support / PSIRT decisions.
+  owner: PB/SH
+  documented_evidence:
+  - Event triage process
+  - Severity matrix
+  - Incident tickets
+  - Escalation records
+  - Root-cause notes
+  type_i_evidence: >-
+    Triage workflow; severity matrix; impact-assessment design.
+  type_ii_evidence: >-
+    Triage tickets across the period; severity records; escalation logs.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Int
+  - Samp
+  cadence: Event-driven
+  failure_modes: >-
+    No event-to-incident decision rule; events never escalated; severity inconsistent.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox evaluates security events through a documented triage process.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.24
+    - iso-27001-a-5.25
+    note: ISMS incident management planning + assessment.
+
+- id: soc-2-cc-7.4
+  kind: criterion
+  native_id: CC7.4
+  group: CC7
+  group_name: System operations
+  title: Incident response execution
+  requirement: >-
+    The entity responds to identified security incidents by executing a defined incident-response
+    program to understand, contain, remediate, and communicate security incidents, as appropriate.
+  pb_interpretation: >-
+    Joint-ready playbooks for product, support, customer-site, and subservice incidents. Include
+    joint-response roles and evidence boundaries for customer-hosted nodes.
+  owner: PB/SH
+  documented_evidence:
+  - Incident response plan
+  - Communication templates
+  - Tabletop programme
+  - Tabletop results
+  - Incident files
+  - Notifications
+  type_i_evidence: >-
+    IR plan; playbooks; contact trees; tabletop plan.
+  type_ii_evidence: >-
+    Incident files across the period; tabletop records; notifications.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Obs
+  - Samp
+  cadence: Event-driven + periodic exercises
+  failure_modes: >-
+    Incident plan too generic; plan exists but not followed.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox maintains a documented incident-response programme.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.26
+    - iso-27001-a-5.27
+    note: ISMS incident response + learning from incidents.
+  - framework: popia
+    refs:
+    - popia-cond-7
+    note: POPIA security safeguards including s 22 breach notification.
+
+- id: soc-2-cc-7.5
+  kind: criterion
+  native_id: CC7.5
+  group: CC7
+  group_name: System operations
+  title: Recovery from incidents
+  requirement: >-
+    The entity identifies, develops, and implements activities to recover from identified security
+    incidents.
+  pb_interpretation: >-
+    Restoration procedures, post-incident reviews, hardening follow-up. If customer environment
+    is primary recovery domain, PB still documents its own obligations and dependencies.
+  owner: PB/SH
+  documented_evidence:
+  - Recovery runbooks
+  - PIR process
+  - Recovery evidence
+  - PIRs
+  - Change records
+  type_i_evidence: >-
+    Recovery runbooks; PIR process; root-cause and prevention loop design.
+  type_ii_evidence: >-
+    PIRs across the period; recovery evidence; change records linked to incidents.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Event-driven + periodic test
+  failure_modes: >-
+    No structured post-incident review; no root cause or recurrence-prevention action.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox uses recovery and lessons-learned processes after incidents.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.27
+    note: ISMS learning from information security incidents.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Common Criteria — Change Management (CC8)
+# ─────────────────────────────────────────────────────────────────────────────
+
+- id: soc-2-cc-8.1
+  kind: criterion
+  native_id: CC8.1
+  group: CC8
+  group_name: Change management
+  title: Change management
+  requirement: >-
+    The entity authorises, designs, develops or acquires, configures, documents, tests, approves,
+    and implements changes to infrastructure, data, software, and procedures to meet its
+    objectives.
+  pb_interpretation: >-
+    Cover code, models, prompts, connectors, configs, installers, documentation, and support
+    scripts. Model updates and prompt / config changes must be treated as controlled changes.
+  owner: PB/SH
+  documented_evidence:
+  - SDLC / change management policy
+  - Emergency change process
+  - PR approvals
+  - Change tickets
+  - Test evidence
+  - Release notes
+  - Rollback evidence
+  type_i_evidence: >-
+    Change policy; release workflow; rollback design; emergency change path.
+  type_ii_evidence: >-
+    PR approvals across the period; tickets; test evidence; release notes; rollback drills.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Obs
+  - Samp
+  cadence: Every change
+  failure_modes: >-
+    Informal hotfixes; emergency changes undocumented; weak rollback.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox manages system changes through documented approval and testing practices.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-8.32
+    note: ISMS change management.
+  - framework: iso-42001
+    refs:
+    - iso-42001-cl-6.3
+    - iso-42001-a-6.1.3
+    note: AIMS planning of changes + documentation of AI system development.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Common Criteria — Risk Mitigation (CC9)
+# ─────────────────────────────────────────────────────────────────────────────
+
+- id: soc-2-cc-9.1
+  kind: criterion
+  native_id: CC9.1
+  group: CC9
+  group_name: Risk mitigation
+  title: Business disruption mitigation
+  requirement: >-
+    The entity identifies, selects, and develops risk mitigation activities for risks arising
+    from potential business disruptions.
+  pb_interpretation: >-
+    Continuity plans for support, releases, credential recovery, repos, and critical teams.
+    Define customer recovery assumptions. Availability execution may sit mainly with the customer,
+    but PB still owns assumptions and support recovery.
+  owner: PB/SH
+  documented_evidence:
+  - BCP / DR plan
+  - Dependency analysis
+  - BIA
+  - Test results
+  - Contact trees
+  type_i_evidence: >-
+    BCP / DR plan; dependency analysis; BIA and tested recovery assumptions.
+  type_ii_evidence: >-
+    BCP reviews across the period; test results; dependency updates.
+  suggested_observation_period: 6-12 months; at least one test cycle preferred
+  audit_methods:
+  - Insp
+  - Int
+  - Samp
+  cadence: Annual + on change
+  failure_modes: >-
+    Plan stops at "call support"; plan stale; no exercise.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox maintains continuity and disruption-response planning.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.29
+    - iso-27001-a-5.30
+    note: ISMS information security during disruption + ICT readiness for business continuity.
+
+- id: soc-2-cc-9.2
+  kind: criterion
+  native_id: CC9.2
+  group: CC9
+  group_name: Risk mitigation
+  title: Vendor and business partner risk
+  requirement: >-
+    The entity assesses and manages risks associated with vendors and business partners.
+  pb_interpretation: >-
+    Govern cloud relays, support tooling, telemetry tools, open-source and model suppliers, code-
+    signing services. Separate PB vendors from customer-selected local infrastructure vendors.
+  owner: PB
+  documented_evidence:
+  - Vendor risk management process
+  - Contract standards
+  - Due diligence records
+  - Contracts
+  - Review logs
+  - Issue tracking
+  type_i_evidence: >-
+    Vendor process; contract requirements; tiering; review cadence design.
+  type_ii_evidence: >-
+    Due diligence records across the period; annual reviews; issue logs.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Int
+  - Samp
+  cadence: Onboarding + annual + event-driven
+  failure_modes: >-
+    No definition of critical vendor; critical vendor not assessed; contract gaps.
+  maturity_target: AR
+  triggered_by_scenarios:
+  - scn-soc-2-subservice-carveout
+  - scn-soc-2-subservice-inclusive
+  external_safe_phrasing: >-
+    PrivateBox manages security risk in relevant supplier relationships.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.19
+    - iso-27001-a-5.20
+    - iso-27001-a-5.21
+    - iso-27001-a-5.22
+    - iso-27001-a-5.23
+    note: ISMS supplier relationships, contracts, ICT supply chain, monitoring of supplier services.
+  - framework: iso-42001
+    refs:
+    - iso-42001-a-10.2
+    note: AIMS supplier responsibility allocation.
+  - framework: popia
+    refs:
+    - popia-cond-7
+    note: POPIA operator duties (ss 20-21).
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Availability category (A1) — conditional
+# ─────────────────────────────────────────────────────────────────────────────
+
+- id: soc-2-a-1.1
+  kind: criterion
+  native_id: A1.1
+  group: A1
+  group_name: Availability
+  title: Capacity monitoring
+  requirement: >-
+    The entity maintains, monitors, and evaluates current processing capacity and use of system
+    components (infrastructure, data, and software) to manage capacity demand and to enable the
+    implementation of additional capacity to help meet its objectives.
+  pb_interpretation: >-
+    Scope only if PB makes capacity or throughput commitments. In many local deployments,
+    customer owns runtime capacity.
+  owner: PB/SH
+  documented_evidence:
+  - Capacity planning process
+  - Utilisation reports
+  - Forecast reviews
+  type_i_evidence: >-
+    Capacity procedure; forecasting and thresholds.
+  type_ii_evidence: >-
+    Utilisation trends across the period; threshold actions; capacity reviews.
+  suggested_observation_period: Full period if Availability scoped
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Monthly / quarterly
+  failure_modes: >-
+    Availability promise with no metrics; capacity reviews skipped.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox maintains capacity-planning controls where availability commitments apply.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-8.6
+    note: ISMS capacity management.
+
+- id: soc-2-a-1.2
+  kind: criterion
+  native_id: A1.2
+  group: A1
+  group_name: Availability
+  title: Environmental protection, backups, and recovery infrastructure
+  requirement: >-
+    The entity authorises, designs, develops or acquires, implements, operates, approves,
+    maintains, and monitors environmental protections, software, data backup processes, and
+    recovery infrastructure to meet its objectives.
+  pb_interpretation: >-
+    Define required local backup, environmental, and restore architecture. Often a major customer-
+    owned area for on-prem installations.
+  owner: PB/SH
+  documented_evidence:
+  - Backup standard
+  - Restore standard
+  - Environmental controls
+  - Backup jobs
+  - Restore configs
+  type_i_evidence: >-
+    Backup standard; restore standard; environmental controls; recovery-infra design.
+  type_ii_evidence: >-
+    Backup logs across the period; failure alerts; restore evidence.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Obs
+  - Samp
+  cadence: Daily / ongoing + periodic review
+  failure_modes: >-
+    Backups exist but restores unproven.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox documents and operates recoverability controls relevant to scope.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-8.13
+    note: ISMS information backup.
+
+- id: soc-2-a-1.3
+  kind: criterion
+  native_id: A1.3
+  group: A1
+  group_name: Availability
+  title: Recovery-plan testing
+  requirement: >-
+    The entity tests recovery plan procedures supporting system recovery to meet its objectives.
+  pb_interpretation: >-
+    Run restore tests for PB-managed elements; document customer test expectations. Valuable
+    differentiator for PB maturity.
+  owner: PB/SH
+  documented_evidence:
+  - DR testing programme
+  - Restore test records
+  - Tabletop reports
+  type_i_evidence: >-
+    Test schedule; scenario-based restore exercises design.
+  type_ii_evidence: >-
+    Restore test outputs across the period; exercise reports.
+  suggested_observation_period: 6-12 months
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Periodic; usually annual or more often
+  failure_modes: >-
+    Never-tested DR; tests not executed; failures not fixed.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox tests relevant recovery procedures and documents expected customer tests.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.30
+    note: ISMS ICT readiness for business continuity.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Confidentiality category (C1) — conditional
+# ─────────────────────────────────────────────────────────────────────────────
+
+- id: soc-2-c-1.1
+  kind: criterion
+  native_id: C1.1
+  group: C1
+  group_name: Confidentiality
+  title: Confidential information identification and retention
+  requirement: >-
+    The entity identifies and maintains confidential information to meet the entity's objectives
+    related to confidentiality.
+  pb_interpretation: >-
+    Classify customer documents, support bundles, model artefacts, and secrets. Define retention
+    rules. Often worth scoping even without full Privacy.
+  owner: PB/SH
+  documented_evidence:
+  - Data classification scheme
+  - Retention schedule
+  - Classification register
+  - Retention rules
+  - Repositories
+  type_i_evidence: >-
+    Classification policy; retention schedule; support-data and secrets coverage.
+  type_ii_evidence: >-
+    Labelling samples across the period; retention application records.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Ongoing + periodic review
+  failure_modes: >-
+    Classification too generic; data stored in wrong class; no retention enforcement.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox classifies and protects confidential information according to policy.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-5.12
+    - iso-27001-a-5.13
+    note: ISMS classification of information + labelling.
+  - framework: popia
+    refs:
+    - popia-cond-3
+    note: POPIA purpose specification and retention.
+
+- id: soc-2-c-1.2
+  kind: criterion
+  native_id: C1.2
+  group: C1
+  group_name: Confidentiality
+  title: Confidential information disposal
+  requirement: >-
+    The entity disposes of confidential information to meet the entity's objectives related to
+    confidentiality.
+  pb_interpretation: >-
+    Extend disposal rules to support exports, logs, snapshots, update artefacts, retired devices.
+    Keep customer deletion responsibilities explicit where data stays entirely local.
+  owner: PB/SH
+  documented_evidence:
+  - Disposal standard
+  - Retention enforcement
+  - Destruction logs
+  - Purge jobs
+  - Ticket evidence
+  type_i_evidence: >-
+    Disposal process; automated purge plus evidence design.
+  type_ii_evidence: >-
+    Purge records across the period; deletion tickets.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Event-driven + scheduled
+  failure_modes: >-
+    No destruction trigger; retention exceeded; deletion not evidenced.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox uses secure disposal for confidential information.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27001
+    refs:
+    - iso-27001-a-8.10
+    note: ISMS information deletion.
+  - framework: popia
+    refs:
+    - popia-cond-3
+    note: POPIA retention destruction.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Processing Integrity category (PI1) — conditional
+# ─────────────────────────────────────────────────────────────────────────────
+
+- id: soc-2-pi-1.1
+  kind: criterion
+  native_id: PI1.1
+  group: PI1
+  group_name: Processing integrity
+  title: Processing specifications and definitions
+  requirement: >-
+    The entity obtains or generates, uses, and communicates relevant, quality information
+    regarding the objectives related to processing, including definitions of data processed and
+    product and service specifications, to support the use of products and services.
+  pb_interpretation: >-
+    Only scope if PB makes bounded processing commitments. Do not scope generic model truthfulness
+    here.
+  owner: PB
+  documented_evidence:
+  - Processing specifications
+  - Product requirements
+  - Specs
+  - Schema definitions
+  - Acceptance criteria
+  type_i_evidence: >-
+    Specs; interfaces; acceptance criteria.
+  type_ii_evidence: >-
+    Approved specs across the period; test updates.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Int
+  cadence: On change + periodic review
+  failure_modes: >-
+    Vague correctness claims; commitments change without control update.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox defines objective processing specifications where relevant.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: soc-2-pi-1.2
+  kind: criterion
+  native_id: PI1.2
+  group: PI1
+  group_name: Processing integrity
+  title: Input controls
+  requirement: >-
+    The entity implements policies and procedures over system inputs, including controls over
+    completeness, accuracy, and timeliness, to result in products, services, and reporting to
+    meet the entity's objectives.
+  pb_interpretation: >-
+    Apply to imports, connectors, user uploads, batch jobs, support actions where PB makes
+    commitments. Shared when customers feed local data directly.
+  owner: PB/SH
+  documented_evidence:
+  - Input validation rules
+  - Connector controls
+  - Validation logs
+  - Error handling
+  - Import records
+  type_i_evidence: >-
+    Validation rules; exception workflow design.
+  type_ii_evidence: >-
+    Validation logs across the period; rejected-input records.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Ongoing
+  failure_modes: >-
+    Inputs accepted without validation; bad inputs bypass checks.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox applies controlled input-validation measures where processing-integrity commitments apply.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: soc-2-pi-1.3
+  kind: criterion
+  native_id: PI1.3
+  group: PI1
+  group_name: Processing integrity
+  title: Processing controls
+  requirement: >-
+    The entity implements policies and procedures over system processing to result in products,
+    services, and reporting to meet the entity's objectives.
+  pb_interpretation: >-
+    Job controls, exception handling, reconciliations, regression tests for deterministic
+    workflows. Most suitable for deterministic pipelines, not open-ended answer quality.
+  owner: PB/SH
+  documented_evidence:
+  - Processing control procedures
+  - Exception handling
+  - Job logs
+  - Reconciliations
+  - Test results
+  type_i_evidence: >-
+    Workflow definitions; reconciliation or regression-test design.
+  type_ii_evidence: >-
+    Job logs across the period; reconciliations; exception tickets.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Ongoing
+  failure_modes: >-
+    Black-box reliance without controls; silent failures; no exception follow-up.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox uses controlled processing procedures for scoped workflows.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-42001
+    refs:
+    - iso-42001-a-6.1.5
+    note: AIMS V&V and robustness for AI-system processing.
+
+- id: soc-2-pi-1.4
+  kind: criterion
+  native_id: PI1.4
+  group: PI1
+  group_name: Processing integrity
+  title: Output controls
+  requirement: >-
+    The entity implements policies and procedures to deliver output, including its completeness,
+    accuracy, and timeliness, to meet the entity's objectives.
+  pb_interpretation: >-
+    Define output recipients, export approvals, audit reports, error corrections. Good fit for
+    audit exports, workflow actions, or decision-support packages.
+  owner: PB/SH
+  documented_evidence:
+  - Output distribution controls
+  - Delivery logs
+  - Report checks
+  - Export approvals
+  type_i_evidence: >-
+    Output distribution procedure; intended-recipient controls.
+  type_ii_evidence: >-
+    Delivery logs across the period; review checks; export approvals.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Ongoing
+  failure_modes: >-
+    No control over exports or reports; wrong recipient; incomplete export.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox protects and controls output distribution where such commitments are made.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+- id: soc-2-pi-1.5
+  kind: criterion
+  native_id: PI1.5
+  group: PI1
+  group_name: Processing integrity
+  title: Storage controls for items in process
+  requirement: >-
+    The entity implements policies and procedures to store inputs, items in processing, and
+    outputs completely, accurately, and timely to meet the entity's objectives.
+  pb_interpretation: >-
+    Control staging areas, vector stores, caches, output archives, audit records. Often overlaps
+    with Confidentiality and Availability.
+  owner: PB/SH
+  documented_evidence:
+  - Storage controls
+  - Archival standard
+  - Storage configs
+  - Retention logs
+  - Integrity checks
+  type_i_evidence: >-
+    Storage / archival standard; integrity checks design.
+  type_ii_evidence: >-
+    Archival logs across the period; integrity checks.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Ongoing
+  failure_modes: >-
+    Temporary stores unmanaged; staging data unmanaged.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox protects and manages stored processing artefacts where relevant.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk: []
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Privacy category (P1-P8) — conditional
+# ─────────────────────────────────────────────────────────────────────────────
+
+- id: soc-2-p-1.1
+  kind: criterion
+  native_id: P1.1
+  group: P1
+  group_name: Privacy — notice
+  title: Privacy notice
+  requirement: >-
+    The entity provides notice to data subjects about its privacy practices to meet the entity's
+    objectives related to privacy. The notice is updated and communicated to data subjects in a
+    timely manner for changes to the entity's privacy practices.
+  pb_interpretation: >-
+    Scope only if PB's in-scope system collects personal information from data subjects or acts
+    as controller / processor in a way that requires notice. Customer-only data collection may
+    make this not relevant for the system scope.
+  owner: PB/SH
+  documented_evidence:
+  - Privacy notice
+  - Change control
+  - Notice version history
+  - Publication records
+  type_i_evidence: >-
+    Privacy notice; change-control workflow.
+  type_ii_evidence: >-
+    Notice versions across the period; publication evidence.
+  suggested_observation_period: Full period if Privacy scoped
+  audit_methods:
+  - Insp
+  - Int
+  cadence: On change + periodic review
+  failure_modes: >-
+    Privacy scoped with no notice basis; privacy practices change silently.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox documents privacy practices for in-scope personal information handling where applicable.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: iso-27701
+    refs:
+    - iso-27701-a1-3
+    note: PIMS controllers privacy notice.
+  - framework: popia
+    refs:
+    - popia-cond-6
+    note: POPIA openness / collection notice.
+
+- id: soc-2-p-2.1
+  kind: criterion
+  native_id: P2.1
+  group: P2
+  group_name: Privacy — choice and consent
+  title: Choice and consent
+  requirement: >-
+    The entity communicates choices available regarding the collection, use, retention,
+    disclosure, and disposal of personal information to data subjects and obtains and documents
+    consent or authority for the collection, use, retention, disclosure, and disposal of personal
+    information.
+  pb_interpretation: >-
+    Scope only where PB collects or uses personal information directly for support, telemetry, or
+    account services. Often mostly customer-owned in local deployments.
+  owner: PB/SH
+  documented_evidence:
+  - Consent process
+  - Lawful-basis standard
+  - Consent records
+  - Workflow configs
+  type_i_evidence: >-
+    Consent process; recorded lawful-basis logic.
+  type_ii_evidence: >-
+    Consent logs across the period; lawful-basis records.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Event-driven
+  failure_modes: >-
+    Consent implied but undocumented; missing consent trail.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox documents consent or lawful-basis handling for in-scope personal information where applicable.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: popia
+    refs:
+    - popia-cond-2
+    note: POPIA processing limitation including s 11 consent / justification.
+
+- id: soc-2-p-3.1
+  kind: criterion
+  native_id: P3.1
+  group: P3
+  group_name: Privacy — collection
+  title: Collection limitation
+  requirement: >-
+    Personal information is collected consistent with the entity's objectives related to privacy.
+  pb_interpretation: >-
+    Minimise support, telemetry, and admin-personal-data collection. This may be out of scope if
+    customers, not PB, collect end-user data.
+  owner: PB/SH
+  documented_evidence:
+  - Data minimisation standard
+  - Collection review
+  - Data inventories
+  - Telemetry field list
+  type_i_evidence: >-
+    Data minimisation standard; telemetry / support-data field reviews.
+  type_ii_evidence: >-
+    Field inventories across the period; telemetry reviews.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Ongoing + periodic review
+  failure_modes: >-
+    Over-collection "just in case"; PI fields creep over time.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox applies data-minimisation principles to in-scope personal information.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: popia
+    refs:
+    - popia-cond-2
+    note: POPIA minimisation principle.
+
+- id: soc-2-p-4
+  kind: criterion
+  native_id: P4.1-P4.3
+  group: P4
+  group_name: Privacy — use, retention, disposal
+  title: Use, retention, and disposal of personal information
+  requirement: >-
+    The entity limits the use of personal information to the purposes identified in the entity's
+    objectives related to privacy; the entity retains personal information consistent with the
+    entity's objectives related to privacy; the entity securely disposes of personal information.
+  pb_interpretation: >-
+    Define precise uses and retention for support tickets, telemetry, logs, account data, exports.
+    Strong overlap with Confidentiality and records management.
+  owner: PB/SH
+  documented_evidence:
+  - Privacy retention and disposal procedures
+  - Retention schedule
+  - Deletion evidence
+  - Purpose limitation controls
+  type_i_evidence: >-
+    Privacy retention / deletion process; purpose-based restrictions and purge workflow.
+  type_ii_evidence: >-
+    Purpose checks across the period; retention reports; purge evidence.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Ongoing + scheduled
+  failure_modes: >-
+    Retention undefined; data kept too long; unauthorised use.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox restricts use and retention of in-scope personal information.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: popia
+    refs:
+    - popia-cond-3
+    note: POPIA purpose specification + retention.
+
+- id: soc-2-p-5
+  kind: criterion
+  native_id: P5.1-P5.2
+  group: P5
+  group_name: Privacy — access and amendment
+  title: Access and amendment rights
+  requirement: >-
+    The entity provides data subjects with access to their personal information for review and,
+    upon request, provides physical or electronic copies of that information; the entity corrects,
+    amends, or appends personal information based on information provided by data subjects and
+    communicates such information to third parties.
+  pb_interpretation: >-
+    Only scope if PB is responsible for responding to those requests for in-scope PI. Frequently
+    customer-owned for customer data.
+  owner: PB/SH
+  documented_evidence:
+  - DSAR process
+  - Identity verification process
+  - Request records
+  - Response evidence
+  type_i_evidence: >-
+    Request workflow; identity verification, denial logic design.
+  type_ii_evidence: >-
+    Request log across the period; responses.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Event-driven
+  failure_modes: >-
+    No ownership for responses; no identity verification; overdue responses.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox maintains a documented process for in-scope personal-information access or correction requests where applicable.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: popia
+    refs:
+    - popia-cond-8
+    note: POPIA data subject participation.
+
+- id: soc-2-p-6
+  kind: criterion
+  native_id: P6.1-P6.7
+  group: P6
+  group_name: Privacy — disclosure and breach notice
+  title: Third-party disclosure, breach notice, and accounting
+  requirement: >-
+    The entity discloses personal information to third parties consistent with the entity's
+    objectives related to privacy and notifies data subjects of incidents involving personal
+    information consistent with the entity's objectives related to privacy.
+  pb_interpretation: >-
+    Privacy terms into vendor contracts; breach notification decision paths and records.
+    Particularly relevant if PB uses telemetry, support processors, or identity services.
+  owner: PB/SH
+  documented_evidence:
+  - Vendor privacy clauses
+  - Breach-notice process
+  - Contracts
+  - Incident records
+  - Disclosure logs
+  type_i_evidence: >-
+    Vendor clauses; breach notice process; disclosure log design.
+  type_ii_evidence: >-
+    Contracts across the period; incident records; notices.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Event-driven + annual review
+  failure_modes: >-
+    Privacy obligations absent from third-party contracts; processor not notified; no record of disclosure.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox governs third-party and incident-related privacy obligations for in-scope personal information.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: popia
+    refs:
+    - popia-cond-7
+    note: POPIA security safeguards (s 22 breach + s 20-21 operator).
+
+- id: soc-2-p-7.1
+  kind: criterion
+  native_id: P7.1
+  group: P7
+  group_name: Privacy — quality
+  title: Personal information quality
+  requirement: >-
+    The entity collects and maintains accurate, up-to-date, complete, and relevant personal
+    information to meet the entity's objectives related to privacy.
+  pb_interpretation: >-
+    Define necessary PI fields only; correction workflow for account / support records. Usually
+    narrow in system scope for on-prem vendors.
+  owner: PB/SH
+  documented_evidence:
+  - Data quality controls
+  - Correction workflow
+  - Record samples
+  - Correction logs
+  type_i_evidence: >-
+    Quality rules; correction workflow.
+  type_ii_evidence: >-
+    Correction records across the period.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Event-driven
+  failure_modes: >-
+    Bad data persists without correction path.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox maintains data-quality controls for in-scope personal information.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: popia
+    refs:
+    - popia-cond-5
+    note: POPIA information quality.
+
+- id: soc-2-p-8.1
+  kind: criterion
+  native_id: P8.1
+  group: P8
+  group_name: Privacy — complaints and enforcement
+  title: Privacy inquiries, complaints, and enforcement
+  requirement: >-
+    The entity implements a process for receiving, addressing, resolving, and communicating the
+    resolution of inquiries, complaints, and disputes from data subjects and others, and monitors
+    compliance with the entity's objectives related to privacy.
+  pb_interpretation: >-
+    Intake path, escalation, and remediation for privacy issues. Relevant if Privacy is in scope
+    or if procurement requires a privacy-operating model.
+  owner: PB/SH
+  documented_evidence:
+  - Complaint handling process
+  - Privacy monitoring
+  - Complaint log
+  - Remediation records
+  - Reviews
+  type_i_evidence: >-
+    Complaint process; escalation and compliance monitoring.
+  type_ii_evidence: >-
+    Complaint log across the period; closure evidence.
+  suggested_observation_period: Full period
+  audit_methods:
+  - Insp
+  - Samp
+  cadence: Event-driven + periodic review
+  failure_modes: >-
+    Privacy issue handling ad hoc; complaints unresolved.
+  maturity_target: AR
+  external_safe_phrasing: >-
+    PrivateBox maintains processes for privacy inquiries and remediation where applicable.
+  business_models:
+  - on-prem
+  - ai-factory
+  crosswalk:
+  - framework: popia
+    refs:
+    - popia-cond-8
+    note: POPIA data subject participation including complaints.

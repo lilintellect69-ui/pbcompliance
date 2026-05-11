@@ -1,7 +1,7 @@
 # PrivateBox GRC OS — build pipeline targets
 
 PYTHON ?= python3
-FRAMEWORKS := frameworks/iso-27001/iso-27001.yaml frameworks/iso-27701/iso-27701.yaml frameworks/eu-ai-act/eu-ai-act.yaml frameworks/iso-42001/iso-42001.yaml frameworks/popia/popia.yaml frameworks/king-v/king-v.yaml
+FRAMEWORKS := frameworks/iso-27001/iso-27001.yaml frameworks/iso-27701/iso-27701.yaml frameworks/eu-ai-act/eu-ai-act.yaml frameworks/iso-42001/iso-42001.yaml frameworks/popia/popia.yaml frameworks/king-v/king-v.yaml frameworks/soc-2/soc-2.yaml
 
 .PHONY: help validate crosswalks data dev build all clean
 

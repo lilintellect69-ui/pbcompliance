@@ -61,6 +61,7 @@ function getFrameworkLabel(fwId) {
     'eu-ai-act': 'EU AI Act',
     'popia': 'POPIA',
     'king-v': 'King V',
+    'soc-2': 'SOC 2',
   };
   return labels[fwId] || fwId;
 }
@@ -74,6 +75,7 @@ function frameworkAccent(fwId) {
     'eu-ai-act': 'bg-amber-700',
     'popia': 'bg-rose-700',
     'king-v': 'bg-teal-700',
+    'soc-2': 'bg-cyan-700',
   }[fwId] || 'bg-stone-400';
 }
 
@@ -85,6 +87,7 @@ function frameworkLabelClass(fwId) {
     'eu-ai-act': 'text-amber-800',
     'popia': 'text-rose-800',
     'king-v': 'text-teal-800',
+    'soc-2': 'text-cyan-800',
   }[fwId] || 'text-stone-600';
 }
 
@@ -186,6 +189,15 @@ const FRAMEWORK_OVERVIEW = {
       { label: 'Practice 109c (AI)', description: 'Principle 10\'s flagship update vs King IV. AI systems must adhere to ethics, human centricity, accountability, transparency, explainability, security, privacy, fairness and trustworthiness — with human oversight and override mechanisms commensurate with risk. Operationalised through AI System Cards, eval/red-team records, human oversight SOPs.' },
       { label: 'Disclosure Framework', description: 'Mandatory companion document for any org claiming application of King V. Annual website publication; board-approved; concluding statement on whether the four governance outcomes were realised in the period. Missing the Disclosure is the most visible compliance gap.' },
       { label: 'Practice 42', description: 'Holistic NED independence assessment against nine factors (significant funder; >9-year tenure; former-executive within 3 yrs; etc.). "Independence by assertion" without holistic 9-factor analysis is the most common King IV-to-King V transition gap.' },
+    ],
+  },
+  'soc-2': {
+    plain_english: "SOC 2 (System and Organization Controls 2) is the AICPA's Trust Services Criteria attestation framework — a CPA-issued opinion, not a certification. Reports are Type I (point-in-time design) or Type II (operating-effectiveness over a period). The framework is organised as Common Criteria (CC1–CC9 — Security baseline, mandatory) plus optional categories: Availability, Confidentiality, Processing Integrity, and Privacy, each added only where the entity's actual service commitments warrant. The audit is evaluated against the entity's own stated service commitments and system requirements — not generic security claims. For PrivateBox as a customer-hosted AI vendor, the real audit question is \"what system is in scope, what promises does PrivateBox make, and which controls are owned by PrivateBox, the customer (CUECs), or carved-out subservice organisations?\" SOC 2 is the dominant US / global enterprise procurement attestation — legal, finance and healthcare buyers backed by US investors demand it before signing material contracts. Distribution is typically NDA-gated via a Trust Center model.",
+    key_concepts: [
+      { label: 'Type I vs Type II', description: 'Type I = controls designed as of a point in time (faster, cheaper, weaker procurement signal). Type II = controls operated effectively over a period (3–12 months observation; full-strength procurement signal). Most vendors progress Type I → Type II in sequence over 9–12 months.' },
+      { label: 'CC1–CC9 + optional categories', description: 'Common Criteria (Security) is mandatory. Optional: Availability (A1), Confidentiality (C1), Processing Integrity (PI1), Privacy (P1–P8). Each addition increases audit cost; PB picks based on actual commitments — Confidentiality is the natural next step after Security for legal/finance/healthcare buyers.' },
+      { label: 'CUECs', description: 'Complementary User Entity Controls — controls the customer is expected to operate (local IAM, host hardening, local backups, physical security, restore testing). Auditor cannot test these; they must be documented in the system description per DC6. Substantial for an on-prem vendor.' },
+      { label: 'Service commitments register', description: 'SOC 2 attests controls against PB\'s own stated commitments — not generic security. Service commitments register + system requirements register is the foundation. Marketing language that outruns commitments is the top risk. Never claim "SOC 2 certified" — reports are issued, not certified.' },
     ],
   },
 };
