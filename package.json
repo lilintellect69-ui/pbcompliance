@@ -1,0 +1,10 @@
+{
+  "name": "pbcompliance",
+  "private": true,
+  "version": "0.1.0",
+  "description": "PrivateBox GRC OS — root package.json for Vercel API functions. The Vite OS app lives in os/ with its own package.json.",
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.41.0"
+  }
+}
